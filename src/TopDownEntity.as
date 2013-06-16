@@ -9,6 +9,7 @@ package
 		 * Constants
 		 */
 		public var runSpeed:int; //Max run speed
+		
 		public var size:FlxPoint;//Size in pixels of this box collider
 		
 		public var mySprite: FlxSprite;

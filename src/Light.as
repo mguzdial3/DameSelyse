@@ -3,11 +3,7 @@ package {
  
   public class Light extends FlxSprite {
   	
-  		//Use reference to Assets.as so it's extenadable
-  
-   	 
- 
-	    private var darkness:FlxSprite;
+    private var darkness:FlxSprite;
     
    	 public function Light(LightImageClass: Class, x:Number, y:Number, darkness:FlxSprite, _color:uint = 0xFFFFFFFF, alphaNumber: Number=1.0):void {
 	  super(x, y, LightImageClass);
@@ -16,7 +12,6 @@ package {
       this.blend = "screen"
       
       this.alpha =alphaNumber;
-      
       
       this.color = _color;
     }

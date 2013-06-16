@@ -21,5 +21,9 @@ package
 		// tiles
 		[Embed(source = "/assets/tiles/walls (opengameart - daniel siegmund - ccby30).png")] public static var WALLS_TILE:Class;
 		[Embed(source = "/assets/tiles/floor_wood (opengameart - Redshrike - ccby30).png")] public static var FLOORS_TILE:Class;
+	
+		//lights
+		[Embed(source="/assets/light.png")] public static var LightImageClass:Class;
+		
 	}
 }

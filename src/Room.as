@@ -1,13 +1,11 @@
 package{
 	import org.flixel.*;
 	public class Room {
-		private var leftCorner:FlxPoint;
-		private var size: FlxPoint;
-		private var cameraPosition: FlxPoint;
+		private var leftCorner:FlxPoint; //Left corner of room
+		private var size: FlxPoint; //Size in pixels of room (width, height)
+		private var cameraPosition: FlxPoint; //Camera position for the room
 		
-		public var adjacentRooms: Vector.<Room>;
-		public var nextRoom: Room;
-		
+		public var adjacentRooms: Vector.<Room>; //A collection of all the rooms next to this one
 		
 		public var numRooms: int;
 		
@@ -24,7 +22,7 @@ package{
 			numRooms=0;
 		}
 		
-		
+		//Returns a reference to the camera position
 		public function getCameraPosition(): FlxPoint
 		{
 			return cameraPosition;
@@ -33,11 +31,10 @@ package{
 		//Called to add rooms that are adjacent to this one
 		public function addNeighbor(room: Room):void
 		{
-			//nextRoom = room;
 			numRooms=adjacentRooms.push(room);
-			//numRooms++;
 		}
 		
+		//Returns a room if we should transfer into that one
 		public function checkRooms(playerPnt: FlxPoint): Room
 		{
 			var roomToReturn: Room;
@@ -48,9 +45,6 @@ package{
 				{
 				for (i = 0; i < numRooms; i++)
 				{
-				
-					
-					//TROUBLE PART
     				if(adjacentRooms[i].within(playerPnt))
     				{
     					roomToReturn = adjacentRooms[i];

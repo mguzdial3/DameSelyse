@@ -65,8 +65,6 @@ package
 		private var darkness:FlxSprite;
 		private var playerLight:Light;
 		
-		[Embed(source="/assets/light.png")]
-   	 	private var LightImageClass:Class;
 		
 		/**
 		 * Constructor
@@ -115,7 +113,7 @@ package
       		darkness.scrollFactor.x = darkness.scrollFactor.y = 0;
       		darkness.blend = "multiply";
 			
-			playerLight = new Light(LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness);
+			playerLight = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness);
 			
 			// objects
 			createObjects();
@@ -203,15 +201,15 @@ package
 			add(player);
 			add(player.mySprite);
 			
-			 var light:Light = new Light(LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness, 0xFFFFDDFF);
+			 var light:Light = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness, 0xFFFFDDFF);
     		add(light);
-    		 var light2:Light = new Light(LightImageClass, FlxG.width / 4, FlxG.height / 4, darkness, 0xFFFFFFDD);
+    		 var light2:Light = new Light(Assets.LightImageClass, FlxG.width / 4, FlxG.height / 4, darkness, 0xFFFFFFDD);
     		add(light2);
-    		 var light3:Light = new Light(LightImageClass, FlxG.width*3/ 4, FlxG.height*3/ 4, darkness, 0xFFDDFFFF);
+    		 var light3:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height*3/ 4, darkness, 0xFFDDFFFF);
     		add(light3);
-    		var light4:Light = new Light(LightImageClass, FlxG.width/ 4, FlxG.height*3/ 4, darkness, 0xFFFFFFCC);
+    		var light4:Light = new Light(Assets.LightImageClass, FlxG.width/ 4, FlxG.height*3/ 4, darkness, 0xFFFFFFCC);
     		add(light4);
-    		var light5:Light = new Light(LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFCC);
+    		var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFCC);
     		add(light5);
 			
 			
