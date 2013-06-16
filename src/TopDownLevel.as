@@ -23,10 +23,10 @@ package
 		/**
 		*Moving Camera Stuff
 		*/
-		public var currRoom: Room; //Has to be public to be accessible in children
-		private var cameraPoint: FlxPoint;
-		private var goalPoint: FlxPoint;
-		private var movingToGoal: Boolean;
+		public var currRoom: Room; //Has to be public to be accessible in children, representation of current room 
+		private var cameraPoint: FlxPoint; //Current place the camera is focusing on
+		private var goalPoint: FlxPoint; //The goal position for the camera point
+		private var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
 		
 		
 		/**
@@ -62,6 +62,7 @@ package
 		
 		/**
 		 * Create the whole level, including all sprites, maps, blocks, etc
+		 * This method is called automatically, the equivalent of Unity3D's Start
 		 */
 		public function create():void 
 		{
@@ -80,7 +81,7 @@ package
 		}
 		
 		/**
-		*Room transfer logical
+		*Room transfer logic
 		* Pass in center of player
 		*/
 		public function roomTransfer(point: FlxPoint):void

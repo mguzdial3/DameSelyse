@@ -1,12 +1,7 @@
 package
 {
 	import org.flixel.*;
-	//import topdown.*;
-
-	/**
-	 * State for actually playing the game
-	 * @author Cody Sandahl
-	 */
+	
 	public class GameState extends FlxState
 	{
 	

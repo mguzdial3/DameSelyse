@@ -1,12 +1,7 @@
 package 
 {
 	import org.flixel.*;
-	//import topdown.*;
 	
-	/**
-	 * A basic indoor scene
-	 * @author Cody Sandahl
-	 */
 	public class IndoorHouseLevel extends TopDownLevel
 	{
 		/**

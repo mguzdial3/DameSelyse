@@ -1,10 +1,7 @@
 package 
 {
 	import org.flixel.*;
-	/**
-	 * Player-controlled entity
-	 * @author Cody Sandahl
-	 */
+
 	public class Player extends TopDownEntity
 	{
 		/**
