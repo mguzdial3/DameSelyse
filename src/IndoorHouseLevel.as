@@ -2,6 +2,8 @@ package
 {
 	import org.flixel.*;
 	
+	
+	
 	public class IndoorHouseLevel extends TopDownLevel
 	{
 		/**
@@ -47,6 +49,25 @@ package
 		);
 		
 		
+		protected static var FOREGROUND:Array = new Array(
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		);
+		
+		
 		/**
 		 * Custom groups
 		 */
@@ -64,6 +85,10 @@ package
 		//Darkness
 		private var darkness:FlxSprite;
 		private var playerLight:Light;
+		
+		//Controller reference for enemies
+		private var enemyController: EnemyController;
+		
 		
 		
 		/**
@@ -105,16 +130,30 @@ package
 			);
 			wallGroup.add(tiles);
 			
+			//FOREGROUND
+			tiles = new FlxTilemap();
+			tiles.loadMap(
+				FlxTilemap.arrayToCSV(FOREGROUND, 15), // convert our array of tile indices to a format flixel understands
+				Assets.WALLS_TILE, // image to use
+				tileSize.x, // width of each tile (in pixels)
+				tileSize.y // height of each tile (in pixels)
+			);
+			
+			foreGroundGroup.add(tiles);
+			
+			
+			
+			
 			darkness = new FlxSprite(0,0);
 			
 			
 			
-      		darkness.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
+      		darkness.makeGraphic(FlxG.width, FlxG.height, 0xff777777);
       		darkness.scrollFactor.x = darkness.scrollFactor.y = 0;
       		darkness.blend = "multiply";
 			
 			playerLight = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness);
-			
+			playerLight.scale = (new FlxPoint(0.5,0.5));
 			// objects
 			createObjects();
 		}
@@ -178,7 +217,7 @@ package
 		 * Create the player
 		 */
 		override protected function createPlayer():void {
-			player = new Player(playerStart.x, playerStart.y);
+			player = new Player(playerStart.x, playerStart.y/2);
 		}
 		
 		/**
@@ -201,21 +240,32 @@ package
 			add(player);
 			add(player.mySprite);
 			
-			 var light:Light = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness, 0xFFFFDDFF);
-    		add(light);
-    		 var light2:Light = new Light(Assets.LightImageClass, FlxG.width / 4, FlxG.height / 4, darkness, 0xFFFFFFDD);
-    		add(light2);
-    		 var light3:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height*3/ 4, darkness, 0xFFDDFFFF);
-    		add(light3);
-    		var light4:Light = new Light(Assets.LightImageClass, FlxG.width/ 4, FlxG.height*3/ 4, darkness, 0xFFFFFFCC);
-    		add(light4);
-    		var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFCC);
+		
+    		var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF);
     		add(light5);
 			
+			 
+			var one: FlxPoint = new FlxPoint(140,140);
+			var two: FlxPoint = new FlxPoint(80,140);
+			var three: FlxPoint = new FlxPoint(80,100);
 			
+			var waypoints: Vector.<FlxPoint> = new Vector.<FlxPoint>();
+			
+			waypoints.push(one);
+			waypoints.push(two);
+			waypoints.push(three);
+			
+			var enemy1:Enemy = new Enemy(waypoints,player, light5);
+			
+			var enemies: Vector.<Enemy> = new Vector.<Enemy>();
+			
+			enemies.push(enemy1);
+			
+			enemyController = new EnemyController(enemies);
+			
+			
+			add(enemyController);
 			add(playerLight);
-			
-			
 			
 			add(darkness);
 			
@@ -223,7 +273,7 @@ package
 			add(guiGroup);
 		}
 		override public function draw():void {
- 		  darkness.fill(0xff000000);
+ 		  darkness.fill(0xff777777);
    			super.draw();
  			}
 		
@@ -232,10 +282,17 @@ package
 			{
 				return new PlainHouseLevel(levelSize,tileSize);
 			}
+			else if(super.reloadThisLevel)
+			{
+				return new IndoorHouseLevel(levelSize,tileSize);
+			}
 			else
 			{
 				return null;
 			}
+			
+			
+			
 		}
 		
 		
@@ -247,8 +304,15 @@ package
 			playerLight.x=(player.x+player.width/2);
 			playerLight.y = (player.y-player.height/2);
 			FlxG.collide(objectGroup, player);
+			//enemy1.update();
+			
+			var enemyMessage: int = enemyController.commandEnemies();
 			
 			
+			if(enemyMessage==1)
+			{
+				super.reloadThisLevel=true;
+			}
 		}
 	}
 }

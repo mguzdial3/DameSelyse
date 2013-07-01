@@ -10,9 +10,6 @@ package
 		 * @param	Y	Y location of the entity
 		 */
 		 
-		 
-		
-		 
 		public function Player(X:Number=100, Y:Number=100):void {
 			super(Assets.RANGER_SPRITE, new FlxPoint(16,2), new FlxPoint(16,18), X, Y);
 			
