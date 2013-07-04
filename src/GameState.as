@@ -23,7 +23,7 @@ package
 			//FlxG.mouse.show();
 			// load the first level (this level should then connect to the other levels)
 			//LEVEL = new IndoorHouseLevel(new FlxPoint(424, 272),new FlxPoint(16, 16));
-			LEVEL = new TestLevel1(new FlxPoint(320, 320),new FlxPoint(16, 16));
+			LEVEL = new TestLevel1(new FlxPoint(448, 384),new FlxPoint(16, 16));
 			
 			//Adding the LEVEL variable adds everything added to the LEVEL variable object 
 			this.add(LEVEL);
