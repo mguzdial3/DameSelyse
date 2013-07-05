@@ -5,9 +5,9 @@ package
 	
 	public class TopDownEntity extends FlxSprite
 	{
-		/**
-		 * Constants
-		 */
+		//Whether or not this entity is currently paused
+		private var currPaused: Boolean;
+	
 		public var runSpeed:int; //Max run speed
 		
 		public var size:FlxPoint;//Size in pixels of this box collider
@@ -52,7 +52,7 @@ package
 			);
 			
 			
-			
+			currPaused=false;
 			createAnimations();
 		}
 		
@@ -72,10 +72,6 @@ package
 			mySprite.addAnimation("walk_right", [4, 5, 6], 12);
 			mySprite.addAnimation("walk_down", [8, 9, 10], 12);
 			mySprite.addAnimation("walk_left", [12, 13, 14], 12);
-			mySprite.addAnimation("attack_up", [16, 17, 18, 19], 12, false); // false = don't loop the animation
-			mySprite.addAnimation("attack_right", [20, 21, 22, 23], 12, false);
-			mySprite.addAnimation("attack_down", [24, 25, 26, 27], 12, false);
-			mySprite.addAnimation("attack_left", [28, 29, 30, 31], 12, false);
 			
 		}
 
@@ -87,8 +83,10 @@ package
 		 * Update each timestep
 		 */
 		public override function update():void {
-			
-			updateControls();
+			if(!currPaused)
+			{
+				updateControls();
+			}
 			updateAnimations();
 			mySprite.update();
 			
@@ -101,8 +99,40 @@ package
 			center.x = mySprite.x+mySprite.width/2;
 			center.y = mySprite.y+mySprite.height/2;
 			
-			super.update();
+			if(!currPaused)
+			{
+				super.update();
+			}
 		}
+		
+		public function hardStop():void
+		{
+			
+			velocity.x=0;
+			velocity.y=0;
+			acceleration.x=0;
+			acceleration.y=0;
+		}
+		
+		public function setPaused(_paused: Boolean):void
+		{
+			currPaused=_paused;
+			hardStop();
+		}
+		
+		
+		public function hardStopY(): void
+		{
+			velocity.y=0;
+			acceleration.y=0;
+		}
+		
+		public function hardStopX(): void
+		{
+			velocity.x=0;
+			acceleration.x=0;
+		}
+		
 		
 		/**
 		 * Based on current state, show the correct animation
@@ -163,36 +193,40 @@ package
 		/**
 		 * Move entity left
 		 */
-		public function moveLeft():void {
+		public function moveLeft(modifier:Number=1):void {
+			currPaused=false;
 			facing = LEFT;
-			acceleration.x = -runSpeed * 4; // accelerate to top speed in 1/4 of a second
+			acceleration.x = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
 			
 		}
 		
 		/**
 		 * Move entity right
 		 */
-		public function moveRight():void {
+		public function moveRight(modifier:Number=1):void {
+			currPaused=false;
 			facing = RIGHT;
-			acceleration.x = runSpeed * 4; // accelerate to top speed in 1/4 of a second
+			acceleration.x = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
 		
 		}
 		
 		/**
 		 * Move entity up
 		 */
-		public function moveUp():void {
+		public function moveUp(modifier:Number=1):void {
+			currPaused=false;
 			facing = UP;
-			acceleration.y = -runSpeed * 4; // accelerate to top speed in 1/4 of a second
+			acceleration.y = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
 		
 		}
 		
 		/**
 		 * Move entity down
 		 */
-		public function moveDown():void {
+		public function moveDown(modifier:Number=1):void {
+			currPaused=false;
 			facing = DOWN;
-			acceleration.y = runSpeed * 4; // accelerate to top speed in 1/4 of a second
+			acceleration.y = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
 	
 		}
 	}

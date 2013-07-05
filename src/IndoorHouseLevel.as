@@ -2,6 +2,8 @@ package
 {
 	import org.flixel.*;
 	
+	
+	
 	public class IndoorHouseLevel extends TopDownLevel
 	{
 		/**
@@ -47,6 +49,25 @@ package
 		);
 		
 		
+		protected static var FOREGROUND:Array = new Array(
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		);
+		
+		
 		/**
 		 * Custom groups
 		 */
@@ -64,6 +85,12 @@ package
 		//Darkness
 		private var darkness:FlxSprite;
 		private var playerLight:Light;
+		
+		//Controller reference for enemies
+		private var enemyController: EnemyController;
+		
+		
+		
 		
 		
 		/**
@@ -105,16 +132,30 @@ package
 			);
 			wallGroup.add(tiles);
 			
+			//FOREGROUND
+			tiles = new FlxTilemap();
+			tiles.loadMap(
+				FlxTilemap.arrayToCSV(FOREGROUND, 15), // convert our array of tile indices to a format flixel understands
+				Assets.WALLS_TILE, // image to use
+				tileSize.x, // width of each tile (in pixels)
+				tileSize.y // height of each tile (in pixels)
+			);
+			
+			foreGroundGroup.add(tiles);
+			
+			
+			
+			
 			darkness = new FlxSprite(0,0);
 			
 			
 			
-      		darkness.makeGraphic(FlxG.width, FlxG.height, 0xff000000);
+      		darkness.makeGraphic(FlxG.width, FlxG.height, 0xff777777);
       		darkness.scrollFactor.x = darkness.scrollFactor.y = 0;
       		darkness.blend = "multiply";
 			
 			playerLight = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness);
-			
+			playerLight.scale = (new FlxPoint(0.5,0.5));
 			// objects
 			createObjects();
 		}
@@ -178,7 +219,7 @@ package
 		 * Create the player
 		 */
 		override protected function createPlayer():void {
-			player = new Player(playerStart.x, playerStart.y);
+			player = new Player(playerStart.x, playerStart.y/2);
 		}
 		
 		/**
@@ -199,23 +240,34 @@ package
 			add(decalGroup);
 			add(objectGroup);
 			add(player);
-			add(player.mySprite);
+			player.addSprites(this);
 			
-			 var light:Light = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness, 0xFFFFDDFF);
-    		add(light);
-    		 var light2:Light = new Light(Assets.LightImageClass, FlxG.width / 4, FlxG.height / 4, darkness, 0xFFFFFFDD);
-    		add(light2);
-    		 var light3:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height*3/ 4, darkness, 0xFFDDFFFF);
-    		add(light3);
-    		var light4:Light = new Light(Assets.LightImageClass, FlxG.width/ 4, FlxG.height*3/ 4, darkness, 0xFFFFFFCC);
-    		add(light4);
-    		var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFCC);
+		
+    		var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF);
     		add(light5);
 			
+			 
+			var one: FlxPoint = new FlxPoint(140,140);
+			var two: FlxPoint = new FlxPoint(80,140);
+			var three: FlxPoint = new FlxPoint(80,100);
 			
+			var waypoints: Vector.<FlxPoint> = new Vector.<FlxPoint>();
+			
+			waypoints.push(one);
+			waypoints.push(two);
+			waypoints.push(three);
+			
+			var enemy1:Enemy = new Enemy(waypoints,player, light5);
+			
+			var enemies: Vector.<Enemy> = new Vector.<Enemy>();
+			
+			enemies.push(enemy1);
+			
+			enemyController = new EnemyController(enemies);
+			
+			
+			add(enemyController);
 			add(playerLight);
-			
-			
 			
 			add(darkness);
 			
@@ -223,14 +275,20 @@ package
 			add(guiGroup);
 		}
 		override public function draw():void {
- 		  darkness.fill(0xff000000);
+ 			darkness.fill(0xff777777);
    			super.draw();
- 			}
+ 		}
+		
+		
 		
 		override public function transferLevel(): TopDownLevel{
 			if(player.x>220)
 			{
 				return new PlainHouseLevel(levelSize,tileSize);
+			}
+			else if(super.reloadThisLevel)
+			{
+				return new IndoorHouseLevel(levelSize,tileSize);
 			}
 			else
 			{
@@ -244,11 +302,147 @@ package
 		 */
 		override public function update():void {
 			super.update(); // NOTE: map -> player collision happens in super.update()
+			
+		}
+		
+		override public function normalGameplay():void
+		{
+			super.normalGameplay();
+			
 			playerLight.x=(player.x+player.width/2);
 			playerLight.y = (player.y-player.height/2);
 			FlxG.collide(objectGroup, player);
+			//enemy1.update();
+			
+			var enemyMessage: int = enemyController.commandEnemies();
+			
+			
+			if(enemyMessage==EnemyController.ENEMY_SPOTTED_PLAYER)
+			{
+				setUpQuestionState();
+			}
+		}
+		
+		private function setUpQuestionState():void
+		{
+			
+			//Pause player
+			player.setPaused(true);
+			questionText = new FlxText(10, levelSize.y-50, levelSize.x/2, enemyController.getQuestion());
+			questionText.alignment = "center";
+			
+			//Set Question Time State
+			setGameState(QUESTION_TIME);
+				
+			add(questionText);
+			
+			var currAnswers: Vector.<EnemyAnswer> = enemyController.getAnswers();
+			
+			answerUp = new FlxText(10, levelSize.y/3, levelSize.x/2, currAnswers[0].getAnswerText());//Up Answer
+			answerRight = new FlxText(10+levelSize.x/6, levelSize.y/2, levelSize.x/2, currAnswers[1].getAnswerText()); //Right Answer
+			answerLeft = new FlxText(10, levelSize.y/2, levelSize.x/2, currAnswers[3].getAnswerText()); //Left Answer
+			answerDown = new FlxText(10, 2*levelSize.y/3, levelSize.x/2, currAnswers[2].getAnswerText()); //Down Answer
+			
+			var i: int;
+			
+			for(i=0; i<4; i++)
+			{
+				if(currAnswers[i].isCorrectAnswer())
+				{
+					correctAnswer=i;
+				}
+			}
+			
+			
+			answerUp.alignment = "center";
+			add(answerUp);
+			answerRight.alignment = "center";
+			add(answerRight);
+			answerDown.alignment = "center";
+			add(answerDown);
+			answerLeft.alignment = "left";
+			add(answerLeft);
 			
 			
 		}
+		
+		//Remove question state and return to normal gameplay state
+		private function fromQuestionState():void
+		{
+			player.setPaused(false);
+			setGameState(NORMAL_GAMEPLAY);
+			
+			remove(questionText);
+			remove(answerUp);
+			remove(answerDown);
+			remove(answerRight);
+			remove(answerLeft);
+		}
+		
+		
+		
+		override public function questionGameplay():void
+		{
+			super.questionGameplay();
+			
+			if (FlxG.keys.justReleased("A"))
+			{
+				if(correctAnswer==3)
+				{
+					enemyController.resetEnemies();
+				}
+				else
+				{
+					reloadLevel();
+				}
+				
+				fromQuestionState();
+				
+			}
+				
+			if (FlxG.keys.justReleased("D"))
+			{
+				if(correctAnswer==1)
+				{
+					enemyController.resetEnemies();
+				}
+				else
+				{
+					reloadLevel();
+				}
+				
+				fromQuestionState();
+			}
+				
+			if (FlxG.keys.justReleased("W"))
+			{
+				if(correctAnswer==0)
+				{
+					enemyController.resetEnemies();
+				}
+				else
+				{
+					reloadLevel();
+				}
+				
+				fromQuestionState();
+			}
+				
+			if (FlxG.keys.justReleased("S"))
+			{
+				if(correctAnswer==2)
+				{
+					enemyController.resetEnemies();
+				}
+				else
+				{
+					reloadLevel();
+				}
+				
+				fromQuestionState();
+			}
+			
+		}
+		
 	}
 }

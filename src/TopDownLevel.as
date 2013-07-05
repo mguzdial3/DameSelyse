@@ -12,12 +12,13 @@ package
 		public var numTiles:FlxPoint; // how many tiles are in this level (width and height)
 		public var floorGroup:FlxGroup; // floor (rendered beneath the walls - no collisions)
 		public var wallGroup:FlxGroup; // all the map blocks (with collisions)
+		public var foreGroundGroup:FlxGroup; // foreground (rendered above the walls - no collisions)
 		public var guiGroup:FlxGroup; // gui elements
 		
 		/**
 		 * Player
 		 */
-		public var player:TopDownEntity;
+		public var player:Player;
 		public var playerStart:FlxPoint;
 		
 		/**
@@ -27,6 +28,31 @@ package
 		private var cameraPoint: FlxPoint; //Current place the camera is focusing on
 		private var goalPoint: FlxPoint; //The goal position for the camera point
 		private var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
+		
+		/**
+		* level stuff
+		*/
+		
+		protected var reloadThisLevel: Boolean;
+		
+		/**
+		* Game State Stuff
+		*/
+		protected var currState: int;
+		protected static const NORMAL_GAMEPLAY:int=0;
+		protected static const QUESTION_TIME:int=1;
+		
+		/**
+		 * Question Stuff
+		 */
+		 
+		 protected var questionText: FlxText;
+		 protected var answerUp: FlxText; //0
+		 protected var answerRight: FlxText; //1
+		 protected var answerDown: FlxText; //2
+		 protected var answerLeft: FlxText; //3
+		 protected var correctAnswer: int;
+		 
 		
 		
 		/**
@@ -38,6 +64,8 @@ package
 		public function TopDownLevel( levelSize:FlxPoint, tileSize:FlxPoint, _playerStart: FlxPoint):void 
 		{
 			super();
+			reloadThisLevel=false;
+			
 			this.levelSize = levelSize;
 			this.tileSize = tileSize;
 			if (levelSize && tileSize)
@@ -45,6 +73,7 @@ package
 			// setup groups
 			this.floorGroup = new FlxGroup();
 			this.wallGroup = new FlxGroup();
+			this.foreGroundGroup = new FlxGroup();
 			this.guiGroup = new FlxGroup();
 			
 			this.playerStart=_playerStart;
@@ -58,6 +87,11 @@ package
 			
 			// create the level
 			this.create();
+		}
+		
+		public function reloadLevel(): void
+		{
+			reloadThisLevel=true;
 		}
 		
 		/**
@@ -105,6 +139,9 @@ package
 		
 		/**
 		* Returns the next level to go to if we should transfer the level, null otherwise
+		*
+		*
+		* Also to be made use of in terms of reloading this specific level
 		*/
 		public function transferLevel(): TopDownLevel
 		{
@@ -118,7 +155,7 @@ package
 		 */
 		protected function createPlayer():void 
 		{
-			player = new TopDownEntity(Assets.RANGER_SPRITE, new FlxPoint(16,2), new FlxPoint(16,18), playerStart.x, playerStart.y);
+			player = new Player(playerStart.x, playerStart.y);
 		}
 		
 		/**
@@ -128,6 +165,13 @@ package
 		{
 		}
 		
+		/**
+		 * Set the current game State
+		 */
+		protected function setGameState(gameState:int):void
+		{
+			currState=gameState;
+		}		
 		
 		private function movingCamera(): void
 		{
@@ -185,6 +229,18 @@ package
 		 * Update each timestep
 		 */
 		override public function update():void {
+			if(currState==NORMAL_GAMEPLAY)
+			{
+				normalGameplay();
+			}
+			else if(currState==QUESTION_TIME)
+			{
+				questionGameplay();
+			}
+		}
+		
+		public function normalGameplay():void
+		{
 			super.update();
 			roomTransfer(player.center);
 			FlxG.collide(wallGroup, player);
@@ -194,5 +250,11 @@ package
 				movingCamera();
 			}
 		}
+		
+		public function questionGameplay():void
+		{
+			
+		}
+		
 	}
 }
