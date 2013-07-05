@@ -12,7 +12,6 @@ package
 		public var numTiles:FlxPoint; // how many tiles are in this level (width and height)
 		public var floorGroup:FlxGroup; // floor (rendered beneath the walls - no collisions)
 		public var wallGroup:FlxGroup; // all the map blocks (with collisions)
-		public var foreGroundGroup:FlxGroup; // foreground (rendered above the walls - no collisions)
 		public var guiGroup:FlxGroup; // gui elements
 		
 		/**
@@ -29,11 +28,6 @@ package
 		private var goalPoint: FlxPoint; //The goal position for the camera point
 		private var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
 		
-		/**
-		* level stuff
-		*/
-		
-		protected var reloadThisLevel: Boolean;
 		
 		/**
 		 * Constructor
@@ -44,8 +38,6 @@ package
 		public function TopDownLevel( levelSize:FlxPoint, tileSize:FlxPoint, _playerStart: FlxPoint):void 
 		{
 			super();
-			reloadThisLevel=false;
-			
 			this.levelSize = levelSize;
 			this.tileSize = tileSize;
 			if (levelSize && tileSize)
@@ -53,7 +45,6 @@ package
 			// setup groups
 			this.floorGroup = new FlxGroup();
 			this.wallGroup = new FlxGroup();
-			this.foreGroundGroup = new FlxGroup();
 			this.guiGroup = new FlxGroup();
 			
 			this.playerStart=_playerStart;
@@ -67,11 +58,6 @@ package
 			
 			// create the level
 			this.create();
-		}
-		
-		public function reloadLevel(): void
-		{
-			reloadThisLevel=true;
 		}
 		
 		/**
@@ -119,9 +105,6 @@ package
 		
 		/**
 		* Returns the next level to go to if we should transfer the level, null otherwise
-		*
-		*
-		* Also to be made use of in terms of reloading this specific level
 		*/
 		public function transferLevel(): TopDownLevel
 		{

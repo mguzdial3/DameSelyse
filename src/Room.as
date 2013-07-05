@@ -65,7 +65,7 @@ package{
 			var toReturn: Boolean =false;
 			if(playerPnt.x>leftCorner.x && playerPnt.x<leftCorner.x+size.x)
 			{
-				if(playerPnt.y<leftCorner.y && playerPnt.y>leftCorner.y-size.y)
+				if(playerPnt.y>leftCorner.y && playerPnt.y<leftCorner.y+size.y)
 				{
 					toReturn = true;
 				}

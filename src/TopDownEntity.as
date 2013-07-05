@@ -104,27 +104,6 @@ package
 			super.update();
 		}
 		
-		public function hardStop():void
-		{
-			velocity.x=0;
-			velocity.y=0;
-			acceleration.x=0;
-			acceleration.y=0;
-		}
-		
-		public function hardStopY(): void
-		{
-			velocity.y=0;
-			acceleration.y=0;
-		}
-		
-		public function hardStopX(): void
-		{
-			velocity.x=0;
-			acceleration.x=0;
-		}
-		
-		
 		/**
 		 * Based on current state, show the correct animation
 		 * to be overriden
@@ -184,36 +163,36 @@ package
 		/**
 		 * Move entity left
 		 */
-		public function moveLeft(modifier:Number=1):void {
+		public function moveLeft():void {
 			facing = LEFT;
-			acceleration.x = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			acceleration.x = -runSpeed * 4; // accelerate to top speed in 1/4 of a second
 			
 		}
 		
 		/**
 		 * Move entity right
 		 */
-		public function moveRight(modifier:Number=1):void {
+		public function moveRight():void {
 			facing = RIGHT;
-			acceleration.x = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			acceleration.x = runSpeed * 4; // accelerate to top speed in 1/4 of a second
 		
 		}
 		
 		/**
 		 * Move entity up
 		 */
-		public function moveUp(modifier:Number=1):void {
+		public function moveUp():void {
 			facing = UP;
-			acceleration.y = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			acceleration.y = -runSpeed * 4; // accelerate to top speed in 1/4 of a second
 		
 		}
 		
 		/**
 		 * Move entity down
 		 */
-		public function moveDown(modifier:Number=1):void {
+		public function moveDown():void {
 			facing = DOWN;
-			acceleration.y = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			acceleration.y = runSpeed * 4; // accelerate to top speed in 1/4 of a second
 	
 		}
 	}
