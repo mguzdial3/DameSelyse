@@ -194,5 +194,74 @@ package
 			else if (movement.y > 0)
 				moveDown();
 		}
+		
+		
+		
+		public function setNewOutfit(outfitType:uint, outfit:Class):void
+	{
+		if(outfitType==PlayerOutfit.LEGS_OUTFIT)
+		{
+			mySprite.loadGraphic(
+				outfit, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				16, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
+			
+			
+			mySprite.addAnimation("idle_right", [5]);
+			mySprite.addAnimation("idle_down", [9]);
+			mySprite.addAnimation("idle_left", [13]);
+			mySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+			mySprite.addAnimation("walk_right", [4, 5, 6], 12);
+			mySprite.addAnimation("walk_down", [8, 9, 10], 12);
+			mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+		}
+		else if(outfitType==PlayerOutfit.BODY_OUTFIT)
+		{
+			bodySprite.loadGraphic(
+				outfit, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				16, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
+			
+			bodySprite.addAnimation("idle_up", [1]);
+			
+			bodySprite.addAnimation("idle_right", [5]);
+			bodySprite.addAnimation("idle_down", [9]);
+			bodySprite.addAnimation("idle_left", [13]);
+			bodySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+			bodySprite.addAnimation("walk_right", [4, 5, 6], 12);
+			bodySprite.addAnimation("walk_down", [8, 9, 10], 12);
+			bodySprite.addAnimation("walk_left", [12, 13, 14], 12);
+		}
+		else if(outfitType==PlayerOutfit.HEAD_OUTFIT)
+		{
+			headSprite.loadGraphic(
+				outfit, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				16, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
+			
+			headSprite.addAnimation("idle_up", [1]);
+			
+			headSprite.addAnimation("idle_right", [5]);
+			headSprite.addAnimation("idle_down", [9]);
+			headSprite.addAnimation("idle_left", [13]);
+			headSprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+			headSprite.addAnimation("walk_right", [4, 5, 6], 12);
+			headSprite.addAnimation("walk_down", [8, 9, 10], 12);
+			headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+		}
 	}
+		
+	}
+	
+	
+	
 }

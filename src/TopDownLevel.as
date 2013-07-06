@@ -53,6 +53,12 @@ package
 		 protected var answerLeft: FlxText; //3
 		 protected var correctAnswer: int;
 		 
+		 
+		 /**
+		 * Outfit stuff
+		 */
+		 protected var legOutfit: PlayerOutfit;
+		 
 		
 		
 		/**

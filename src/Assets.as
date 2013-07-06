@@ -7,11 +7,16 @@ package
 	{
 		// sprites
 		[Embed(source = "/assets/sprites/ranger (opengameart - Antifarea - ccby30).png")] public static var RANGER_SPRITE:Class;
-		
-		//Split up head
+		[Embed(source = "/assets/sprites/ranger (opengameart - Antifarea - ccby30)2.png")] public static var RANGER2_SPRITE:Class;
+		//Split up player sprite
 		[Embed(source = "/assets/sprites/rangerHEAD.png")] public static var RANGERHEAD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/rangerBODY.png")] public static var RANGERBODY_SPRITE:Class;
 		[Embed(source = "/assets/sprites/rangerLEGS.png")] public static var RANGERLEGS_SPRITE:Class;
+		
+		//Outfit
+		[Embed(source = "/assets/sprites/ranger2Pants.png")] public static var RANGER2_PANTS:Class;
+		[Embed(source = "/assets/sprites/ranger2LEGSSheet.png")] public static var RANGER2LEGS_SPRITE:Class;
+		
 		[Embed(source = "/assets/sprites/rug1 (opengameart - Redshrike - ccby30).png")] public static var RUG1_SPRITE:Class;
 		[Embed(source = "/assets/sprites/rug2 (opengameart - Redshrike - ccby30).png")] public static var RUG2_SPRITE:Class;
 		[Embed(source = "/assets/sprites/bookcase (opengameart - Redshrike - ccby30).png")] public static var BOOKCASE_SPRITE:Class;

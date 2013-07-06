@@ -42,7 +42,7 @@ package
 		
 		
 		public function Enemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140 ):void {
-			super(Assets.RANGER_SPRITE, new FlxPoint(10,4), new FlxPoint(16,18), X, Y,30);
+			super(Assets.RANGER2_SPRITE, new FlxPoint(10,4), new FlxPoint(16,18), X, Y,30);
 			
 			
 			originalPosition = new FlxPoint(X,Y);

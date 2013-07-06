@@ -17,6 +17,9 @@ package
 		//Used in camera room transfering
 		public var center: FlxPoint;
 		
+		
+		
+		
 		//public var collisionBox: FlxObject;
 		/**
 		 * Constructor

@@ -93,6 +93,7 @@ package
 		
 		
 		
+		
 		/**
 		 * Constructor
 		 * @param	state		State displaying the level
@@ -100,7 +101,13 @@ package
 		 * @param	blockSize	Default width and height of each tile (in pixels)
 		 */
 		public function IndoorHouseLevel(levelSize:FlxPoint, blockSize:FlxPoint):void {
+			
+			
+			
 			super(levelSize, blockSize,new FlxPoint(120,120));
+			legOutfit = new PlayerOutfit(50,50,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE);
+			add(legOutfit);
+			
 		}
 		
 		/**
@@ -226,9 +233,9 @@ package
 		 * Create text, buttons, indicators, etc
 		 */
 		override protected function createGUI():void {
-			var instructions:FlxText = new FlxText(0, 0, levelSize.x, "Use ARROW keys to walk around");
-			instructions.alignment = "center";
-			guiGroup.add(instructions);
+			//var instructions:FlxText = new FlxText(0, 0, levelSize.x, "Use ARROW keys to walk around");
+			//instructions.alignment = "center";
+			//guiGroup.add(instructions);
 		}
 		
 		/**
@@ -312,8 +319,18 @@ package
 			playerLight.x=(player.x+player.width/2);
 			playerLight.y = (player.y-player.height/2);
 			FlxG.collide(objectGroup, player);
-			//enemy1.update();
 			
+			
+			
+			if(FlxG.collide(legOutfit, player))
+			{
+				remove(legOutfit);
+				
+				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
+			}
+			
+			
+			//ENEMY CONTROLLER STUFF
 			var enemyMessage: int = enemyController.commandEnemies();
 			
 			
