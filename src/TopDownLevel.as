@@ -88,6 +88,7 @@ package
 			
 			cameraPoint = new FlxPoint(playerStart.x,playerStart.y);
 			goalPoint = new FlxPoint(playerStart.x,playerStart.y);
+			FlxG.camera.focusOn(cameraPoint);
 			movingToGoal = false;
 			
 			
@@ -183,7 +184,7 @@ package
 		{
 			var mDistance: Number = manhattanDistance(cameraPoint,goalPoint);
 			
-			if(mDistance<1)
+			if(mDistance<4)
 			{
 				cameraPoint = goalPoint;
 				movingToGoal=false;

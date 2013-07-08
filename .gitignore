@@ -1,2 +1,5 @@
-
+bin/
+celeste.sublime-project
+celeste.sublime-workspace
+compileFlash.py
 .DS_Store
