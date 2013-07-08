@@ -148,7 +148,7 @@ package
 		private var enemyController:EnemyController;
 
 		public function showcaseMap1(levelSize:FlxPoint, blockSize:FlxPoint):void {
-			super(levelSize, blockSize, new FlxPoint(208,152));
+			super(levelSize, blockSize, new FlxPoint(248.0,152.0));
 		}
 
 		override protected function createMap():void {
@@ -241,6 +241,53 @@ package
 			var enemies:Vector.<Enemy> = new Vector.<Enemy>();
 			var light5:Light = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF);
 			add(light5);
+
+			var waypointList0: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
+
+			waypointList0.push(new FlxPoint(152.0,392.0)); 
+			waypointList0.push(new FlxPoint(152.0,440.0)); 
+			waypointList0.push(new FlxPoint(328.0,440.0)); 
+			waypointList0.push(new FlxPoint(328.0,392.0)); 
+			waypointList0.push(new FlxPoint(168.0,392.0)); 
+
+			var enemy0:Enemy = new Enemy(waypointList0, player, light5, 144.0, 384.0); 
+			enemies.push(enemy0); 
+
+			var waypointList1: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
+
+			waypointList1.push(new FlxPoint(232.0,424.0)); 
+			waypointList1.push(new FlxPoint(312.0,424.0)); 
+			waypointList1.push(new FlxPoint(168.0,424.0)); 
+			waypointList1.push(new FlxPoint(216.0,424.0)); 
+
+			var enemy1:Enemy = new Enemy(waypointList1, player, light5, 224.0, 416.0); 
+			enemies.push(enemy1); 
+
+			var waypointList2: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
+
+			waypointList2.push(new FlxPoint(184.0,456.0)); 
+			waypointList2.push(new FlxPoint(184.0,376.0)); 
+			waypointList2.push(new FlxPoint(216.0,376.0)); 
+			waypointList2.push(new FlxPoint(216.0,456.0)); 
+			waypointList2.push(new FlxPoint(264.0,456.0)); 
+			waypointList2.push(new FlxPoint(264.0,376.0)); 
+			waypointList2.push(new FlxPoint(312.0,376.0)); 
+			waypointList2.push(new FlxPoint(312.0,456.0)); 
+			waypointList2.push(new FlxPoint(280.0,456.0)); 
+			waypointList2.push(new FlxPoint(280.0,376.0)); 
+			waypointList2.push(new FlxPoint(232.0,376.0)); 
+			waypointList2.push(new FlxPoint(232.0,456.0)); 
+			waypointList2.push(new FlxPoint(200.0,456.0)); 
+
+			var enemy2:Enemy = new Enemy(waypointList2, player, light5, 176.0, 448.0); 
+			enemies.push(enemy2); 
+
+			var waypointList3: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
+
+			waypointList3.push(new FlxPoint(232.0,280.0)); 
+
+			var enemy3:Enemy = new Enemy(waypointList3, player, light5, 224.0, 272.0); 
+			enemies.push(enemy3); 
 
 			enemyController = new EnemyController(enemies);
 			add(enemyController);
