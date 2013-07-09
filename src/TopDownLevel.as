@@ -86,17 +86,24 @@ package
 			
 			this.playerStart=_playerStart;
 			
-			
-			
+			/*
 			cameraPoint = new FlxPoint(playerStart.x,playerStart.y);
 			goalPoint = new FlxPoint(playerStart.x,playerStart.y);
 			movingToGoal = false;
-			
+			*/
 			
 			// create the level
 			this.create();
 		}
 		
+		public function focusOnCurrRoom(): void
+		{
+			cameraPoint = currRoom.getCameraPosition();
+			goalPoint = currRoom.getCameraPosition();
+			movingToGoal = false;	
+			FlxG.camera.focusOn(currRoom.getCameraPosition());
+		}
+
 		public function reloadLevel(): void
 		{
 			reloadThisLevel=true;
@@ -185,7 +192,7 @@ package
 		{
 			var mDistance: Number = manhattanDistance(cameraPoint,goalPoint);
 			
-			if(mDistance<1)
+			if(mDistance<4)
 			{
 				cameraPoint = goalPoint;
 				movingToGoal=false;
