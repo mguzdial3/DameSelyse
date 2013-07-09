@@ -4,9 +4,13 @@ package
 
 	public class Player extends TopDownEntity
 	{
-	
+		
+		//Sprites for body and head of character
 		public var bodySprite:FlxSprite;
 		public var headSprite:FlxSprite;
+		
+		//Handles current outfits and stores the others
+		public var outfitHandler: OutfitHandler;
 	
 		/**
 		 * Constructor
@@ -18,6 +22,14 @@ package
 			
 			bodySprite = new FlxSprite(X,Y);
 			headSprite = new FlxSprite(X,Y);
+			
+			//Set up original outfits
+			var legOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.LEGS_OUTFIT,Assets.RANGERLEGS_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			
+			outfitHandler = new OutfitHandler(legOutfit,bodyOutfit,headOutfit);
+			
 			//BODY SPRITE SET UP
 			bodySprite.loadGraphic(
 				Assets.RANGERBODY_SPRITE, // image to use
@@ -197,70 +209,119 @@ package
 		
 		
 		
-		public function setNewOutfit(outfitType:uint, outfit:Class):void
-	{
-		if(outfitType==PlayerOutfit.LEGS_OUTFIT)
-		{
-			mySprite.loadGraphic(
-				outfit, // image to use
-				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
-				16, // width of each frame (in pixels)
-				18 // height of each frame (in pixels)
-			);
+			public function setNewOutfit(outfitType:uint, outfit:Class):void
+			{
+			if(outfitType==PlayerOutfit.LEGS_OUTFIT)
+			{
+				mySprite.loadGraphic(
+					outfit, // image to use
+					true, // animated
+					false, // don't generate "flipped" images since they're already in the image
+					16, // width of each frame (in pixels)
+					18 // height of each frame (in pixels)
+				);
 			
 			
-			mySprite.addAnimation("idle_right", [5]);
-			mySprite.addAnimation("idle_down", [9]);
-			mySprite.addAnimation("idle_left", [13]);
-			mySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			mySprite.addAnimation("walk_right", [4, 5, 6], 12);
-			mySprite.addAnimation("walk_down", [8, 9, 10], 12);
-			mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+				mySprite.addAnimation("idle_right", [5]);
+				mySprite.addAnimation("idle_down", [9]);
+				mySprite.addAnimation("idle_left", [13]);
+				mySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+				mySprite.addAnimation("walk_right", [4, 5, 6], 12);
+				mySprite.addAnimation("walk_down", [8, 9, 10], 12);
+				mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+			}
+			else if(outfitType==PlayerOutfit.BODY_OUTFIT)
+			{
+				bodySprite.loadGraphic(
+					outfit, // image to use
+					true, // animated
+					false, // don't generate "flipped" images since they're already in the image
+					16, // width of each frame (in pixels)
+					18 // height of each frame (in pixels)
+				);
+			
+				bodySprite.addAnimation("idle_up", [1]);
+			
+				bodySprite.addAnimation("idle_right", [5]);
+				bodySprite.addAnimation("idle_down", [9]);
+				bodySprite.addAnimation("idle_left", [13]);
+				bodySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+				bodySprite.addAnimation("walk_right", [4, 5, 6], 12);
+				bodySprite.addAnimation("walk_down", [8, 9, 10], 12);
+				bodySprite.addAnimation("walk_left", [12, 13, 14], 12);
+			}
+			else if(outfitType==PlayerOutfit.HEAD_OUTFIT)
+			{
+				headSprite.loadGraphic(
+					outfit, // image to use
+					true, // animated
+					false, // don't generate "flipped" images since they're already in the image
+					16, // width of each frame (in pixels)
+					18 // height of each frame (in pixels)
+				);
+			
+				headSprite.addAnimation("idle_up", [1]);
+			
+				headSprite.addAnimation("idle_right", [5]);
+				headSprite.addAnimation("idle_down", [9]);
+				headSprite.addAnimation("idle_left", [13]);
+				headSprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
+				headSprite.addAnimation("walk_right", [4, 5, 6], 12);
+				headSprite.addAnimation("walk_down", [8, 9, 10], 12);
+				headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+			}
 		}
-		else if(outfitType==PlayerOutfit.BODY_OUTFIT)
+	
+		//Outfit Handler Translates
+		public function setNewOutfitPiece(newOutfitPiece: PlayerOutfit):void
 		{
-			bodySprite.loadGraphic(
-				outfit, // image to use
-				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
-				16, // width of each frame (in pixels)
-				18 // height of each frame (in pixels)
-			);
-			
-			bodySprite.addAnimation("idle_up", [1]);
-			
-			bodySprite.addAnimation("idle_right", [5]);
-			bodySprite.addAnimation("idle_down", [9]);
-			bodySprite.addAnimation("idle_left", [13]);
-			bodySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			bodySprite.addAnimation("walk_right", [4, 5, 6], 12);
-			bodySprite.addAnimation("walk_down", [8, 9, 10], 12);
-			bodySprite.addAnimation("walk_left", [12, 13, 14], 12);
+			if(newOutfitPiece.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
+			{		
+				outfitHandler.setCurrLegsOutfit(newOutfitPiece);
+			}
+			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
+			{
+				outfitHandler.setCurrBodyOutfit(newOutfitPiece);
+			}
+			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
+			{
+				outfitHandler.setCurrHeadOutfit(newOutfitPiece);
+			}
 		}
-		else if(outfitType==PlayerOutfit.HEAD_OUTFIT)
+		
+		public function sameHeadOutfitType(outfitType:uint):Boolean
 		{
-			headSprite.loadGraphic(
-				outfit, // image to use
-				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
-				16, // width of each frame (in pixels)
-				18 // height of each frame (in pixels)
-			);
+			if(outfitType==outfitHandler.getCurrHeadOutfitType())
+			{
+				return true;
+			}	
 			
-			headSprite.addAnimation("idle_up", [1]);
-			
-			headSprite.addAnimation("idle_right", [5]);
-			headSprite.addAnimation("idle_down", [9]);
-			headSprite.addAnimation("idle_left", [13]);
-			headSprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			headSprite.addAnimation("walk_right", [4, 5, 6], 12);
-			headSprite.addAnimation("walk_down", [8, 9, 10], 12);
-			headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+			return false;
 		}
-	}
+		
+		public function sameBodyOutfitType(outfitType:uint):Boolean
+		{
+			if(outfitType==outfitHandler.getCurrBodyOutfitType())
+			{
+				return true;
+			}	
+			
+			return false;
+		}
+		
+		public function sameLegsOutfitType(outfitType:uint):Boolean
+		{
+			if(outfitType==outfitHandler.getCurrLegsOutfitType())
+			{
+				return true;
+			}	
+			
+			return false;
+		}
 		
 	}
+	
+	
 	
 	
 	

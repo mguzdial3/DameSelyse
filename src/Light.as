@@ -26,6 +26,11 @@ package {
     	timer = 0;
     }
     
+    public function setNewScale(pnt: FlxPoint):void
+    {
+    	this.scale=pnt;
+    }
+    
     
     
     

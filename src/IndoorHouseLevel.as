@@ -103,10 +103,16 @@ package
 		public function IndoorHouseLevel(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			
 			
-			
+			//You gots to have these bits for the player image to not just be legs
 			super(levelSize, blockSize,new FlxPoint(120,120));
-			legOutfit = new PlayerOutfit(50,50,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE);
+			legOutfit = new PlayerOutfit(50,50,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
 			add(legOutfit);
+			
+			bodyOutfit = new PlayerOutfit(90,50,Assets.RANGER2_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGER2BODY_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			add(bodyOutfit);
+			
+			headOutfit = new PlayerOutfit(50,90,Assets.RANGER2_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGER2HEAD_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			add(headOutfit);
 			
 		}
 		
@@ -260,12 +266,14 @@ package
 			
 			var waypoints: Vector.<FlxPoint> = new Vector.<FlxPoint>();
 			
+			//Create enemy waypoints
 			waypoints.push(one);
 			waypoints.push(two);
 			waypoints.push(three);
 			
 			var enemy1:Enemy = new Enemy(waypoints,player, light5);
 			
+			//Create enemies vector for enemyController
 			var enemies: Vector.<Enemy> = new Vector.<Enemy>();
 			
 			enemies.push(enemy1);
@@ -312,6 +320,7 @@ package
 			
 		}
 		
+		//OVERRIDEN AND CALLED FROM SUPER'S UPDATE METHOD
 		override public function normalGameplay():void
 		{
 			super.normalGameplay();
@@ -320,26 +329,65 @@ package
 			playerLight.y = (player.y-player.height/2);
 			FlxG.collide(objectGroup, player);
 			
-			
+			var newOutfit:Boolean=false;
 			
 			if(FlxG.collide(legOutfit, player))
 			{
 				remove(legOutfit);
 				
 				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
+				
+				player.setNewOutfitPiece(legOutfit);
+				newOutfit=true;
+				//enemyController.checkCorrectOutfit()
+			}
+			
+			else if(FlxG.collide(bodyOutfit, player))
+			{
+				remove(bodyOutfit);
+				
+				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
+				
+				player.setNewOutfitPiece(bodyOutfit);
+				
+				newOutfit=true;
+				//enemyController.checkCorrectOutfit()
+			}
+			
+			else if(FlxG.collide(headOutfit, player))
+			{
+				remove(headOutfit);
+				
+				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
+				
+				player.setNewOutfitPiece(headOutfit);
+				
+				newOutfit=true;
+				//enemyController.checkCorrectOutfit()
 			}
 			
 			
-			//ENEMY CONTROLLER STUFF
-			var enemyMessage: int = enemyController.commandEnemies();
 			
-			
-			if(enemyMessage==EnemyController.ENEMY_SPOTTED_PLAYER)
+			//ENEMY CONTROLLER
+			if(newOutfit)
 			{
-				setUpQuestionState();
+				//THIS PRESENTLY DOESN'T WORK, BUT IT WILL SHRINK THE GUARD'S FOV
+				enemyController.commandEnemies(EnemyController.CHECK_COSTUME);
+			}
+			else
+			{
+				//THIS MOVES THE ENEMIES
+				var enemyMessage: int = enemyController.commandEnemies();
+			
+			
+				if(enemyMessage==EnemyController.ENEMY_SPOTTED_PLAYER)
+				{
+					setUpQuestionState();
+				}
 			}
 		}
 		
+		//BEGINNING QUESTiON STATE
 		private function setUpQuestionState():void
 		{
 			
@@ -397,7 +445,7 @@ package
 		}
 		
 		
-		
+		//OVERRIDEN METHOD CALLED IN SUPER'S UPDATE
 		override public function questionGameplay():void
 		{
 			super.questionGameplay();

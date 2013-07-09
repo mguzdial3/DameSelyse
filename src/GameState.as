@@ -22,8 +22,7 @@ package
 			//Do we need a mouse? I do not think so
 			//FlxG.mouse.show();
 			// load the first level (this level should then connect to the other levels)
-			//LEVEL = new IndoorHouseLevel(new FlxPoint(424, 272),new FlxPoint(16, 16));
-			LEVEL = new showcaseMap1(new FlxPoint(992, 1184),new FlxPoint(16, 16));
+			LEVEL = new IndoorHouseLevel(new FlxPoint(424, 272),new FlxPoint(16, 16));
 			
 			//Adding the LEVEL variable adds everything added to the LEVEL variable object 
 			this.add(LEVEL);

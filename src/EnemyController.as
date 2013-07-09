@@ -10,6 +10,7 @@ package
 		//COMMANDS THAT CAN BE PASSED IN
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE_ALL:int=1;
+		public static const CHECK_COSTUME:int=6;
 		
 		public var numEnemies:int;
 		
@@ -66,6 +67,8 @@ package
 			currState=NORMAL_GAMEPLAY;
 		}
 		
+		
+		
 		public function getQuestion(): String
 		{
 			return currQuestion;
@@ -76,12 +79,31 @@ package
 			return currAnswers;
 		}
 		
+		/**
+		 * Check all enemies and see if the player is now wearing the right outfit
+		 */
+		public function checkCorrectOutfit(): void
+		{
+			var i:int;
+			
+			
+			for(i=0; i<enemies.length; i++)
+			{
+				enemies[i].checkPlayerOutfit()
+			}
+		}
 		
 		public function commandEnemies(specialCommand: int=0):int
 		{
 			var messageToReturn:int=NOTHING_SPECIAL;
 			
-			if(specialCommand==NOT_ANY)
+			if(specialCommand==CHECK_COSTUME)
+			{
+				checkCorrectOutfit();
+			}
+			
+			
+			if(specialCommand==NOT_ANY || specialCommand==CHECK_COSTUME)
 			{
 				var i:int;
 				var myMessage:int;
@@ -113,6 +135,8 @@ package
 		
 			return messageToReturn;
 		}
+		
+		
 		
 		
 		

@@ -58,6 +58,8 @@ package
 		 * Outfit stuff
 		 */
 		 protected var legOutfit: PlayerOutfit;
+		 protected var bodyOutfit:PlayerOutfit;
+		 protected var headOutfit:PlayerOutfit;
 		 
 		
 		
@@ -88,7 +90,6 @@ package
 			
 			cameraPoint = new FlxPoint(playerStart.x,playerStart.y);
 			goalPoint = new FlxPoint(playerStart.x,playerStart.y);
-			FlxG.camera.focusOn(cameraPoint);
 			movingToGoal = false;
 			
 			
@@ -184,7 +185,7 @@ package
 		{
 			var mDistance: Number = manhattanDistance(cameraPoint,goalPoint);
 			
-			if(mDistance<4)
+			if(mDistance<1)
 			{
 				cameraPoint = goalPoint;
 				movingToGoal=false;

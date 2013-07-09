@@ -14,7 +14,7 @@ package
 		
 		public var QUESTION_TIME:int = 1;
 		private var PAUSED: int=2;
-		private var player:TopDownEntity;
+		private var player:Player;
 		
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE:int=1;
@@ -40,6 +40,13 @@ package
 		//For resetting character
 		protected var originalPosition: FlxPoint;
 		
+		//What outfit to use against this enemy (different for each class)
+		protected var outfitToUse:uint;
+		
+		//Used in altering the light
+		public var alterLight: Boolean;
+		public var shrinkLight:Boolean;
+		
 		
 		public function Enemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140 ):void {
 			super(Assets.RANGER2_SPRITE, new FlxPoint(10,4), new FlxPoint(16,18), X, Y,30);
@@ -56,12 +63,14 @@ package
 			//Question set up
 			setUpQuestion();	
 			
-					
+			//This one is just the basic guard outfit
+			outfitToUse=OutfitHandler.GUARD_OUTFIT;
 						
 						
 			//Set up movement FlxPoint (Used as a vector)
 			movement = new FlxPoint();
 			currWaypoint = 0;
+			
 		}
 		
 		public function resetToOriginalPositions():void
@@ -69,8 +78,8 @@ package
 			this.x=originalPosition.x;
 			this.y=originalPosition.y;
 			
-			//Reset to white
-			lightFOV.setColor();
+			//Reset to undetected state
+			lightFOV.setColor(undetectedColor);
 			
 		}
 		
@@ -149,6 +158,21 @@ package
 				lightFOV.y += (lightSourceGoal.y-lightFOV.y)/4;
 			}
 			
+			if(alterLight)
+			{
+				if(shrinkLight)
+				{
+					lightFOV.scale= new FlxPoint(0.5,0.5);
+				}
+				else
+				{
+					lightFOV.scale= new FlxPoint(1,1);
+				}
+				alterLight=false;
+			}
+			
+			
+			
 		}
 		
 		
@@ -205,9 +229,6 @@ package
 					}
 			
 				}
-		
-					//this.x += 0.5*(goalPoint.x-this.x)/Math.abs((goalPoint.x-this.x));
-					//this.y += 0.5*(goalPoint.y-this.y)/Math.abs((goalPoint.y-this.y));
 		
 		
 				//Check how to transfer into seeking player state
@@ -280,7 +301,7 @@ package
 			return 0;
 		}
 		
-		
+		//CALLED FROM ENEMYCONTROLLER, MAKES ALL THE THINGS HAPPEN
 		public function command(commandMessage: int=0):int {
 		
 		
@@ -300,7 +321,7 @@ package
 		
 		
 		
-		
+		//THIS TECHNICALLY MOVES THE ENEMY, BUT ONLY CAUSE OF STUFF FROM COMMAND
 		override protected function updateControls():void {
 			super.updateControls();
 			
@@ -324,6 +345,50 @@ package
 			}
 		}
 		
+		//Checks to see if player is wearing correct outfit to shrink FOV
+		//if so, does. if not, sets to normal
+		public function checkPlayerOutfit():void
+		{
+			
+			var numCorrect:int=0;
+			
+			if(player.sameHeadOutfitType(outfitToUse))
+			{
+				numCorrect++;
+			}
+			if(player.sameBodyOutfitType(outfitToUse))
+			{
+				numCorrect++;
+			}
+			if(player.sameLegsOutfitType(outfitToUse))
+			{
+				numCorrect++;
+			}
+			
+			//if(numCorrect>3)
+			//{
+				shrinkFOV();
+			//}
+			//else
+			//{
+			//	resetFOV();
+			//}
+			
+			
+		}
+		
+		//To be overriden for how other lightFOV's shrink
+		protected function shrinkFOV():void
+		{
+			alterLight=true;
+			shrinkLight=true;
+		}
+		
+		protected function resetFOV():void
+		{
+			alterLight=true;
+			shrinkLight=false;
+		}
 		
 		
 		/**
