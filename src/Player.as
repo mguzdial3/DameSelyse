@@ -289,9 +289,9 @@ package
 			}
 		}
 		
-		public function sameHeadOutfitType(outfitType:uint):Boolean
+		public function sameHeadOutfitType(outfitSet:uint):Boolean
 		{
-			if(outfitType==outfitHandler.getCurrHeadOutfitType())
+			if(outfitSet==outfitHandler.getCurrHeadOutfitSet())
 			{
 				return true;
 			}	
@@ -299,9 +299,9 @@ package
 			return false;
 		}
 		
-		public function sameBodyOutfitType(outfitType:uint):Boolean
+		public function sameBodyOutfitType(outfitSet:uint):Boolean
 		{
-			if(outfitType==outfitHandler.getCurrBodyOutfitType())
+			if(outfitSet==outfitHandler.getCurrBodyOutfitSet())
 			{
 				return true;
 			}	
@@ -309,14 +309,14 @@ package
 			return false;
 		}
 		
-		public function sameLegsOutfitType(outfitType:uint):Boolean
+		public function sameLegsOutfitType(outfitSet:uint):Boolean
 		{
-			//if(outfitType==outfitHandler.getCurrLegsOutfitType())
-		//	{
+			if(outfitSet==outfitHandler.getCurrLegsOutfitSet())
+			{
 				return true;
-		//	}	
+			}	
 			
-		//	return false;
+			return false;
 		}
 		
 	}

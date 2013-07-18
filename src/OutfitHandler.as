@@ -14,6 +14,7 @@ package
 		private var currLegsOutfit: int;
 		private var currBodyOutfit: int;
 		private var currHeadOutfit: int;
+		private var testHead: uint, testBody: uint, testLegs: uint;
 		
 		//All outfits
 		private var allOutfits: Vector.<PlayerOutfit>;
@@ -23,6 +24,9 @@ package
 		{
 			allOutfits = new Vector.<PlayerOutfit>();
 			
+			testHead = _currHeadOutfit.getOutfitType();
+			testBody = _currBodyOutfit.getOutfitType();
+			testLegs = _currLegsOutfit.getOutfitType();
 			
 			currLegsOutfit = allOutfits.push(_currLegsOutfit);
 			currBodyOutfit = allOutfits.push(_currBodyOutfit);
@@ -45,20 +49,20 @@ package
 			return allOutfits[currHeadOutfit];
 		}
 		
-		//GET TYPE
-		public function getCurrLegsOutfitType():uint
+		//GET What set they belong to
+		public function getCurrLegsOutfitSet():uint
 		{
-			return allOutfits[currLegsOutfit].getOutfitType();
+			return allOutfits[currLegsOutfit].getOutfitSet();
 		}	
 		
-		public function getCurrBodyOutfitType():uint
+		public function getCurrBodyOutfitSet():uint
 		{
-			return allOutfits[currBodyOutfit].getOutfitType();
+			return allOutfits[currBodyOutfit].getOutfitSet();
 		}
 		
-		public function getCurrHeadOutfitType():uint
+		public function getCurrHeadOutfitSet():uint
 		{
-			return allOutfits[currHeadOutfit].getOutfitType();
+			return allOutfits[currHeadOutfit].getOutfitSet();
 		}
 		
 		
@@ -72,16 +76,19 @@ package
 		//Setters
 		public function setCurrLegsOutfit(currLeg: PlayerOutfit):void
 		{
+			testLegs = currLeg.getOutfitType();
 			currLegsOutfit = allOutfits.push(currLeg)-1;
 		}
 		
 		public function setCurrBodyOutfit(currBody: PlayerOutfit):void
 		{
+			testBody = currBody.getOutfitType();
 			currBodyOutfit = allOutfits.push(currBody)-1;
 		}
 		
 		public function setCurrHeadOutfit(currHead: PlayerOutfit):void
 		{
+			testHead = currHead.getOutfitType();
 			currHeadOutfit = allOutfits.push(currHead)-1;
 		}
 		

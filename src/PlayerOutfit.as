@@ -39,6 +39,11 @@ package
 			return outfitType;
 		}
 		
+		public function getOutfitSet(): uint
+		{
+			return outfitSet;
+		}
+		
 	
 	}
 }

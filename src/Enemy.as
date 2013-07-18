@@ -158,23 +158,6 @@ package
 				lightFOV.x += (lightSourceGoal.x-lightFOV.x)/4;
 				lightFOV.y += (lightSourceGoal.y-lightFOV.y)/4;
 			}
-			
-			/**
-			if(alterLight)
-			{
-				if(shrinkLight)
-				{
-					lightFOV.scale= new FlxPoint(0.5,0.5);
-				}
-				else
-				{
-					lightFOV.scale= new FlxPoint(1,1);
-				}
-				alterLight=false;
-			}
-			
-			*/
-			
 		}
 		
 		
@@ -361,7 +344,7 @@ package
 			
 			var numCorrect:int=0;
 			
-			if( player.sameHeadOutfitType(outfitToUse))
+			if(player.sameHeadOutfitType(outfitToUse))
 			{
 				numCorrect++;
 			}
@@ -374,7 +357,7 @@ package
 				numCorrect++;
 			}
 			
-			if(numCorrect>1)
+			if(numCorrect==3)
 			{
 				
 				shrinkFOV();
@@ -390,12 +373,12 @@ package
 		//To be overriden for how other lightFOV's shrink
 		protected function shrinkFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.25,0.25);
+			lightFOV.scale= new FlxPoint(0.3,0.3);
 		}
 		
 		protected function resetFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.5,0.5);
+			lightFOV.scale= new FlxPoint(0.6,0.6);
 		}
 		
 		
