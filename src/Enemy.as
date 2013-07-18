@@ -18,6 +18,7 @@ package
 		
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE:int=1;
+		public static const CHECK_COSTUME:int=2;
 		
 		
 		//Used to tell the enemy direction to move next
@@ -31,7 +32,7 @@ package
 		
 		
 		protected var undetectedColor: uint = 0xFFFFFFFF;
-		protected var detectedColor: uint =  0xFFFF2222;
+		protected var detectedColor: uint =  0xFFFF5555;
 		
 		//Question asking stuff
 		protected var enemyQuestion: String;
@@ -158,6 +159,7 @@ package
 				lightFOV.y += (lightSourceGoal.y-lightFOV.y)/4;
 			}
 			
+			/**
 			if(alterLight)
 			{
 				if(shrinkLight)
@@ -171,7 +173,7 @@ package
 				alterLight=false;
 			}
 			
-			
+			*/
 			
 		}
 		
@@ -183,7 +185,7 @@ package
 			
 			var distanceFromCenter:Number = manhattanDistance(point, new FlxPoint(lightFOV.x, lightFOV.y));
 			
-			var radiusOfLight: Number = lightFOV.width/4;
+			var radiusOfLight: Number = (lightFOV.scale.x*lightFOV.width)/4;
 			
 			if(distanceFromCenter<radiusOfLight)
 			{
@@ -304,6 +306,7 @@ package
 		//CALLED FROM ENEMYCONTROLLER, MAKES ALL THE THINGS HAPPEN
 		public function command(commandMessage: int=0):int {
 		
+			
 		
 			if(commandMessage==NOT_ANY)
 			{
@@ -313,6 +316,12 @@ package
 			{
 				super.hardStop();
 				super.setPaused(true);
+			}
+			else if(commandMessage==CHECK_COSTUME)
+			{
+				
+				checkPlayerOutfit();
+			
 			}
 					
 			return 0;
@@ -352,7 +361,7 @@ package
 			
 			var numCorrect:int=0;
 			
-			if(player.sameHeadOutfitType(outfitToUse))
+			if( player.sameHeadOutfitType(outfitToUse))
 			{
 				numCorrect++;
 			}
@@ -365,14 +374,15 @@ package
 				numCorrect++;
 			}
 			
-			//if(numCorrect>3)
-			//{
+			if(numCorrect>1)
+			{
+				
 				shrinkFOV();
-			//}
-			//else
-			//{
-			//	resetFOV();
-			//}
+			}
+			else
+			{
+				resetFOV();
+			}
 			
 			
 		}
@@ -380,14 +390,12 @@ package
 		//To be overriden for how other lightFOV's shrink
 		protected function shrinkFOV():void
 		{
-			alterLight=true;
-			shrinkLight=true;
+			lightFOV.scale= new FlxPoint(0.25,0.25);
 		}
 		
 		protected function resetFOV():void
 		{
-			alterLight=true;
-			shrinkLight=false;
+			lightFOV.scale= new FlxPoint(0.5,0.5);
 		}
 		
 		

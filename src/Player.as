@@ -18,7 +18,7 @@ package
 		 * @param	Y	Y location of the entity
 		 */
 		public function Player(X:Number=100, Y:Number=100):void {
-			super(Assets.RANGERLEGS_SPRITE, new FlxPoint(16,2), new FlxPoint(16,18), X, Y);
+			super(Assets.RANGERLEGS_SPRITE, new FlxPoint(12,2), new FlxPoint(16,18), X, Y);
 			
 			bodySprite = new FlxSprite(X,Y);
 			headSprite = new FlxSprite(X,Y);
@@ -198,13 +198,13 @@ package
 				
 			// check final movement direction
 			if (movement.x < 0)
-				moveLeft();
+				moveLeft(2);
 			else if (movement.x > 0)
-				moveRight();
+				moveRight(2);
 			if (movement.y < 0)
-				moveUp();
+				moveUp(2);
 			else if (movement.y > 0)
-				moveDown();
+				moveDown(2);
 		}
 		
 		
@@ -311,12 +311,12 @@ package
 		
 		public function sameLegsOutfitType(outfitType:uint):Boolean
 		{
-			if(outfitType==outfitHandler.getCurrLegsOutfitType())
-			{
+			//if(outfitType==outfitHandler.getCurrLegsOutfitType())
+		//	{
 				return true;
-			}	
+		//	}	
 			
-			return false;
+		//	return false;
 		}
 		
 	}

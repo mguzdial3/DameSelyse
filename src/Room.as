@@ -9,14 +9,16 @@ package{
 		
 		public var numRooms: int;
 		
+		public var roomName:String;
+		
 		//Constructor, sets up room rectangle
-		public function Room(_leftCorner: FlxPoint, _size: FlxPoint, _cameraPosition: FlxPoint)
+		public function Room(_leftCorner: FlxPoint, _size: FlxPoint, _cameraPosition: FlxPoint, _roomName:String="RoomRoom")
 		{
 		
 			leftCorner = _leftCorner;
 			size = _size;
 			cameraPosition = _cameraPosition;
-			
+			roomName=_roomName;
 			adjacentRooms = new Vector.<Room>();
 			
 			numRooms=0;
@@ -31,7 +33,16 @@ package{
 		//Called to add rooms that are adjacent to this one
 		public function addNeighbor(room: Room):void
 		{
-			numRooms=adjacentRooms.push(room);
+			
+			
+			if(adjacentRooms.indexOf(room)==-1)
+			{	
+			
+				
+				numRooms=adjacentRooms.push(room);
+				
+				room.addNeighbor(this);
+			}
 		}
 		
 		//Returns a room if we should transfer into that one

@@ -10,7 +10,7 @@ package
 		//COMMANDS THAT CAN BE PASSED IN
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE_ALL:int=1;
-		public static const CHECK_COSTUME:int=6;
+		public static const CHECK_COSTUME:int=2;
 		
 		public var numEnemies:int;
 		
@@ -89,7 +89,7 @@ package
 			
 			for(i=0; i<enemies.length; i++)
 			{
-				enemies[i].checkPlayerOutfit()
+				enemies[i].checkPlayerOutfit();
 			}
 		}
 		
@@ -103,7 +103,7 @@ package
 			}
 			
 			
-			if(specialCommand==NOT_ANY || specialCommand==CHECK_COSTUME)
+			if(specialCommand==NOT_ANY )
 			{
 				var i:int;
 				var myMessage:int;
@@ -131,6 +131,16 @@ package
 						
 					}
 				}
+			}
+			else if(specialCommand==PAUSE_ALL)
+			{
+				
+					for(i=0; i<enemies.length; i++)
+					{
+						enemies[i].hardStop();
+					
+						
+					}
 			}
 		
 			return messageToReturn;

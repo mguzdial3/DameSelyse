@@ -14,6 +14,13 @@ package
 		[Embed(source = "/assets/sprites/rangerLEGS.png")] public static var RANGERLEGS_SPRITE:Class;
 		
 		//Outfit
+		
+		[Embed(source = "/assets/sprites/ranger2Head.png")] public static var RANGER2_HAT:Class;
+		[Embed(source = "/assets/sprites/ranger2HEADSheet.png")] public static var RANGER2HEAD_SPRITE:Class;
+		
+		[Embed(source = "/assets/sprites/ranger2Body.png")] public static var RANGER2_SHIRT:Class;
+		[Embed(source = "/assets/sprites/ranger2BODYSheet.png")] public static var RANGER2BODY_SPRITE:Class;
+		
 		[Embed(source = "/assets/sprites/ranger2Pants.png")] public static var RANGER2_PANTS:Class;
 		[Embed(source = "/assets/sprites/ranger2LEGSSheet.png")] public static var RANGER2LEGS_SPRITE:Class;
 		

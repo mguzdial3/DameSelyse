@@ -331,7 +331,7 @@ package
 			
 			var newOutfit:Boolean=false;
 			
-			if(FlxG.collide(legOutfit, player))
+			if(legOutfit!=null && FlxG.collide(legOutfit, player))
 			{
 				remove(legOutfit);
 				
@@ -339,10 +339,10 @@ package
 				
 				player.setNewOutfitPiece(legOutfit);
 				newOutfit=true;
-				//enemyController.checkCorrectOutfit()
+				enemyController.checkCorrectOutfit()
 			}
 			
-			else if(FlxG.collide(bodyOutfit, player))
+			if(bodyOutfit!=null && FlxG.collide(bodyOutfit, player))
 			{
 				remove(bodyOutfit);
 				
@@ -351,10 +351,10 @@ package
 				player.setNewOutfitPiece(bodyOutfit);
 				
 				newOutfit=true;
-				//enemyController.checkCorrectOutfit()
+				enemyController.checkCorrectOutfit()
 			}
 			
-			else if(FlxG.collide(headOutfit, player))
+			if(headOutfit!=null && FlxG.collide(headOutfit, player))
 			{
 				remove(headOutfit);
 				
@@ -363,7 +363,7 @@ package
 				player.setNewOutfitPiece(headOutfit);
 				
 				newOutfit=true;
-				//enemyController.checkCorrectOutfit()
+				enemyController.checkCorrectOutfit()
 			}
 			
 			

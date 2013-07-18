@@ -72,17 +72,17 @@ package
 		//Setters
 		public function setCurrLegsOutfit(currLeg: PlayerOutfit):void
 		{
-			currLegsOutfit = allOutfits.push(currLeg);
+			currLegsOutfit = allOutfits.push(currLeg)-1;
 		}
 		
 		public function setCurrBodyOutfit(currBody: PlayerOutfit):void
 		{
-			currBodyOutfit = allOutfits.push(currBody);
+			currBodyOutfit = allOutfits.push(currBody)-1;
 		}
 		
 		public function setCurrHeadOutfit(currHead: PlayerOutfit):void
 		{
-			currHeadOutfit = allOutfits.push(currHead);
+			currHeadOutfit = allOutfits.push(currHead)-1;
 		}
 		
 		//Swap two indexes

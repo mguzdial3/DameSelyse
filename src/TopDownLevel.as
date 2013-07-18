@@ -27,7 +27,7 @@ package
 		public var currRoom: Room; //Has to be public to be accessible in children, representation of current room 
 		private var cameraPoint: FlxPoint; //Current place the camera is focusing on
 		private var goalPoint: FlxPoint; //The goal position for the camera point
-		private var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
+		protected var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
 		
 		/**
 		* level stuff
@@ -86,11 +86,9 @@ package
 			
 			this.playerStart=_playerStart;
 			
-			/*
-			cameraPoint = new FlxPoint(playerStart.x,playerStart.y);
-			goalPoint = new FlxPoint(playerStart.x,playerStart.y);
-			movingToGoal = false;
-			*/
+			
+			FlxG.camera.setBounds(0, 0, levelSize.x, levelSize.y); 
+			
 			
 			// create the level
 			this.create();
@@ -188,11 +186,12 @@ package
 			currState=gameState;
 		}		
 		
-		private function movingCamera(): void
+		protected function movingCamera(): void
 		{
 			var mDistance: Number = manhattanDistance(cameraPoint,goalPoint);
 			
-			if(mDistance<4)
+			//WARNING: NO LERP
+			if(mDistance<20000)
 			{
 				cameraPoint = goalPoint;
 				movingToGoal=false;
@@ -204,7 +203,14 @@ package
 				
 			}
 			
-			FlxG.camera.focusOn(cameraPoint);
+			//FlxG.camera.focusOn(cameraPoint);
+			FlxG.camera.scroll.x = cameraPoint.x-FlxG.camera.width/2;
+			FlxG.camera.scroll.y = cameraPoint.y-FlxG.camera.height/2;
+			
+			//FlxG.camera.x = cameraPoint.x-FlxG.camera.width/2;
+			//FlxG.camera.y= cameraPoint.y-FlxG.camera.height/2;
+			//GOT TO BE A BETTER WAY TO DO THIS
+			
 		}
 		
 		/**
@@ -244,6 +250,7 @@ package
 		 * Update each timestep
 		 */
 		override public function update():void {
+			super.update();
 			if(currState==NORMAL_GAMEPLAY)
 			{
 				normalGameplay();
@@ -256,7 +263,7 @@ package
 		
 		public function normalGameplay():void
 		{
-			super.update();
+			
 			roomTransfer(player.center);
 			FlxG.collide(wallGroup, player);
 			
