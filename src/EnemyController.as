@@ -23,11 +23,12 @@ package
 		//RETURN MESSAGES
 		public static const ENEMY_SPOTTED_PLAYER:int =4;
 		public static const NOTHING_SPECIAL:int = 5;
+		public static const RELOAD_LEVEL:int =6;
 		
 		
 		
 		
-		protected var currQuestion: String;
+		protected var currQuestion: DialogNode;
 		protected var currAnswers: Vector.<EnemyAnswer>;
 		
 		public function EnemyController(_enemies: Vector.<Enemy>)
@@ -69,7 +70,7 @@ package
 		
 		
 		
-		public function getQuestion(): String
+		public function getQuestion(): DialogNode
 		{
 			return currQuestion;
 		}
@@ -118,7 +119,18 @@ package
 						if(myMessage==enemies[i].QUESTION_TIME)
 						{
 							enterQuestionMode(enemies[i]);
-							messageToReturn =ENEMY_SPOTTED_PLAYER;
+							
+							if(enemies[i].getHasSeenPlayer())
+							{
+								messageToReturn = RELOAD_LEVEL;
+							}
+							
+							else
+							{
+								enemies[i].youSawThePlayer();
+								messageToReturn =ENEMY_SPOTTED_PLAYER;
+							}
+							
 						}
 					}
 				}
@@ -134,7 +146,6 @@ package
 			}
 			else if(specialCommand==PAUSE_ALL)
 			{
-				
 					for(i=0; i<enemies.length; i++)
 					{
 						enemies[i].hardStop();

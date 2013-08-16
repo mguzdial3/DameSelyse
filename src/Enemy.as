@@ -35,7 +35,7 @@ package
 		protected var detectedColor: uint =  0xFFFF5555;
 		
 		//Question asking stuff
-		protected var enemyQuestion: String;
+		protected var enemyQuestion: DialogNode;
 		protected var enemyAnswers: Vector.<EnemyAnswer>;
 		
 		//For resetting character
@@ -48,8 +48,17 @@ package
 		public var alterLight: Boolean;
 		public var shrinkLight:Boolean;
 		
+		protected var numberAnswersSuspicious: int=8; //Number of answers to have when enemy is suspicious
+		protected var numberAnswersRelaxed:int = 4; //Number of answers to have when enemy is relaxed
+		protected var suspicious: Boolean; //Whether or not this enemy is suspicious
 		
-		public function Enemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140 ):void {
+		
+		//For when paused
+		protected var pausedPosition: FlxPoint;
+		
+		protected var hasSeenPlayer: Boolean;
+		
+		public function Enemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null ):void {
 			super(Assets.RANGER2_SPRITE, new FlxPoint(10,4), new FlxPoint(16,18), X, Y,30);
 			
 			
@@ -66,11 +75,25 @@ package
 			
 			//This one is just the basic guard outfit
 			outfitToUse=OutfitHandler.GUARD_OUTFIT;
-						
+					
+			suspicious = true;	
 						
 			//Set up movement FlxPoint (Used as a vector)
 			movement = new FlxPoint();
 			currWaypoint = 0;
+			
+			pausedPosition = new FlxPoint(0,0);
+			
+			if(_dialogNode!=null)
+			{
+				enemyQuestion = _dialogNode;
+			}
+			else
+			{
+				enemyQuestion = new DialogNode(null, DialogHandler.FIRE_HEAD, "What are you doing here?");
+			}
+			
+			hasSeenPlayer=false;
 			
 		}
 		
@@ -89,32 +112,76 @@ package
 		
 		//To be overriden by later enemies
 		protected function setUpQuestion():void
-		{
-			enemyQuestion = "What do you desire?";
+		{	
+			var enemyAnswer1: String = "Failure";
+			var enemyAnswer2: String = "Just guard stuff";
+			var enemyAnswer3: String = 	"Losing";
+			var enemyAnswer4: String = "EPIC FAILS";
+			var enemyAnswer5: String = "Your Mom";
+			var enemyAnswer6: String = "Sucking";
+			var enemyAnswer7: String = "Being Terrible";
+			var enemyAnswer8: String = "I'm the Prisoner";
+			var enemyAnswer9: String = "Escaping!";
+			var enemyAnswer10: String = "Not winning";
 			
-			var enemyAnswer1: String = "W.)Failure";
-			var enemyAnswer2: String = "D.) Success";
-			var enemyAnswer3: String = 	"S.) Failure";
-			var enemyAnswer4: String = "A.) Failure";
 			
 			enemyAnswers = 	new Vector.<EnemyAnswer>();
 			
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer1));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,true));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer3));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer4));
-			
+			//THE CORRECT ANSWER NEEDS TO BE THE FIRST ONE
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,getRandomKeyboardKey(),true));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer5, getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer8, getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey()));
 			
 		}
 		
-		public function getQuestion(): String
+		//Can just use this in every enemy to come after
+		public function getRandomKeyboardKey(): String
+		{
+			var keys:Array = new Array("Q", "W", "E", "R", "T",
+			"Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", 
+			"J", "K", "L", "Z", "X", "C", "V", "B", "N", "M");
+			
+			return keys[((int)(Math.random()*26 ))];
+		
+		}
+		
+		public function getQuestion(): DialogNode
 		{
 			return enemyQuestion;
 		}
 		
+		//THIS METHOD IS ABOUT TO GET COMPLICATED
 		public function getAnswers(): Vector.<EnemyAnswer>
 		{
-			return enemyAnswers;
+			var numberOfAnswers:int = numberAnswersSuspicious;
+			
+			if(!suspicious)
+			{
+				numberOfAnswers = numberAnswersRelaxed;
+			}
+			
+			var answersToReturn: Vector.<EnemyAnswer> = new Vector.<EnemyAnswer>();
+			
+			//Always return the correct answer WHICH SHOULD BE THE FIRST ONE
+			answersToReturn.push(enemyAnswers[0]);
+			
+			var i:int;
+			
+			while(i<numberOfAnswers-1)
+			{
+				//Grab a random answer that isn't the first one
+				answersToReturn.push(enemyAnswers[(int)(Math.random()*(enemyAnswers.length-1))+1]);
+				i++;
+			}
+			
+			return answersToReturn;
 		}
 		
 		
@@ -293,16 +360,26 @@ package
 		
 			if(commandMessage==NOT_ANY)
 			{
+			
+			if(pausedPosition.x!=0)
+			{
+				pausedPosition = new FlxPoint(0,0);
+			}			
 				return regularGameplay();
 			}		
 			else if(commandMessage==PAUSE)
 			{
+				if(pausedPosition.x==0)
+				{
+					pausedPosition = new FlxPoint(x,y);
+				}
+			
 				super.hardStop();
 				super.setPaused(true);
+				
 			}
 			else if(commandMessage==CHECK_COSTUME)
 			{
-				
 				checkPlayerOutfit();
 			
 			}
@@ -316,6 +393,7 @@ package
 		//THIS TECHNICALLY MOVES THE ENEMY, BUT ONLY CAUSE OF STUFF FROM COMMAND
 		override protected function updateControls():void {
 			super.updateControls();
+			
 			
 			if (movement.x < 0)
 				moveLeft(speedModifier);
@@ -335,6 +413,7 @@ package
 				//Easy way to keep it from meandering forever in the y direction
 				hardStopY();
 			}
+			
 		}
 		
 		//Checks to see if player is wearing correct outfit to shrink FOV
@@ -359,11 +438,12 @@ package
 			
 			if(numCorrect==3)
 			{
-				
+				suspicious=false;
 				shrinkFOV();
 			}
 			else
 			{
+				suspicious=true;
 				resetFOV();
 			}
 			
@@ -373,7 +453,7 @@ package
 		//To be overriden for how other lightFOV's shrink
 		protected function shrinkFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.3,0.3);
+			lightFOV.scale= new FlxPoint(0.35,0.35);
 		}
 		
 		protected function resetFOV():void
@@ -391,6 +471,16 @@ package
 			+ Math.pow((secondPoint.y-firstPoint.y),2));
 			
 			return distanceBetween;
+		}
+		
+		public function getHasSeenPlayer():Boolean
+		{
+			return hasSeenPlayer;
+		}
+		
+		public function youSawThePlayer():void
+		{
+			hasSeenPlayer = true;
 		}
 		
 	

@@ -24,9 +24,9 @@ package
 			headSprite = new FlxSprite(X,Y);
 			
 			//Set up original outfits
-			var legOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.LEGS_OUTFIT,Assets.RANGERLEGS_SPRITE, OutfitHandler.NORMAL_OUTFIT);
-			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
-			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var legOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGERLEGS_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
 			
 			outfitHandler = new OutfitHandler(legOutfit,bodyOutfit,headOutfit);
 			
@@ -209,8 +209,8 @@ package
 		
 		
 		
-			public function setNewOutfit(outfitType:uint, outfit:Class):void
-			{
+		public function setNewOutfit(outfitType:uint, outfit:Class):void
+		{
 			if(outfitType==PlayerOutfit.LEGS_OUTFIT)
 			{
 				mySprite.loadGraphic(
@@ -229,6 +229,9 @@ package
 				mySprite.addAnimation("walk_right", [4, 5, 6], 12);
 				mySprite.addAnimation("walk_down", [8, 9, 10], 12);
 				mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+				
+				
+				
 			}
 			else if(outfitType==PlayerOutfit.BODY_OUTFIT)
 			{
@@ -269,7 +272,17 @@ package
 				headSprite.addAnimation("walk_right", [4, 5, 6], 12);
 				headSprite.addAnimation("walk_down", [8, 9, 10], 12);
 				headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+				
+				
+				//This is quite cheating
+				facing = DOWN;
+				headSprite.play("idle_down");
+				
+				
 			}
+			
+			
+			
 		}
 	
 		//Outfit Handler Translates
@@ -287,6 +300,7 @@ package
 			{
 				outfitHandler.setCurrHeadOutfit(newOutfitPiece);
 			}
+			
 		}
 		
 		public function sameHeadOutfitType(outfitSet:uint):Boolean
@@ -317,6 +331,11 @@ package
 			}	
 			
 			return false;
+		}
+		
+		public function getOutfitHandler(): OutfitHandler
+		{
+			return outfitHandler;
 		}
 		
 	}
