@@ -17,7 +17,8 @@ package
 		protected var displayText:String;
 		protected var canPlay:Boolean;
 		
-		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, _pausesGame:Boolean=false, _alternateNode:DialogNode=null)
+		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, 
+		_pausesGame:Boolean=false, _alternateNode:DialogNode=null)
 		{
 			nextNode=_nextNode;
 			faceToDisplay=_faceToDisplay;

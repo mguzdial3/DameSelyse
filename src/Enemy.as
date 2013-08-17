@@ -12,16 +12,18 @@ package
 		private var WAYPOINTING: int=0;
 		private var SEEKINGPLAYER: int=1;
 		
+		//MESSAGES THIS ENEMY CAN RETURN
 		public var QUESTION_TIME:int = 1;
 		private var PAUSED: int=2;
 		private var player:Player;
 		
+		//Messages that can be passed into this enemy
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE:int=1;
 		public static const CHECK_COSTUME:int=2;
 		
 		
-		//Used to tell the enemy direction to move next
+		//Used to tell the enemy what direction to move next
 		private var movement: FlxPoint;
 		
 		//Used to tell the enemy at what speed to move
@@ -44,9 +46,6 @@ package
 		//What outfit to use against this enemy (different for each class)
 		protected var outfitToUse:uint;
 		
-		//Used in altering the light
-		public var alterLight: Boolean;
-		public var shrinkLight:Boolean;
 		
 		protected var numberAnswersSuspicious: int=8; //Number of answers to have when enemy is suspicious
 		protected var numberAnswersRelaxed:int = 4; //Number of answers to have when enemy is relaxed
@@ -157,7 +156,6 @@ package
 			return enemyQuestion;
 		}
 		
-		//THIS METHOD IS ABOUT TO GET COMPLICATED
 		public function getAnswers(): Vector.<EnemyAnswer>
 		{
 			var numberOfAnswers:int = numberAnswersSuspicious;

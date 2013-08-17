@@ -21,13 +21,6 @@ package
 		public var player:Player;
 		public var playerStart:FlxPoint;
 		
-		/**
-		*Moving Camera Stuff
-		*/
-		public var currRoom: Room; //Has to be public to be accessible in children, representation of current room 
-		private var cameraPoint: FlxPoint; //Current place the camera is focusing on
-		private var goalPoint: FlxPoint; //The goal position for the camera point
-		protected var movingToGoal: Boolean; //Whether or not we're currently moving towards the goal
 		
 		/**
 		* level stuff
@@ -46,9 +39,6 @@ package
 		/**
 		 * Question Stuff
 		 */
-		 
-		 //FOR BUILDING, WE NEED SOME KIND OF DIALOG HANDLER
-		 protected var questionText: FlxText;
 		 protected var answers: Vector.<EnemyAnswer>;
 		 protected var answerDisplays: Vector.<FlxText>;
 		
@@ -350,6 +340,16 @@ package
 				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
 				
 				player.setNewOutfitPiece(legOutfit);
+				newOutfit=true;
+			}
+			
+			if(headOutfit!=null && FlxG.collide(headOutfit, player))
+			{
+				remove(headOutfit);
+				
+				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
+				
+				player.setNewOutfitPiece(headOutfit);
 				newOutfit=true;
 			}
 			

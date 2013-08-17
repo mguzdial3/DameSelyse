@@ -11,9 +11,7 @@ package
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE_ALL:int=1;
 		public static const CHECK_COSTUME:int=2;
-		
-		public var numEnemies:int;
-		
+				
 		private var currState:int=2;
 		
 		//STATES
@@ -45,7 +43,7 @@ package
 			
 		}
 		
-		public function enterQuestionMode(enemy: Enemy):void
+		private function enterQuestionMode(enemy: Enemy):void
 		{
 			currState = QUESTION_TIME;
 			

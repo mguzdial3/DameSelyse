@@ -208,7 +208,7 @@ package
 		}
 		
 		
-		
+		//This changes the display to match the new outfit
 		public function setNewOutfit(outfitType:uint, outfit:Class):void
 		{
 			if(outfitType==PlayerOutfit.LEGS_OUTFIT)
@@ -285,24 +285,17 @@ package
 			
 		}
 	
-		//Outfit Handler Translates
+		//Sets new outfit for Outfit Handler
 		public function setNewOutfitPiece(newOutfitPiece: PlayerOutfit):void
 		{
-			if(newOutfitPiece.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
-			{		
-				outfitHandler.setCurrLegsOutfit(newOutfitPiece);
-			}
-			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
-			{
-				outfitHandler.setCurrBodyOutfit(newOutfitPiece);
-			}
-			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
-			{
-				outfitHandler.setCurrHeadOutfit(newOutfitPiece);
-			}
+			
+			outfitHandler.setCurrOutfit(newOutfitPiece);
+			
+			
 			
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameHeadOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrHeadOutfitSet())
@@ -313,6 +306,7 @@ package
 			return false;
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameBodyOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrBodyOutfitSet())
@@ -323,6 +317,7 @@ package
 			return false;
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameLegsOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrLegsOutfitSet())
@@ -333,6 +328,7 @@ package
 			return false;
 		}
 		
+		//Used only once to connect inventory up to it
 		public function getOutfitHandler(): OutfitHandler
 		{
 			return outfitHandler;

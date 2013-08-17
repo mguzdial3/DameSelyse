@@ -14,7 +14,6 @@ package
 		private var currLegsOutfit: int;
 		private var currBodyOutfit: int;
 		private var currHeadOutfit: int;
-		private var testHead: uint, testBody: uint, testLegs: uint;
 		
 		//All outfits
 		private var allOutfits: Vector.<PlayerOutfit>;
@@ -24,9 +23,6 @@ package
 		{
 			allOutfits = new Vector.<PlayerOutfit>();
 			
-			testHead = _currHeadOutfit.getOutfitType();
-			testBody = _currBodyOutfit.getOutfitType();
-			testLegs = _currLegsOutfit.getOutfitType();
 			
 			currLegsOutfit = allOutfits.push(_currLegsOutfit)-1;
 			currBodyOutfit = allOutfits.push(_currBodyOutfit)-1;
@@ -95,7 +91,7 @@ package
 		}
 		
 		
-		public function setCurrLegsOutfit(currLeg: PlayerOutfit):void
+		private function setCurrLegsOutfit(currLeg: PlayerOutfit):void
 		{
 		
 			currLeg.velocity.x=0;
@@ -105,17 +101,15 @@ package
 		
 			if(allOutfits.indexOf(currLeg)==-1)
 			{
-				testLegs = currLeg.getOutfitType();
 				currLegsOutfit = allOutfits.push(currLeg)-1;
 			}
 			else
 			{
-				testLegs=currLeg.getOutfitType();
 				currLegsOutfit = allOutfits.indexOf(currLeg);
 			}
 		}
 		
-		public function setCurrBodyOutfit(currBody: PlayerOutfit):void
+		private function setCurrBodyOutfit(currBody: PlayerOutfit):void
 		{
 			currBody.velocity.x=0;
 			currBody.velocity.y=0;
@@ -124,17 +118,15 @@ package
 		
 			if(allOutfits.indexOf(currBody)==-1)
 			{
-				testBody = currBody.getOutfitType();
 				currBodyOutfit = allOutfits.push(currBody)-1;
 			}
 			else
 			{
-				testBody=currBody.getOutfitType();
 				currBodyOutfit = allOutfits.indexOf(currBody);
 			}
 		}
 		
-		public function setCurrHeadOutfit(currHead: PlayerOutfit):void
+		private function setCurrHeadOutfit(currHead: PlayerOutfit):void
 		{
 			
 			currHead.velocity.x=0;
@@ -145,12 +137,10 @@ package
 		
 			if(allOutfits.indexOf(currHead)==-1)
 			{
-				testHead = currHead.getOutfitType();
 				currHeadOutfit = allOutfits.push(currHead)-1;
 			}
 			else
 			{
-				testHead=currHead.getOutfitType();
 				currHeadOutfit = allOutfits.indexOf(currHead);
 			}
 		}

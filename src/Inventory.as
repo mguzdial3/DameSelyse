@@ -305,7 +305,7 @@ package
 							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
 							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
 							
-							outfitHandler.setCurrBodyOutfit(draggedObject);
+							outfitHandler.setCurrOutfit(draggedObject);
 							
 							draggedObject.x= bodyRepresentation.x+bodyRepresentation.width/2-draggedObject.width/2;
 							draggedObject.y= bodyRepresentation.y+bodyRepresentation.height/2-draggedObject.height/2;
@@ -323,7 +323,7 @@ package
 							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
 							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
 							
-							outfitHandler.setCurrHeadOutfit(draggedObject);
+							outfitHandler.setCurrOutfit(draggedObject);
 							
 							draggedObject.x= headRepresentation.x+headRepresentation.width/2-draggedObject.width/2;
 							draggedObject.y= headRepresentation.y+headRepresentation.height/2-draggedObject.height/2;
@@ -341,7 +341,7 @@ package
 							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
 							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
 							
-							outfitHandler.setCurrLegsOutfit(draggedObject);
+							outfitHandler.setCurrOutfit(draggedObject);
 							
 							draggedObject.x= legsRepresentation.x+legsRepresentation.width/2-draggedObject.width/2;
 							draggedObject.y= legsRepresentation.y+legsRepresentation.height/2-draggedObject.height/2;
