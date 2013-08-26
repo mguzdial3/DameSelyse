@@ -244,7 +244,12 @@ package
 		
 		}	
 		
+		public function setNotSuspicious():void
+		{
+			lightFOV.setColor(0xFFFFFFFF);
 			
+			currentState=WAYPOINTING;
+		}
 		
 		
 		private function regularGameplay():int
@@ -282,7 +287,7 @@ package
 		
 		
 				//Check how to transfer into seeking player state
-				if(withinView(new FlxPoint(player.x,player.y)))
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding())
 				{
 					currentState=SEEKINGPLAYER;
 				}

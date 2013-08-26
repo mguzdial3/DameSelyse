@@ -92,7 +92,18 @@ package
 			}
 		}
 		
-		public function commandEnemies(specialCommand: int=0):int
+		//Clears all enemies suspicions
+		public function clearAllSuspicions():void
+		{
+			var i:int;
+			for(i=0; i<enemies.length; i++)
+			{
+				enemies[i].setNotSuspicious();
+			}
+			
+		}
+		
+		public function commandEnemies(specialCommand: int=NOT_ANY):int
 		{
 			var messageToReturn:int=NOTHING_SPECIAL;
 			

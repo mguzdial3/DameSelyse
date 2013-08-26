@@ -32,9 +32,11 @@ package
 		* Game State Stuff
 		*/
 		protected var currState: int;
+		protected var prevState: int;
 		protected static const NORMAL_GAMEPLAY:int=0;
 		protected static const QUESTION_TIME:int=1;
 		protected static const INVENTORY_GAMEPLAY:int=2;
+		protected static const HIDING_GAMEPLAY:int=3;
 		
 		/**
 		 * Question Stuff
@@ -71,6 +73,11 @@ package
 		
 		//Inventory
 		protected var inventory: Inventory;
+		
+		//WaterDrops grounp
+		protected var waterDrops: FlxGroup;
+		//Text for score
+		protected var dropletText: FlxText;
 		 
 		 
 		 /**
@@ -79,6 +86,14 @@ package
 		 protected var legOutfit: PlayerOutfit;
 		 protected var bodyOutfit:PlayerOutfit;
 		 protected var headOutfit:PlayerOutfit;
+		
+		//HideableObjects
+		protected var hideableObjects: Vector.<HideableObject>; //List of all hdieableObjects
+		protected var hideableObjectIndex: int; //Current index of object we're looking at
+		protected var hidingTimer : Number; //The amount of time till we're done hiding/unhiding
+		//HideableObjects Loading Bar
+		protected var hidingBarBackground: FlxSprite;
+		protected var hidingBar:FlxSprite;
 		 
 		
 		//Debug
@@ -140,6 +155,8 @@ package
 			menuText.alignment = "right";
 			menuText.scrollFactor.x = menuText.scrollFactor.y = 0;
 			add(menuText);
+			
+			hidingTimer=0;
 		}
 
 		public function reloadLevel(): void
@@ -155,9 +172,11 @@ package
 		{
 			createMap();
 			createPlayer();
-			createGUI();
+			addHideableObjects();
+			createWaterDroplets();
 			addEnemies();
 			addGroups();
+			createGUI();
 			createCamera();
 		}
 		
@@ -180,7 +199,13 @@ package
 			return null;
 		}
 		
-		
+		protected function addHideableObjects():void
+		{
+			//HideableObject thing
+			hideableObjects = new Vector.<HideableObject>();
+			
+			hideableObjectIndex = -1;
+		}
 				
 		/**
 		 * Create the player, bullets, etc
@@ -196,6 +221,29 @@ package
 		 */
 		protected function createGUI():void 
 		{
+			dropletText =new FlxText(FlxG.camera.scroll.x+220, FlxG.camera.scroll.y+20, 100, "0/"+player.getMaxDrops());
+			dropletText.alignment = "right";
+			dropletText.scrollFactor = new FlxPoint(0, 0);
+			dropletText.color = 0xff4433ff;
+			add(dropletText);
+			
+			
+			hidingBarBackground = new FlxSprite(0,0);
+			hidingBarBackground.makeGraphic(16,5, 0xaaaaaaaa);
+			add(hidingBarBackground);
+			
+			hidingBar = new FlxSprite(0,0);
+			hidingBar.makeGraphic(16,5, 0xaaffffff);
+			hidingBar.scale.x=0;
+			add(hidingBar);
+		}
+		
+		/**
+		*Create the water droplets
+		*/
+		protected function createWaterDroplets():void
+		{
+			waterDrops = new FlxGroup();
 		}
 		
 		/**
@@ -203,6 +251,8 @@ package
 		 */
 		protected function setGameState(gameState:int):void
 		{
+		
+			prevState = currState;
 			currState=gameState;
 		}		
 		
@@ -267,6 +317,68 @@ package
 			{
 				inventoryGameplay();
 			}
+			else if(currState==HIDING_GAMEPLAY)
+			{
+				hiddenNormalGameplay();
+			}
+		}
+		
+		public function hiddenNormalGameplay():void
+		{	
+			//ENEMY CONTROLLER
+			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, wallGroup);
+			
+			//THIS MOVES THE ENEMIES
+			var enemyMessage: int = enemyController.commandEnemies();
+
+
+	
+			if (FlxG.keys.pressed("LEFT") || FlxG.keys.pressed("RIGHT")
+				|| FlxG.keys.pressed("UP") ||FlxG.keys.pressed("DOWN"))
+				{
+					
+					hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
+					
+					
+					hidingBar.alpha=1;
+					hidingBarBackground.alpha = 1;
+					
+					hidingBar.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBar.width/2;
+					hidingBar.y = hideableObjects[hideableObjectIndex].y-hidingBar.height;	
+						
+					hidingBarBackground.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBarBackground.width/2;
+					hidingBarBackground.y = hideableObjects[hideableObjectIndex].y-hidingBarBackground.height;
+					
+					
+					if(hidingTimer>0)
+					{
+						hidingTimer -=FlxG.elapsed;
+					}
+					else
+					{
+						player.setHiding(false);
+						player.setPaused(false);
+						hidingBar.scale.x=0.5;
+						hidingBar.alpha=0;
+						hidingBarBackground.alpha=0;
+						hidingTimer=0;
+						
+						playerLight.alpha=1;
+						hideableObjects[hideableObjectIndex].transferToNormalImage();
+						setGameState(NORMAL_GAMEPLAY);					
+					}
+				}
+				
+		}
+		
+		protected function getWaterDrops(Drop:FlxSprite,Player:FlxSprite):void
+		{		
+			if(player.addDrop())
+			{
+				Drop.kill();
+			}
+			
 		}
 		
 		
@@ -275,13 +387,18 @@ package
 			FlxG.camera.follow(player, 2);
 			FlxG.collide(wallGroup, player);
 			
+			//Water Droplet Conections
+			FlxG.overlap(waterDrops,player,getWaterDrops);
+			
+			
+			//Update collection text
+			dropletText.text = ""+player.getDrops()+"/"+player.getMaxDrops();
+			
 			if(FlxG.keys.justReleased("M"))
 			{
-			
 				setGameState(INVENTORY_GAMEPLAY);
 				player.setPaused(true);
 				inventory.showInventory(this, FlxG.camera.scroll);
-				
 			}
 			
 			//Check all dialogueTriggers to see if we have entered a dialogue zone
@@ -313,6 +430,7 @@ package
 				}
 			}
 			
+			
 			//Handle Displaying Dialog
 			if(displayingDialog)
 			{
@@ -323,10 +441,76 @@ package
 				{
 					dialogHandler.hideDialogHandler(this);
 					player.setPaused(false);
-					
-					
+						
+					//hideableObjects[hideableObjectIndex].transferToHidingImage();
+					setGameState(NORMAL_GAMEPLAY);
 				}
 			}
+			
+			//HideableObjects Check			
+			//Do we have a hideableObject we're checking against presently
+			if(hideableObjectIndex!=-1)
+			{
+				if(FlxG.collide(hideableObjects[hideableObjectIndex],player))
+				{
+					
+					hidingBar.alpha=1;
+					hidingBarBackground.alpha=1;
+					
+					
+					hidingBar.scale.x = (16*(hidingTimer)/hideableObjects[hideableObjectIndex].getTimeToEnter())/16.0;
+					/**	
+					hidingBar.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBar.width/2;
+					hidingBar.y = hideableObjects[i].y-hidingBar.height;	
+						
+					hidingBarBackground.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBarBackground.width/2;
+					hidingBarBackground.y = hideableObjects[i].y-hidingBarBackground.height;
+					*/
+					
+					if(hidingTimer<hideableObjects[hideableObjectIndex].getTimeToEnter())
+					{
+						hidingTimer+= FlxG.elapsed;
+					}
+					else
+					{
+						player.setHiding(true);
+						player.setPaused(true);
+						
+						playerLight.alpha=0;
+						hideableObjects[hideableObjectIndex].transferToHidingImage();
+						setGameState(HIDING_GAMEPLAY);
+						
+						enemyController.clearAllSuspicions();
+					}
+				}
+				else
+				{
+					hidingBar.alpha=0;
+					hidingBarBackground.alpha=0;
+				
+					hideableObjectIndex=-1;
+					hidingTimer=0;
+				}
+			}
+			else //Else check each of them
+			{
+				for(i = 0; i<hideableObjects.length; i++)
+				{
+					if( FlxG.collide(hideableObjects[i],player))
+					{
+						hideableObjectIndex=i;
+						hidingBar.alpha=1;
+						hidingBarBackground.alpha=1;
+						
+						hidingBar.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBar.width/2;
+						hidingBar.y = hideableObjects[i].y-hidingBar.height;	
+						
+						hidingBarBackground.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBarBackground.width/2;
+						hidingBarBackground.y = hideableObjects[i].y-hidingBarBackground.height;	
+					}
+				}
+			}
+			
 			
 			playerLight.x=(player.x+player.width/2);
 			playerLight.y = (player.y-player.height/2);
@@ -377,7 +561,6 @@ package
 			{
 				//THIS MOVES THE ENEMIES
 				var enemyMessage: int = enemyController.commandEnemies();
-			
 			
 				if(enemyMessage==EnemyController.ENEMY_SPOTTED_PLAYER)
 				{
@@ -468,8 +651,18 @@ package
 		
 			if(FlxG.keys.justReleased("M"))
 			{
-				currState = NORMAL_GAMEPLAY;
-				player.setPaused(false);
+			
+				//Set to prevState, so either Normal or Hidden
+				setGameState(prevState);
+				
+				if(currState == NORMAL_GAMEPLAY)
+				{
+					player.setPaused(false);
+				}
+				else
+				{
+					player.setPaused(true);
+				}
 				inventory.hideInventory(this, FlxG.camera.scroll);
 				
 			}

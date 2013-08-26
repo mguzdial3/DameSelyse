@@ -475,6 +475,16 @@ package
 			
 			
 		}
+		
+		override protected function addHideableObjects():void
+		{
+			super.addHideableObjects();
+			
+			//HideableObject stuff						
+			hideableObjects.push(new HideableObject(playerStart.x+32, playerStart.y, Assets.ARMOR_SPRITE));
+			
+			hideableObjects.push(new HideableObject(1600.0, 1328.0, Assets.ARMOR_SPRITE));
+		}
 
 		override protected function createMap():void {
 			var tiles:FlxTilemap;
@@ -509,10 +519,6 @@ package
 			prisonerLight = new Light(Assets.LightImageClass,17*16,94*16,darkness,0xFF4455FF);
 			playerLight.scale = new FlxPoint(0.5,0.5);
 
-
-			//currRoom = room0; //replace with room of your choice
-			//focusOnCurrRoom();
-			
 			createObjects();
 		}
 
@@ -593,7 +599,38 @@ package
 		}
 
 		override protected function createGUI():void {
+			super.createGUI();
+		}
 		
+		//Create all the water droplets
+		override protected function createWaterDroplets():void
+		{
+			var waterDrop:FlxSprite;
+			waterDrops = new FlxGroup();
+			
+			waterDrop = new FlxSprite(playerStart.x, playerStart.y+40, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(playerStart.x+20, playerStart.y+40, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(playerStart.x, playerStart.y+60, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(playerStart.x+20, playerStart.y+60, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(playerStart.x, playerStart.y+80, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(1608, 1336, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(1592, 1336, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
+			
+			waterDrop = new FlxSprite(1600, 1336, Assets.WATER_DROP);
+			waterDrops.add(waterDrop);
 			
 		}
 		
@@ -1660,8 +1697,23 @@ package
 			
 			add(wallGroup);
 			
+			
+			//Add all hideableObjects
+			
+			
+			var i: int;
+			if(hideableObjects!=null)
+			{
+				for(i =0; i<hideableObjects.length; i++)
+				{
+					add(hideableObjects[i]);
+				}
+			}
+			
+			
 			add(objectGroup);
 			add(decalGroup);
+			add(waterDrops); //Add all collectibles
 			add(player);
 			
 			//NOTE: CHANGED THIS LINE TO THE ONE BELOW FOR FULL BODY

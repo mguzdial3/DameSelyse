@@ -62,6 +62,10 @@ package
 		[Embed(source="/assets/sprites/GoodGuard.png")] public static var GOOD_GUARD:Class;
 		[Embed(source="/assets/sprites/GoodGuardKnockedOut.png")] public static var GOOD_GUARD_KOD:Class;
 		
+		//PRISONER
 		[Embed(source="/assets/Prisoner.png")] public static var PRISONER:Class;
+		
+		//WATER DROP
+		[Embed(source="/assets/WaterDrop.png")] public static var WATER_DROP:Class;
 	}
 }
