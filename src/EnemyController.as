@@ -11,9 +11,7 @@ package
 		public static const NOT_ANY:int = 0;
 		public static const PAUSE_ALL:int=1;
 		public static const CHECK_COSTUME:int=2;
-		
-		public var numEnemies:int;
-		
+				
 		private var currState:int=2;
 		
 		//STATES
@@ -23,11 +21,12 @@ package
 		//RETURN MESSAGES
 		public static const ENEMY_SPOTTED_PLAYER:int =4;
 		public static const NOTHING_SPECIAL:int = 5;
+		public static const RELOAD_LEVEL:int =6;
 		
 		
 		
 		
-		protected var currQuestion: String;
+		protected var currQuestion: DialogNode;
 		protected var currAnswers: Vector.<EnemyAnswer>;
 		
 		public function EnemyController(_enemies: Vector.<Enemy>)
@@ -44,7 +43,7 @@ package
 			
 		}
 		
-		public function enterQuestionMode(enemy: Enemy):void
+		private function enterQuestionMode(enemy: Enemy):void
 		{
 			currState = QUESTION_TIME;
 			
@@ -69,7 +68,7 @@ package
 		
 		
 		
-		public function getQuestion(): String
+		public function getQuestion(): DialogNode
 		{
 			return currQuestion;
 		}
@@ -93,7 +92,18 @@ package
 			}
 		}
 		
-		public function commandEnemies(specialCommand: int=0):int
+		//Clears all enemies suspicions
+		public function clearAllSuspicions():void
+		{
+			var i:int;
+			for(i=0; i<enemies.length; i++)
+			{
+				enemies[i].setNotSuspicious();
+			}
+			
+		}
+		
+		public function commandEnemies(specialCommand: int=NOT_ANY):int
 		{
 			var messageToReturn:int=NOTHING_SPECIAL;
 			
@@ -118,7 +128,18 @@ package
 						if(myMessage==enemies[i].QUESTION_TIME)
 						{
 							enterQuestionMode(enemies[i]);
-							messageToReturn =ENEMY_SPOTTED_PLAYER;
+							
+							if(enemies[i].getHasSeenPlayer())
+							{
+								messageToReturn = RELOAD_LEVEL;
+							}
+							
+							else
+							{
+								enemies[i].youSawThePlayer();
+								messageToReturn =ENEMY_SPOTTED_PLAYER;
+							}
+							
 						}
 					}
 				}
@@ -134,7 +155,6 @@ package
 			}
 			else if(specialCommand==PAUSE_ALL)
 			{
-				
 					for(i=0; i<enemies.length; i++)
 					{
 						enemies[i].hardStop();

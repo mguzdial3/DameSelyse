@@ -6,7 +6,7 @@ package
 	public class TopDownEntity extends FlxSprite
 	{
 		//Whether or not this entity is currently paused
-		private var currPaused: Boolean;
+		protected var currPaused: Boolean;
 	
 		public var runSpeed:int; //Max run speed
 		
@@ -197,9 +197,11 @@ package
 		 * Move entity left
 		 */
 		public function moveLeft(modifier:Number=1):void {
-			currPaused=false;
-			facing = LEFT;
-			acceleration.x = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			if(!currPaused)
+			{
+				facing = LEFT;
+				acceleration.x = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			}
 			
 		}
 		
@@ -207,9 +209,11 @@ package
 		 * Move entity right
 		 */
 		public function moveRight(modifier:Number=1):void {
-			currPaused=false;
-			facing = RIGHT;
-			acceleration.x = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			if(!currPaused)
+			{
+				facing = RIGHT;
+				acceleration.x = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			}
 		
 		}
 		
@@ -217,9 +221,11 @@ package
 		 * Move entity up
 		 */
 		public function moveUp(modifier:Number=1):void {
-			currPaused=false;
-			facing = UP;
-			acceleration.y = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			if(!currPaused)
+			{
+				facing = UP;
+				acceleration.y = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			}
 		
 		}
 		
@@ -227,9 +233,11 @@ package
 		 * Move entity down
 		 */
 		public function moveDown(modifier:Number=1):void {
-			currPaused=false;
-			facing = DOWN;
-			acceleration.y = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			if(!currPaused)
+			{
+				facing = DOWN;
+				acceleration.y = runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
+			}
 	
 		}
 	}

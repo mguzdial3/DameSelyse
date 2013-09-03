@@ -14,6 +14,9 @@ package
 		[Embed(source = "/assets/sprites/rangerLEGS.png")] public static var RANGERLEGS_SPRITE:Class;
 		
 		//Outfit
+		[Embed(source = "/assets/sprites/rangerHat.png")] public static var RANGER_HAT:Class;
+		[Embed(source = "/assets/sprites/rangerPants.png")] public static var RANGER_PANTS:Class;
+		[Embed(source = "/assets/sprites/rangerShirt.png")] public static var RANGER_SHIRT:Class;
 		
 		[Embed(source = "/assets/sprites/ranger2Head.png")] public static var RANGER2_HAT:Class;
 		[Embed(source = "/assets/sprites/ranger2HEADSheet.png")] public static var RANGER2HEAD_SPRITE:Class;
@@ -37,10 +40,32 @@ package
 
 		// tiles
 		[Embed(source = "/assets/tiles/walls (opengameart - daniel siegmund - ccby30).png")] public static var WALLS_TILE:Class;
-		[Embed(source = "/assets/tiles/floor_wood (opengameart - Redshrike - ccby30).png")] public static var FLOORS_TILE:Class;
+		[Embed(source = "/assets/tiles/floor.png")] public static var FLOORS_TILE:Class;
 	
 		//lights
 		[Embed(source="/assets/light.png")] public static var LightImageClass:Class;
 		
+		//Keys
+		[Embed(source="/assets/Key.png")] public static var KEY:Class;
+		[Embed(source="/assets/Key2.png")] public static var KEY2:Class;
+		
+		//LOCKED DOOR
+		[Embed(source="/assets/SingleDoor.png")] public static var LOCKED_DOOR:Class;
+		
+		//Display Heads
+		[Embed(source="/assets/CharacterHead.png")] public static var CHARACTER_HEAD:Class;
+		[Embed(source="/assets/FireHead.png")] public static var FIRE_HEAD:Class;
+		[Embed(source="/assets/GoodGuardHead.png")] public static var GOOD_GUARD_HEAD:Class;
+		[Embed(source="/assets/PrisonerFace.png")] public static var PRISONER_HEAD:Class;
+		
+		//GOOD GUARD BITS
+		[Embed(source="/assets/sprites/GoodGuard.png")] public static var GOOD_GUARD:Class;
+		[Embed(source="/assets/sprites/GoodGuardKnockedOut.png")] public static var GOOD_GUARD_KOD:Class;
+		
+		//PRISONER
+		[Embed(source="/assets/Prisoner.png")] public static var PRISONER:Class;
+		
+		//WATER DROP
+		[Embed(source="/assets/WaterDrop.png")] public static var WATER_DROP:Class;
 	}
 }

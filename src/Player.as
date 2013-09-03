@@ -11,7 +11,16 @@ package
 		
 		//Handles current outfits and stores the others
 		public var outfitHandler: OutfitHandler;
+		
+		private var hiding: Boolean;
 	
+		//The number of drops the player is carrying
+		private var numDrops: int;
+		private var MAX_DROPS: int= 10;
+		
+		//FOR DEBUGGING
+		private var num: Number;
+		
 		/**
 		 * Constructor
 		 * @param	X	X location of the entity
@@ -19,14 +28,14 @@ package
 		 */
 		public function Player(X:Number=100, Y:Number=100):void {
 			super(Assets.RANGERLEGS_SPRITE, new FlxPoint(12,2), new FlxPoint(16,18), X, Y);
-			
+			num=0;
 			bodySprite = new FlxSprite(X,Y);
 			headSprite = new FlxSprite(X,Y);
 			
 			//Set up original outfits
-			var legOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.LEGS_OUTFIT,Assets.RANGERLEGS_SPRITE, OutfitHandler.NORMAL_OUTFIT);
-			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
-			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,null,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var legOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGERLEGS_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
+			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
 			
 			outfitHandler = new OutfitHandler(legOutfit,bodyOutfit,headOutfit);
 			
@@ -196,21 +205,37 @@ package
 			if (FlxG.keys.pressed("DOWN"))
 				movement.y += 1;
 				
+			var maxDropNum: Number = MAX_DROPS;
+			var dropNum : Number = numDrops;
+				
+			num = (maxDropNum - (dropNum))/maxDropNum;
+			num+=0.1; //So you can always move at least a little
+			
+			maxVelocity = new FlxPoint(runSpeed*num, runSpeed*num);
+			
 			// check final movement direction
 			if (movement.x < 0)
-				moveLeft(2);
+			{
+				moveLeft(2*num);
+			}
 			else if (movement.x > 0)
-				moveRight(2);
+			{
+				moveRight(2*num);
+			}
 			if (movement.y < 0)
-				moveUp(2);
+			{
+				moveUp(2*num);
+			}
 			else if (movement.y > 0)
-				moveDown(2);
+			{
+				moveDown(2*num);
+			}
 		}
 		
 		
-		
-			public function setNewOutfit(outfitType:uint, outfit:Class):void
-			{
+		//This changes the display to match the new outfit
+		public function setNewOutfit(outfitType:uint, outfit:Class):void
+		{
 			if(outfitType==PlayerOutfit.LEGS_OUTFIT)
 			{
 				mySprite.loadGraphic(
@@ -229,6 +254,9 @@ package
 				mySprite.addAnimation("walk_right", [4, 5, 6], 12);
 				mySprite.addAnimation("walk_down", [8, 9, 10], 12);
 				mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+				
+				
+				
 			}
 			else if(outfitType==PlayerOutfit.BODY_OUTFIT)
 			{
@@ -269,26 +297,30 @@ package
 				headSprite.addAnimation("walk_right", [4, 5, 6], 12);
 				headSprite.addAnimation("walk_down", [8, 9, 10], 12);
 				headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+				
+				
+				//This is quite cheating
+				facing = DOWN;
+				headSprite.play("idle_down");
+				
+				
 			}
+			
+			
+			
 		}
 	
-		//Outfit Handler Translates
+		//Sets new outfit for Outfit Handler
 		public function setNewOutfitPiece(newOutfitPiece: PlayerOutfit):void
 		{
-			if(newOutfitPiece.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
-			{		
-				outfitHandler.setCurrLegsOutfit(newOutfitPiece);
-			}
-			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
-			{
-				outfitHandler.setCurrBodyOutfit(newOutfitPiece);
-			}
-			else if(newOutfitPiece.getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
-			{
-				outfitHandler.setCurrHeadOutfit(newOutfitPiece);
-			}
+			
+			outfitHandler.setCurrOutfit(newOutfitPiece);
+			
+			
+			
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameHeadOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrHeadOutfitSet())
@@ -299,6 +331,7 @@ package
 			return false;
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameBodyOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrBodyOutfitSet())
@@ -309,6 +342,7 @@ package
 			return false;
 		}
 		
+		//Checks to see if the passed in outfit set matches this one
 		public function sameLegsOutfitType(outfitSet:uint):Boolean
 		{
 			if(outfitSet==outfitHandler.getCurrLegsOutfitSet())
@@ -318,6 +352,74 @@ package
 			
 			return false;
 		}
+		
+		//Used only once to connect inventory up to it
+		public function getOutfitHandler(): OutfitHandler
+		{
+			return outfitHandler;
+		}
+		
+		//HIDING
+		public function getHiding(): Boolean
+		{
+			return hiding;
+		}
+		
+		public function setHiding (_hiding: Boolean): void
+		{
+			hiding = _hiding;
+			
+			if(hiding)
+			{
+				mySprite.alpha=0;
+				headSprite.alpha = 0;
+				bodySprite.alpha = 0;
+			}
+			else
+			{
+				mySprite.alpha=1;
+				headSprite.alpha = 1;
+				bodySprite.alpha = 1;
+			}
+		}
+		
+		////////////////////////
+		//Water Drop Stuff
+		
+		public function addDrop():Boolean
+		{
+		
+			if(numDrops<MAX_DROPS)
+			{
+				numDrops++;
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public function getDrops(): int
+		{
+			return numDrops;
+		}	
+		
+		public function clearDrops(): void
+		{
+			numDrops=0;
+		}	
+		
+		
+		public function getMaxDrops(): int
+		{
+			return MAX_DROPS;
+		}
+		
+		//FOR DEBUGGING
+		public function getNum():Number
+		{
+			return num;
+		}
+		
 		
 	}
 	

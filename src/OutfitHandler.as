@@ -14,7 +14,6 @@ package
 		private var currLegsOutfit: int;
 		private var currBodyOutfit: int;
 		private var currHeadOutfit: int;
-		private var testHead: uint, testBody: uint, testLegs: uint;
 		
 		//All outfits
 		private var allOutfits: Vector.<PlayerOutfit>;
@@ -24,13 +23,10 @@ package
 		{
 			allOutfits = new Vector.<PlayerOutfit>();
 			
-			testHead = _currHeadOutfit.getOutfitType();
-			testBody = _currBodyOutfit.getOutfitType();
-			testLegs = _currLegsOutfit.getOutfitType();
 			
-			currLegsOutfit = allOutfits.push(_currLegsOutfit);
-			currBodyOutfit = allOutfits.push(_currBodyOutfit);
-			currHeadOutfit = allOutfits.push(_currHeadOutfit);
+			currLegsOutfit = allOutfits.push(_currLegsOutfit)-1;
+			currBodyOutfit = allOutfits.push(_currBodyOutfit)-1;
+			currHeadOutfit = allOutfits.push(_currHeadOutfit)-1;
 		}
 		
 		//Getters
@@ -65,6 +61,10 @@ package
 			return allOutfits[currHeadOutfit].getOutfitSet();
 		}
 		
+		public function getIndexOf(outfit:PlayerOutfit):int
+		{
+			return allOutfits.indexOf(outfit);
+		}
 		
 		
 		//Get all the outfits, for use in displaying them, for when we have that menu
@@ -74,22 +74,75 @@ package
 		}
 		
 		//Setters
-		public function setCurrLegsOutfit(currLeg: PlayerOutfit):void
+		public function setCurrOutfit(currOutfit: PlayerOutfit):void
 		{
-			testLegs = currLeg.getOutfitType();
-			currLegsOutfit = allOutfits.push(currLeg)-1;
+			if(currOutfit.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
+			{
+				setCurrLegsOutfit(currOutfit);
+			}
+			else if(currOutfit.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
+			{
+				setCurrBodyOutfit(currOutfit);
+			}
+			else if(currOutfit.getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
+			{
+				setCurrHeadOutfit(currOutfit);
+			}
 		}
 		
-		public function setCurrBodyOutfit(currBody: PlayerOutfit):void
+		
+		private function setCurrLegsOutfit(currLeg: PlayerOutfit):void
 		{
-			testBody = currBody.getOutfitType();
-			currBodyOutfit = allOutfits.push(currBody)-1;
+		
+			currLeg.velocity.x=0;
+			currLeg.velocity.y=0;
+			currLeg.acceleration.x=0;
+			currLeg.acceleration.y=0;
+		
+			if(allOutfits.indexOf(currLeg)==-1)
+			{
+				currLegsOutfit = allOutfits.push(currLeg)-1;
+			}
+			else
+			{
+				currLegsOutfit = allOutfits.indexOf(currLeg);
+			}
 		}
 		
-		public function setCurrHeadOutfit(currHead: PlayerOutfit):void
+		private function setCurrBodyOutfit(currBody: PlayerOutfit):void
 		{
-			testHead = currHead.getOutfitType();
-			currHeadOutfit = allOutfits.push(currHead)-1;
+			currBody.velocity.x=0;
+			currBody.velocity.y=0;
+			currBody.acceleration.x=0;
+			currBody.acceleration.y=0;
+		
+			if(allOutfits.indexOf(currBody)==-1)
+			{
+				currBodyOutfit = allOutfits.push(currBody)-1;
+			}
+			else
+			{
+				currBodyOutfit = allOutfits.indexOf(currBody);
+			}
+		}
+		
+		private function setCurrHeadOutfit(currHead: PlayerOutfit):void
+		{
+			
+			currHead.velocity.x=0;
+			currHead.velocity.y=0;
+			currHead.acceleration.x=0;
+			currHead.acceleration.y=0;
+		
+		
+			if(allOutfits.indexOf(currHead)==-1)
+			{
+				currHeadOutfit = allOutfits.push(currHead)-1;
+			}
+			else
+			{
+				currHeadOutfit = allOutfits.indexOf(currHead);
+			}
 		}
 		
 		//Swap two indexes
