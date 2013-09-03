@@ -25,7 +25,8 @@ package
 			//LEVEL = new IndoorHouseLevel(new FlxPoint(424, 272),new FlxPoint(16, 16));
 			//LEVEL = new showcaseMap1(new FlxPoint(992, 1184),new FlxPoint(16, 16));
 			//LEVEL = new firstRoom(new FlxPoint(928, 704),new FlxPoint(16, 16));
-			LEVEL = new firstAttempt5(new FlxPoint(2592, 2080),new FlxPoint(16, 16));
+			//LEVEL = new adamAttempt1(new FlxPoint(2592, 2080),new FlxPoint(16, 16));
+			LEVEL = new dungeonLevel(new FlxPoint(4192, 3424),new FlxPoint(16, 16)); //new FlxPoint(2592, 2080),new FlxPoint(16, 16));
 			//Adding the LEVEL variable adds everything added to the LEVEL variable object 
 			this.add(LEVEL);
 		
