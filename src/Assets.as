@@ -67,5 +67,9 @@ package
 		
 		//WATER DROP
 		[Embed(source="/assets/WaterDrop.png")] public static var WATER_DROP:Class;
+		
+		//SAVING POINTS
+		[Embed(source = "/assets/sprites/openPipe.png")] public static var OPEN_PIPE:Class;
+		[Embed(source = "/assets/sprites/openingPipe.png")] public static var CLOSED_PIPE:Class;
 	}
 }

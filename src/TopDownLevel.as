@@ -37,6 +37,7 @@ package
 		protected static const QUESTION_TIME:int=1;
 		protected static const INVENTORY_GAMEPLAY:int=2;
 		protected static const HIDING_GAMEPLAY:int=3;
+		protected static const SAVING_GAMEPLAY:int=4;
 		
 		/**
 		 * Question Stuff
@@ -75,7 +76,7 @@ package
 		protected var inventory: Inventory;
 		
 		//WaterDrops grounp
-		protected var waterDrops: FlxGroup;
+		protected var waterDrops: Vector.<FlxSprite>;
 		//Text for score
 		protected var dropletText: FlxText;
 		 
@@ -99,6 +100,12 @@ package
 		//Debug
 		protected var debugText: FlxText;
 		
+		//Saving Stuff
+		protected var saver: FlxSave;
+		protected var savePoints: Vector.<SavePoint>;//List of all save points
+		protected var saveTimer: Number;//Amount of time till we're done opening a closed save point
+		protected var saveIndex: int; //The index of the save we're currently working with
+		private var resetSave: Boolean=false;
 		
 		/**
 		 * Constructor
@@ -122,6 +129,8 @@ package
 			this.guiGroup = new FlxGroup();
 			
 			this.playerStart=_playerStart;
+			
+			
 			
 			
 			FlxG.camera.setBounds(0, 0, levelSize.x, levelSize.y); 
@@ -157,6 +166,28 @@ package
 			add(menuText);
 			
 			hidingTimer=0;
+			
+			saver = new FlxSave();
+			saveTimer=0;
+			var _loaded: Boolean = saver.bind("levelData");
+			if((_loaded && (saver.data.playerX==null || saver.data.playerY==null || saver.data.numDrops==null || saver.data.currSavePointIndex==null
+			|| saver.data.dropsGrabbed ==null))
+			|| resetSave)
+			{
+			
+				setUpSaveInformation();
+				
+				
+				debugText.text = "Drops Collected: "+0;
+			}
+			else
+			{
+				loadInformation();
+				
+				
+				debugText.text = "Drops Collected: "+saver.data.numDrops;
+				
+			}
 		}
 
 		public function reloadLevel(): void
@@ -174,10 +205,12 @@ package
 			createPlayer();
 			addHideableObjects();
 			createWaterDroplets();
+			savePointCreation();
 			addEnemies();
 			addGroups();
 			createGUI();
 			createCamera();
+			
 		}
 		
 		/**
@@ -243,7 +276,7 @@ package
 		*/
 		protected function createWaterDroplets():void
 		{
-			waterDrops = new FlxGroup();
+			waterDrops = new Vector.<FlxSprite>();
 		}
 		
 		/**
@@ -285,6 +318,67 @@ package
 			return distanceBetween;
 		}
 		
+		//Make the save points
+		protected function savePointCreation(): void
+		{
+			savePoints = new Vector.<SavePoint>();
+		}
+		
+		//Overrideable method for setting up save information (all save things are overrideable such that we can change
+		//What is saved and how it's saved per level
+		protected function setUpSaveInformation(): void
+		{
+			saver.data.playerX = playerStart.x;
+			saver.data.playerY = playerStart.y;
+			saver.data.numDrops=0; //Represents number of drops collected over all
+			saver.data.currSavePointIndex = -1; //Represents the current open save point index
+			saver.data.dropsGrabbed = new Array();
+		}
+		
+		//Overrideable save function 
+		protected function saveInformation(): void
+		{
+			saver.data.playerX=player.x; 
+			saver.data.playerY=player.y; 
+			saver.data.numDrops+= player.getDrops();
+			player.clearDrops();
+			saver.data.currSavePointIndex = saveIndex;
+				
+			var i: int;
+			for(i=0; i<waterDrops.length; i++)
+			{
+				if(saver.data.drobsGrabbed.indexOf(i)==-1 && !waterDrops[i].alive)
+				{
+					saver.data.dropsGrabbed.push(i);
+				}
+			}
+		}
+		
+		//Overrideable load function
+		protected function loadInformation(): void
+		{
+			player.x = saver.data.playerX;
+			player.y = saver.data.playerY;
+				
+			if(saver.data.currSavePointIndex!=-1)
+			{
+				savePoints[saver.data.currSavePointIndex].openSavePoint();
+			}
+			
+			var i:int=0;
+			var j:int = 0;
+			//Water Drops check if it's been grabbed
+			for(i = 0; i<waterDrops.length; i++)
+			{
+				for(j=0; j<saver.data.dropsGrabbed.length; j++)
+				{
+					if(i==saver.data.dropsGrabbed[j])
+					{
+						waterDrops[i].kill();
+					}
+				}
+			}
+		}
 		
 		/**
 		 * Create the default camera for this level
@@ -304,6 +398,12 @@ package
 			debugText.x = FlxG.camera.scroll.x;
 			debugText.y =  FlxG.camera.scroll.y;
 			
+			//Cheat bit for quick save destroying
+			if (FlxG.keys.pressed("X"))
+			{
+				saver.erase();
+			}
+			
 			
 			if(currState==NORMAL_GAMEPLAY)
 			{
@@ -321,6 +421,52 @@ package
 			{
 				hiddenNormalGameplay();
 			}
+			else if(currState==SAVING_GAMEPLAY)
+			{
+				savingGameplay();
+			}
+		}
+		
+		//Handles saving
+		protected function savingGameplay():void
+		{
+			//ENEMY CONTROLLER
+			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, wallGroup);
+			
+			//THIS MOVES THE ENEMIES
+			var enemyMessage: int = enemyController.commandEnemies();
+			
+				if(savePoints[saveIndex].getOpened())
+				{
+					saveInformation();
+					
+					debugText.text = "Drops Collected: "+saver.data.numDrops;
+					saveTimer=0;
+					player.setPaused(false);
+					setGameState(NORMAL_GAMEPLAY);
+					
+				}
+				else
+				{
+				
+					//Open savePoint first
+				
+					if(saveTimer==0)
+					{
+						savePoints[saveIndex].setOpening();
+					}
+					else if(saveTimer> savePoints[saveIndex].getTimeToOpen())
+					{
+						savePoints[saveIndex].openSavePoint();
+					}
+				
+					saveTimer+= FlxG.elapsed;
+				
+				}
+				
+			
+			
 		}
 		
 		public function hiddenNormalGameplay():void
@@ -388,7 +534,12 @@ package
 			FlxG.collide(wallGroup, player);
 			
 			//Water Droplet Conections
-			FlxG.overlap(waterDrops,player,getWaterDrops);
+			var i:int=0;
+			for(i=0; i<waterDrops.length; i++)
+			{
+				
+				FlxG.overlap(waterDrops[i],player,getWaterDrops);
+			}
 			
 			
 			//Update collection text
@@ -401,8 +552,9 @@ package
 				inventory.showInventory(this, FlxG.camera.scroll);
 			}
 			
+			
+			
 			//Check all dialogueTriggers to see if we have entered a dialogue zone
-			var i:int=0;
 			for(i=0; i<dialogueTriggers.length; i++)
 			{
 				if(dialogueTriggers[i]!=null && FlxG.collide(dialogueTriggers[i],player))
@@ -427,6 +579,17 @@ package
 							dialogueTriggers[i]=null;
 						}
 					}
+				}
+			}
+			
+			//saveIndex set up and figure out to start saving
+			for(i=0; i<savePoints.length; i++)
+			{
+				if(savePoints[i]!=null && FlxG.collide(savePoints[i],player))
+				{
+					saveIndex = i;
+					setGameState(SAVING_GAMEPLAY);
+					player.setPaused(true); //Pause player while saving
 				}
 			}
 			

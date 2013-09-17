@@ -485,6 +485,17 @@ package
 			
 			hideableObjects.push(new HideableObject(1600.0, 1328.0, Assets.ARMOR_SPRITE));
 		}
+		
+		override protected function savePointCreation():void
+		{
+			super.savePointCreation();
+			
+			//HideableObject stuff						
+			savePoints.push(new SavePoint(playerStart.x-32, playerStart.y));
+			savePoints.push(new SavePoint(1600+96, 1328.0-96));
+			
+			
+		}
 
 		override protected function createMap():void {
 			var tiles:FlxTilemap;
@@ -606,31 +617,31 @@ package
 		override protected function createWaterDroplets():void
 		{
 			var waterDrop:FlxSprite;
-			waterDrops = new FlxGroup();
+			waterDrops = new Vector.<FlxSprite>();
 			
 			waterDrop = new FlxSprite(playerStart.x, playerStart.y+40, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(playerStart.x+20, playerStart.y+40, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(playerStart.x, playerStart.y+60, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(playerStart.x+20, playerStart.y+60, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(playerStart.x, playerStart.y+80, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(1608, 1336, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(1592, 1336, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 			waterDrop = new FlxSprite(1600, 1336, Assets.WATER_DROP);
-			waterDrops.add(waterDrop);
+			waterDrops.push(waterDrop);
 			
 		}
 		
@@ -1710,10 +1721,21 @@ package
 				}
 			}
 			
+			if(savePoints!=null)
+			{
+				for(i =0; i<savePoints.length; i++)
+				{
+					add(savePoints[i]);
+				}
+			}			
 			
 			add(objectGroup);
 			add(decalGroup);
-			add(waterDrops); //Add all collectibles
+			//Add all collectibles
+			for(i = 0; i<waterDrops.length; i++)
+			{
+				add(waterDrops[i]);
+			}
 			add(player);
 			
 			//NOTE: CHANGED THIS LINE TO THE ONE BELOW FOR FULL BODY
@@ -1740,7 +1762,7 @@ package
 			debugText = new FlxText(FlxG.camera.scroll.x,FlxG.camera.scroll.y,100);
 			debugText.text = "Debug: ";
 			//Don't add for now
-			//add(debugText);
+			add(debugText);
 		}
 
 		override public function draw():void {

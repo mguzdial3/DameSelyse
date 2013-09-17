@@ -16,7 +16,7 @@ package
 	
 		//The number of drops the player is carrying
 		private var numDrops: int;
-		private var MAX_DROPS: int= 10;
+		private var MAX_DROPS: int= 100;
 		
 		//FOR DEBUGGING
 		private var num: Number;
@@ -407,6 +407,8 @@ package
 		{
 			numDrops=0;
 		}	
+		
+		
 		
 		
 		public function getMaxDrops(): int
