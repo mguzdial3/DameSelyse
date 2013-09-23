@@ -344,14 +344,21 @@ package
 			player.clearDrops();
 			saver.data.currSavePointIndex = saveIndex;
 				
+			
 			var i: int;
 			for(i=0; i<waterDrops.length; i++)
 			{
-				if(saver.data.drobsGrabbed.indexOf(i)==-1 && !waterDrops[i].alive)
+			
+			
+				//WARNING: Might be a problem later if the array gets too long
+				if( !waterDrops[i].alive )//&& arraySoFar.indexOf(i)==-1)
 				{
 					saver.data.dropsGrabbed.push(i);
 				}
 			}
+			
+			saver.flush();
+			
 		}
 		
 		//Overrideable load function
@@ -434,18 +441,19 @@ package
 			FlxG.collide(enemyController, player);
 			FlxG.collide(enemyController, wallGroup);
 			
+			
+				
+			
 			//THIS MOVES THE ENEMIES
 			var enemyMessage: int = enemyController.commandEnemies();
 			
 				if(savePoints[saveIndex].getOpened())
 				{
 					saveInformation();
-					
 					debugText.text = "Drops Collected: "+saver.data.numDrops;
 					saveTimer=0;
-					player.setPaused(false);
 					setGameState(NORMAL_GAMEPLAY);
-					
+					player.setPaused(false);
 				}
 				else
 				{
@@ -465,8 +473,6 @@ package
 				
 				}
 				
-			
-			
 		}
 		
 		public function hiddenNormalGameplay():void
