@@ -115,7 +115,6 @@ package
 			}
 			
 			
-			
 			var outfits: Vector.<PlayerOutfit> = outfitHandler.getAllOutfits();
 			
 			var origPos :FlxPoint = new FlxPoint(30,30);

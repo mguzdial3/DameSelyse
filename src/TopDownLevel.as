@@ -106,6 +106,11 @@ package
 		protected var saveTimer: Number;//Amount of time till we're done opening a closed save point
 		protected var saveIndex: int; //The index of the save we're currently working with
 		private var resetSave: Boolean=false;
+
+		//MiniMap
+		private var map: FlxSprite;
+		private var wallStamp: FlxSprite;
+		private var playerStamp: FlxSprite;
 		
 		/**
 		 * Constructor
@@ -188,6 +193,15 @@ package
 				debugText.text = "Drops Collected: "+saver.data.numDrops;
 				
 			}
+
+			//MiniMap
+			wallStamp = new FlxSprite();
+			wallStamp.makeGraphic(2,2,0xff000000);
+			playerStamp = new FlxSprite();
+			playerStamp.makeGraphic(2,2,0xffff0000);
+			map = new FlxSprite();
+			map.makeGraphic(80,60,0xffffffff);
+			add(map);
 		}
 
 		public function reloadLevel(): void
@@ -546,6 +560,25 @@ package
 				
 				FlxG.overlap(waterDrops[i],player,getWaterDrops);
 			}
+
+			//update minimap
+			map.fill(0xffffffff);
+			var stx: int = int(FlxG.camera.scroll.x / 16) - 10; //start x
+			var sty: int = int(FlxG.camera.scroll.y / 16) - 7; //start y
+			var tx: int; //tile x
+			var ty: int; //tile y
+			for (tx = 0; tx < 40; tx++){
+				for (ty = 0; ty < 30; ty++){
+					if (FlxTilemap(wallGroup.getFirstAlive()).getTile(stx+tx,sty+ty) != 0){
+						map.stamp(wallStamp,tx*2,ty*2);
+					}
+				}
+			}
+			var px: int = int((player.x - FlxG.camera.scroll.x)/16) + 11; //player x
+			var py: int = int((player.y - FlxG.camera.scroll.y)/16) + 7; //player y
+			map.stamp(playerStamp,(px*2),py*2);
+			map.x = FlxG.camera.scroll.x;
+			map.y = FlxG.camera.scroll.y;
 			
 			
 			//Update collection text
