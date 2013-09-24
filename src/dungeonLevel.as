@@ -375,16 +375,44 @@ package
 		private var prisonerSprite: FlxSprite;
 		private var prisonerLight: Light;
 		
+		//Index
+		private var _levelProgressionIndex:int; //Just local storing for the version saved
+		private const GUARD_SPOKEN:int=1;
+		private const HAS_KEY_2:int = 2;
+		private const HAS_RELEASED_PRISONER:int =3;
+		private const HAS_OPENED_PANTS_DOOR:int=4;
 		
 		
 		
 		public function dungeonLevel(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			super(levelSize, blockSize,new FlxPoint(1544.0,952.0)); //new FlxPoint(1096.0,680.0));
 			
+		}
+		
+		//Sets up all stuff that doesn't have to be saved
+		override protected function setUpLevelSpecificAssets(): void
+		{
+			super.setUpLevelSpecificAssets();
 			
-			//EVERYTHING BELOW THIS LINE COULD HAPPEN ANYWHERE, I JUST SHOVED IT HERE SINCE IT'S LEVEL SPECIFIC
 			
-			//Setting up the outfits
+		}
+		
+		
+		
+		
+		override protected function checkSaveSetup(): Boolean
+		{
+			return super.checkSaveSetup() || saver.data.levelProgressionIndex == null;
+		}
+		
+		override protected function setUpSaveInformation(): void
+		{
+			super.setUpSaveInformation();
+			saver.data.levelProgressionIndex=0;
+			
+			_levelProgressionIndex=0;
+			
+			//Setting up the outfits if we don't have load info
 			legOutfit = new PlayerOutfit(33*16,97*16,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
 			add(legOutfit);
 			
@@ -392,7 +420,6 @@ package
 			add(bodyOutfit);
 			
 			headOutfit = new PlayerOutfit(72*16,55*16,Assets.RANGER2_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGER2HEAD_SPRITE, OutfitHandler.GUARD_OUTFIT);
-			
 			
 			//key is no longer in world, but is given to the player
 			key = new InventoryItem(Assets.KEY, 0,0,"Key", new FlxPoint(0.5,0.5));
@@ -439,12 +466,13 @@ package
 			var dialogNode1a:DialogNode = new DialogNode(dialogNode1b, DialogHandler.GOOD_GUARD_HEAD, "Hey! Who are you?");
 			
 			
+			//Index 0
 			dialogueTriggers.push(new  DialogueTriggerZone(100*16, 71*16, 5*16, 3*16, dialogNode1a, false, true));
 			
 			
 			var dialogNode2: DialogNode = new DialogNode(null,  DialogHandler.PLAYER_HEAD, "Hey! A guard tunic! If I can get that, I'll be better hidden.");
 			
-			
+			//Index 1
 			dialogueTriggers.push(new  DialogueTriggerZone(49*16, 78*16, 7*16, 16, dialogNode2));
 			
 			//Prisoner Dialog
@@ -472,10 +500,147 @@ package
 			var endDialogNode:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Looks like I reached the end. It'd be nice if I now filled out a survey about my time in the dungeon!");
 			dialogueTriggers.push(new DialogueTriggerZone(123*16, 15*16,3*16,5*16, endDialogNode, false, true));
 			
+		}
+		
+		//Overrideable save function 
+		override protected function saveInformation(): void
+		{
+			super.saveInformation();
 			
+			saver.data.levelProgressionIndex=_levelProgressionIndex;
 			
 		}
 		
+		//Overrideable load function
+		override protected function loadInformation(): void
+		{
+			super.loadInformation();
+			
+			
+			headOutfit = new PlayerOutfit(72*16,55*16,Assets.RANGER2_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGER2HEAD_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			if(saver.data.headOutfitGot)
+			{
+				headOutfit.setGrabbed();
+				player.setNewOutfitPiece(headOutfit);
+				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
+			}
+			
+			bodyOutfit = new PlayerOutfit(46*16,79*16,Assets.RANGER2_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGER2BODY_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			if(saver.data.bodyOutfitGot)
+			{
+				bodyOutfit.setGrabbed();
+				player.setNewOutfitPiece(bodyOutfit);
+				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
+				
+				
+			}
+			else
+			{
+			
+				var dialogNode2: DialogNode = new DialogNode(null,  DialogHandler.PLAYER_HEAD, "Hey! A guard tunic! If I can get that, I'll be better hidden.");
+			
+				//Index 1
+				dialogueTriggers.push(new  DialogueTriggerZone(49*16, 78*16, 7*16, 16, dialogNode2));
+				add(bodyOutfit);
+			}
+			
+			legOutfit = new PlayerOutfit(33*16,97*16,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			if(saver.data.legsOutfitGot)
+			{
+				legOutfit.setGrabbed();
+				player.setNewOutfitPiece(legOutfit);
+				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
+			}
+			else
+			{
+				add(legOutfit);
+			}
+			
+			enemyController.checkCorrectOutfit();
+			
+			
+			/**
+			Level Stuff
+			*/
+			
+			//key is no longer in world, but is given to the player
+			key = new InventoryItem(Assets.KEY, 0,0,"Key", new FlxPoint(0.5,0.5));
+			//Key2 is within the world
+			key2 = new InventoryItem(Assets.KEY2, 23*16,82*16,"Key2", new FlxPoint(0.5,0.5));
+			add(key2);
+			
+			
+			//Sets up the good guard and knocked out guard sprites
+			goodGuardKOD = new FlxSprite(102*16, 70*16, Assets.GOOD_GUARD_KOD);
+			add(goodGuardKOD);
+			goodGuardKOD.alpha=0;
+			goodGuardKOD.immovable = true;
+			goodGuard = new FlxSprite(102*16, 70*16, Assets.GOOD_GUARD);
+			add(goodGuard);
+				
+			//Adds the list of sprites for use in the dialognodes
+			var goodGuardSprites:Vector.<FlxSprite> = new Vector.<FlxSprite>();
+			var goodGuardKODSprites:Vector.<FlxSprite> = new Vector.<FlxSprite>();
+			goodGuardSprites.push(goodGuard);
+			goodGuardSprites.push(goodGuardLight);
+			goodGuardKODSprites.push(goodGuardKOD);
+			
+			var doorRemoving:Vector.<FlxSprite> = new Vector.<FlxSprite>();
+			doorRemoving.push(lockedDoor2);
+			
+			var prisonerRemoving:Vector.<FlxSprite> = new Vector.<FlxSprite>();
+			prisonerRemoving.push(prisonerSprite);
+			prisonerRemoving.push(prisonerLight);
+			
+			
+			//Good Guard Dialog
+			var dialogNode1l:DialogNode = new SpriteHideDialogNode(null, DialogHandler.GOOD_GUARD_HEAD, "I'll go ahead and knock myself out so they don't suspect me! Good luck!",goodGuardSprites,goodGuardKODSprites);
+			var dialogNode1k:DialogNode = new DialogNode(dialogNode1l, DialogHandler.PLAYER_HEAD, "He ignored me...");
+			var dialogNode1j:DialogNode = new DialogNode(dialogNode1k, DialogHandler.GOOD_GUARD_HEAD, "And if any of the guards catch you, just say you're doing 'Guard Stuff', we're pretty dumb. But it'll only work once per guard, we're not THAT dumb.");
+			var dialogNode1i:DialogNode = new DialogNode(dialogNode1j, DialogHandler.PLAYER_HEAD, "But wait, why are you doing this?");
+			var dialogNode1h:DialogNode = new OutfitDialogNode(dialogNode1i, DialogHandler.GOOD_GUARD_HEAD, "Yeah, I hate the Walrus King. Here, take my helmet. The more of our uniform you wear, the better!",headOutfit);
+			var dialogNode1g:DialogNode = new DialogNode(dialogNode1h, DialogHandler.PLAYER_HEAD, "What!?");
+			var dialogNode1f:DialogNode = new DialogNode(dialogNode1g, DialogHandler.GOOD_GUARD_HEAD, "Well I wanted to help you escape!");
+			var dialogNode1e:DialogNode = new DialogNode(dialogNode1f, DialogHandler.PLAYER_HEAD, "Yeah, so?");
+			var dialogNode1d:DialogNode = new DialogNode(dialogNode1e, DialogHandler.GOOD_GUARD_HEAD, "Wait a second!! No it's not, you're Dame Celeste!");
+			var dialogNode1c:DialogNode = new DialogNode(dialogNode1d, DialogHandler.GOOD_GUARD_HEAD, "Oh, that's cool then-");
+			var dialogNode1b:DialogNode = new DialogNode(dialogNode1c, DialogHandler.PLAYER_HEAD, "Me? Uh- Nobody!");
+			var dialogNode1a:DialogNode = new DialogNode(dialogNode1b, DialogHandler.GOOD_GUARD_HEAD, "Hey! Who are you?");
+			
+			
+			//Index 0
+			dialogueTriggers.push(new  DialogueTriggerZone(100*16, 71*16, 5*16, 3*16, dialogNode1a, false, true));
+			
+			
+			
+			//Prisoner Dialog
+			var dialogNode2i:DialogNode = new SpriteHideDialogNode(null, DialogHandler.PRISONER_HEAD, "Catch you around, princess.",prisonerRemoving);
+			var dialogNode2h:DialogNode = new ItemDialogNode(dialogNode2i, DialogHandler.PRISONER_HEAD, "Perfect, here's the key.",key, key2);
+			var dialogNode2g:DialogNode = new SpriteHideDialogNode(dialogNode2h, DialogHandler.PLAYER_HEAD, "*unlocks door*", doorRemoving);
+			var dialogNode2f:DialogNode = new DialogNode(dialogNode2g, DialogHandler.PLAYER_HEAD, "...Deal.");
+			var dialogNode2e:DialogNode = new DialogNode(dialogNode2f, DialogHandler.PRISONER_HEAD, "If you do, I can give you this key to open that lock, but you have to unlock my door first with that key you just picked up.");
+			var dialogNode2d:DialogNode = new DialogNode(dialogNode2e, DialogHandler.PLAYER_HEAD, "Maybe.");
+			var dialogNode2c:DialogNode = new DialogNode(dialogNode2d, DialogHandler.PRISONER_HEAD, "Whatever. Look, you want those pants in the next cell right?");
+			var dialogNode2b:DialogNode = new DialogNode(dialogNode2c, DialogHandler.PLAYER_HEAD, "I'm not a princess, I'm a Dame.");
+			dialogNode2a = new DialogNode(dialogNode2b, DialogHandler.PRISONER_HEAD, "Hey! Princess.");
+			
+			
+			var dialogNodeGetKeye: DialogNode = new DialogNode(null, DialogHandler.PRISONER_HEAD, "Since you can do something for me. See that key in the middle of the room? Get that for me, I'll make it worth your while.");
+			var dialogNodeGetKeyd: DialogNode = new DialogNode(dialogNodeGetKeye, DialogHandler.PLAYER_HEAD, "-?");
+			var dialogNodeGetKeyc: DialogNode = new DialogNode(dialogNodeGetKeyd, DialogHandler.PRISONER_HEAD, "Don't get your knickers in a bunch. I'm not going to rat you out-");
+			var dialogNodeGetKeyb: DialogNode = new DialogNode(dialogNodeGetKeyc, DialogHandler.PLAYER_HEAD, "-!");
+			var dialogNodeGetKeya: DialogNode = new DialogNode(dialogNodeGetKeyb, DialogHandler.PRISONER_HEAD, "Hey you there! You're not a guard, are you?");
+			
+			
+			
+			prisonerFirstDialogIndex=dialogueTriggers.push(new DialogueTriggerZone(17*16, 94.5*16, 4*16, 2*16,dialogNodeGetKeya,false,true))-1;
+			
+			var endDialogNode:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Looks like I reached the end. It'd be nice if I now filled out a survey about my time in the dungeon!");
+			dialogueTriggers.push(new DialogueTriggerZone(123*16, 15*16,3*16,5*16, endDialogNode, false, true));
+			
+		}
+		
+		//Add the hideable objects
 		override protected function addHideableObjects():void
 		{
 			super.addHideableObjects();
@@ -486,6 +651,7 @@ package
 			hideableObjects.push(new HideableObject(1600.0, 1328.0, Assets.ARMOR_SPRITE));
 		}
 		
+		//Save point creations
 		override protected function savePointCreation():void
 		{
 			super.savePointCreation();
@@ -533,6 +699,7 @@ package
 			createObjects();
 		}
 
+		//Create all objects (props)
 		protected function createObjects():void {
 			var sprite:FlxSprite;
 			decalGroup = new FlxGroup();

@@ -12,6 +12,9 @@ package
 		//The set this outfit belongs to
 		private var outfitSet:uint;
 		
+		
+		private var grabbed: Boolean; 
+		
 		//What type of Outfit is this outfit	
 		private var outfitType:uint;//Legs, Body, or Head
 		//CONSTANTS FOR DIFFERENT OUTFIT TYPES
@@ -26,6 +29,8 @@ package
 			outfitType = _outfitType;
 			outfit = OutfitGraphic;
 			outfitSet=_outfitSet;
+			
+			grabbed = false;
 			
 		}
 		
@@ -42,6 +47,16 @@ package
 		public function getOutfitSet(): uint
 		{
 			return outfitSet;
+		}
+		
+		public function getGrabbed(): Boolean
+		{
+			return grabbed;
+		}
+		
+		public function setGrabbed(): void
+		{
+			grabbed = true;
 		}
 		
 	

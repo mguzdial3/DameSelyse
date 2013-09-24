@@ -76,6 +76,8 @@ package
 		//Setters
 		public function setCurrOutfit(currOutfit: PlayerOutfit):void
 		{
+			currOutfit.setGrabbed(); //This outfit has been grabbed, that's important for saving/loading
+		
 			if(currOutfit.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
 			{
 				setCurrLegsOutfit(currOutfit);

@@ -150,11 +150,7 @@ package
 			//Hooks the inventory up to the player
 			inventory = new Inventory(player.getOutfitHandler());
 			
-			//Dialog Handler has to be above everything else
-			dialogHandler = new DialogHandler();
 			
-			//Set up DialogTriggers
-			dialogueTriggers = new Vector.<DialogueTriggerZone>();
 			
 			
 			//Sets up the timer for the question
@@ -174,10 +170,8 @@ package
 			
 			saver = new FlxSave();
 			saveTimer=0;
-			var _loaded: Boolean = saver.bind("levelData");
-			if((_loaded && (saver.data.playerX==null || saver.data.playerY==null || saver.data.numDrops==null || saver.data.currSavePointIndex==null
-			|| saver.data.dropsGrabbed ==null))
-			|| resetSave)
+			
+			if(checkSaveSetup())
 			{
 			
 				setUpSaveInformation();
@@ -203,6 +197,10 @@ package
 			map.makeGraphic(80,60,0xffffffff);
 			add(map);
 		}
+		
+		
+		
+		
 
 		public function reloadLevel(): void
 		{
@@ -222,10 +220,26 @@ package
 			savePointCreation();
 			addEnemies();
 			addGroups();
+			setUpLevelSpecificAssets();
 			createGUI();
 			createCamera();
 			
 		}
+		
+		
+		//Sets up all dialogue for this level and the various dialogue peoples
+		//And sets up various other level specific stuff
+		protected function setUpLevelSpecificAssets(): void
+		{
+			//Dialog Handler has to be above everything else
+			dialogHandler = new DialogHandler();
+			
+			//Set up DialogTriggers
+			dialogueTriggers = new Vector.<DialogueTriggerZone>();
+		}
+		
+		
+		
 		
 		/**
 		 * Create the map (walls, decals, etc)
@@ -332,6 +346,23 @@ package
 			return distanceBetween;
 		}
 		
+		
+		//Called to determine if we have set up a save spot already
+		protected function checkSaveSetup(): Boolean
+		{
+			var _loaded: Boolean = saver.bind("levelData");
+		
+		
+			return ((_loaded && (saver.data.playerX==null || 
+			 saver.data.headOutfitGot==null 
+			|| saver.data.bodyOutfitGot==null
+			|| saver.data.legsOutfitGot==null
+			||
+			saver.data.playerY==null || saver.data.numDrops==null || saver.data.currSavePointIndex==null
+			|| saver.data.dropsGrabbed ==null))
+			|| resetSave);
+		}
+		
 		//Make the save points
 		protected function savePointCreation(): void
 		{
@@ -347,6 +378,10 @@ package
 			saver.data.numDrops=0; //Represents number of drops collected over all
 			saver.data.currSavePointIndex = -1; //Represents the current open save point index
 			saver.data.dropsGrabbed = new Array();
+			
+			saver.data.headOutfitGot=false;
+			saver.data.bodyOutfitGot=false;
+			saver.data.legsOutfitGot=false;
 		}
 		
 		//Overrideable save function 
@@ -370,6 +405,11 @@ package
 					saver.data.dropsGrabbed.push(i);
 				}
 			}
+			
+			saver.data.headOutfitGot=headOutfit.getGrabbed();
+			saver.data.bodyOutfitGot=bodyOutfit.getGrabbed();
+			saver.data.legsOutfitGot=legOutfit.getGrabbed();
+			
 			
 			saver.flush();
 			
@@ -719,9 +759,11 @@ package
 			
 			var newOutfit:Boolean=false;
 			
-			if(legOutfit!=null && FlxG.collide(legOutfit, player))
+			if(!legOutfit.getGrabbed() && FlxG.collide(legOutfit, player))
 			{
+			
 				remove(legOutfit);
+				legOutfit.setGrabbed();
 				
 				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
 				
@@ -729,9 +771,10 @@ package
 				newOutfit=true;
 			}
 			
-			if(headOutfit!=null && FlxG.collide(headOutfit, player))
+			if(!headOutfit.getGrabbed() && FlxG.collide(headOutfit, player))
 			{
 				remove(headOutfit);
+				headOutfit.setGrabbed();
 				
 				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
 				
@@ -739,9 +782,10 @@ package
 				newOutfit=true;
 			}
 			
-			if(bodyOutfit!=null && FlxG.collide(bodyOutfit, player))
+			if(!bodyOutfit.getGrabbed() && FlxG.collide(bodyOutfit, player))
 			{
 				remove(bodyOutfit);
+				bodyOutfit.setGrabbed();
 				
 				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
 				
