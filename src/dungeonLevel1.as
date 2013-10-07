@@ -1600,21 +1600,27 @@ package
 
 		override protected function addEnemies(): void {
 
+
+			//Testing enemy 1
 			var enemies:Vector.<Enemy> = new Vector.<Enemy>();
 			var enemyLight:Light;
 			var waypointList0: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
 
-			waypointList0.push(new FlxPoint(1768.0,1352.0)); 
-			waypointList0.push(new FlxPoint(1688.0,1352.0)); 
-			waypointList0.push(new FlxPoint(1688.0,1256.0)); 
-			waypointList0.push(new FlxPoint(1768.0,1256.0)); 
-			waypointList0.push(new FlxPoint(1784.0,1352.0)); 
+			//waypointList0.push(new FlxPoint(1768.0,1352.0)); 
+			waypointList0.push(new FlxPoint(1700.0,1352.0)); 
+			waypointList0.push(new FlxPoint(1700.0,1256.0)); 
+			//waypointList0.push(new FlxPoint(1768.0,1256.0)); 
+			//waypointList0.push(new FlxPoint(1784.0,1352.0)); 
 
-			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.75,0.75);
+			enemyLight = new Light(Assets.SharkLightImage, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.75,0.75);
 
-			var enemy0:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList0, player, enemyLight, 1760.0, 1344.0); 
+			var enemyLight2: Light = new Light(Assets.SharkLightImage, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.75,0.75);
+			add(enemyLight2);
+
+			var enemy0:Enemy = new LadyEnemy(waypointList0, player, enemyLight,enemyLight2, 1760.0, 1344.0); 
 			enemies.push(enemy0); 
 
+			/**
 			var waypointList1: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
 
 			waypointList1.push(new FlxPoint(1640.0,1352.0)); 
@@ -1627,7 +1633,7 @@ package
 
 			var enemy1:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList1, player, enemyLight, 1632.0, 1344.0); 
 			enemies.push(enemy1); 
-
+			*/
 			var waypointList2: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
 
 			waypointList2.push(new FlxPoint(1528.0,1352.0)); 

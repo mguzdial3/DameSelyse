@@ -1043,7 +1043,7 @@ package
 			
 			var newOutfit:Boolean=false;
 			
-			if(!legOutfit.getGrabbed() && FlxG.collide(legOutfit, player))
+			if(!legOutfit.getGrabbed() && FlxG.collide(legOutfit, player.mySprite))
 			{
 			
 				remove(legOutfit);
@@ -1055,7 +1055,7 @@ package
 				newOutfit=true;
 			}
 			
-			if(!headOutfit.getGrabbed() && FlxG.collide(headOutfit, player))
+			if(!headOutfit.getGrabbed() && FlxG.collide(headOutfit, player.mySprite))
 			{
 				remove(headOutfit);
 				headOutfit.setGrabbed();
@@ -1066,7 +1066,7 @@ package
 				newOutfit=true;
 			}
 			
-			if(!bodyOutfit.getGrabbed() && FlxG.collide(bodyOutfit, player))
+			if(!bodyOutfit.getGrabbed() && FlxG.collide(bodyOutfit, player.mySprite))
 			{
 				remove(bodyOutfit);
 				bodyOutfit.setGrabbed();

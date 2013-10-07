@@ -14,6 +14,7 @@ package
 		[Embed(source = "/assets/sprites/catGuardSpritesheet.png")] public static var GUARD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/ratCookSpritesheet.png")] public static var COOK_SPRITE:Class;
 		[Embed(source = "/assets/sprites/prisonerSpritesheet.png")] public static var PRISONER_SPRITE:Class;
+		[Embed(source = "/assets/sprites/hammerheadSpritesheet.png")] public static var SHARK_SPRITE:Class;
 		//Split up player sprite
 		[Embed(source = "/assets/sprites/princessHeadSpritesheet.png")] public static var RANGERHEAD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/princessBodySpritesheet.png")] public static var RANGERBODY_SPRITE:Class;
@@ -84,6 +85,7 @@ package
 		
 		//lights
 		[Embed(source="/assets/light.png")] public static var LightImageClass:Class;
+		[Embed(source="/assets/SharkLight.png")] public static var SharkLightImage:Class;
 		
 		//Keys
 		[Embed(source="/assets/Key.png")] public static var KEY:Class;

@@ -21,7 +21,7 @@ package
 		
 		public static const RAT_HEAD:uint=2;
 		public static const PRISONER_HEAD:uint=3;
-		
+		public static const SHARK_HEAD:uint=4;
 		
 		//Potential Responses From Handling Dialog
 		public static const KEEP_GOING: int = 0;
@@ -89,6 +89,13 @@ package
 				
 				add(head);
 			}
+			else if(currNode.getFaceToDisplay() ==SHARK_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.PRISONER_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			
 			
 		}
 		

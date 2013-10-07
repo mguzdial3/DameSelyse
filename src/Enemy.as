@@ -63,8 +63,8 @@ package
 		protected var expressionTimerMax:Number = 1.0;
 		
 		
-		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 30):void {
-			super(imgToUse, new FlxPoint(10,4), new FlxPoint(15,18), X, Y,_runSpeed);
+		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 30, xSize:int = 15, ySize:int = 18):void {
+			super(imgToUse, new FlxPoint(10,4), new FlxPoint(xSize,ySize), X, Y,_runSpeed);
 			
 			
 			originalPosition = new FlxPoint(X,Y);
@@ -107,6 +107,8 @@ package
 			
 		}
 		
+		
+		
 		public function resetToOriginalPositions():void
 		{
 			this.x=originalPosition.x;
@@ -140,7 +142,11 @@ package
 		//Get Positive Response
 		protected function getPositiveResponse(): DialogNode
 		{
-			return new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, well carry on then.",DialogNode.RESET_ENEMIES);
+			var node1: DialogNode = 	 new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, well carry on then.",DialogNode.RESET_ENEMIES)
+		
+			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "You know... Guard stuff");
+			
+		
 		}
 	
 		
@@ -161,17 +167,34 @@ package
 			
 			enemyAnswers = 	new Vector.<EnemyAnswer>();
 			
-			//THE CORRECT ANSWER NEEDS TO BE THE FIRST ONE
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,getRandomKeyboardKey(),true));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, alright- WAIT A MINUTE. You're Dame Celeste! Back to your cell, young lady!",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Wait. What? Oh! You must be Celeste. Let's get you back to your cell.",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, just chilling? WAIT- You're Dame Celeste! Back to prison with you!",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer5, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "...That's really rude. Back to your cell, Celeste, and think about what you've done.",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "You aren't the prisoner I'm looking for... Wait, yes you are!",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Um, you know, guard stuff? Wait a second, I don't have to explain myself! Back to your cell!",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer8, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh! What are you doing out of your cell then? Let's get you back.",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Not anymore! Back to your cell, young lady!",DialogNode.RESET_GAME)));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "First of all, how dare you. Second, back to your cell!",DialogNode.RESET_GAME)));
+			var response2: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, alright- WAIT A MINUTE. You're Dame Celeste! Back to your cell, young lady!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(response2, DialogHandler.PLAYER_HEAD,  enemyAnswer1)));
+			
+			var response3: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Wait. What? Oh! You must be Celeste. Let's get you back to your cell.",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(response3, DialogHandler.PLAYER_HEAD, enemyAnswer3)));
+			
+			var response4: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, just chilling? WAIT- You're Dame Celeste! Back to prison with you!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(response4, DialogHandler.PLAYER_HEAD, enemyAnswer4)));
+			
+			var response5: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "...That's really rude. Back to your cell, Celeste, and think about what you've done.",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer5,getRandomKeyboardKey(), false,  new DialogNode(response5, DialogHandler.PLAYER_HEAD, enemyAnswer5)));
+			
+			var response6: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "You aren't the prisoner I'm looking for... Wait, yes you are!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(response6, DialogHandler.PLAYER_HEAD, enemyAnswer6)));
+			
+			var response7: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Um, you know, guard stuff? Wait a second, I don't have to explain myself! Back to your cell!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(response7, DialogHandler.PLAYER_HEAD, enemyAnswer7)));
+			
+			var response8: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh! What are you doing out of your cell then? Let's get you back.",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer8,getRandomKeyboardKey(), false,  new DialogNode(response8, DialogHandler.PLAYER_HEAD, enemyAnswer8)));
+			
+			var response9: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Not anymore! Back to your cell, young lady!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer9)));
+			
+			var response10: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "First of all, how dare you. Second, back to your cell!",DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer10)));
+			
 			
 		}
 		
@@ -322,6 +345,16 @@ package
 		}
 		
 		
+		protected function resetLight(): void
+		{
+			lightFOV.color = 0xFFFFFFFF;	
+		}
+		
+		protected function suspiciousEnough(): Boolean
+		{
+			return lightFOV.lerpColor(0xFFFF0000,80);
+		}
+		
 		private function regularGameplay():int
 		{
 			//MOVE THE LIGHT SOURCE
@@ -352,7 +385,7 @@ package
 			{	
 			
 				//lightFOV.lerpColor(0xFFFFFFFF,80);	
-				lightFOV.color = 0xFFFFFFFF;	
+				resetLight();
 		
 				goalPoint =waypoints[currWaypoint];
 				//goalPoint = new FlxPoint(player.x,player.y);
@@ -390,7 +423,7 @@ package
 			else if(currentState==SEEKINGPLAYER)
 			{
 			
-				if(lightFOV.lerpColor(0xFFFF0000,80))
+				if(suspiciousEnough())
 				{
 					return QUESTION_TIME;
 				}
@@ -562,7 +595,7 @@ package
 		/**
 		 *Simple manhattan distance (public so we can use it later)
 		 */
-		private function manhattanDistance(firstPoint: FlxPoint, secondPoint: FlxPoint): Number
+		protected function manhattanDistance(firstPoint: FlxPoint, secondPoint: FlxPoint): Number
 		{
 			var distanceBetween: Number = Math.sqrt(Math.pow((secondPoint.x-firstPoint.x),2)
 			+ Math.pow((secondPoint.y-firstPoint.y),2));
