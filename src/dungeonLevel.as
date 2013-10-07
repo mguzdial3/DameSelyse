@@ -679,7 +679,6 @@ package
 				Assets.WALLS_TILE, tileSize.x, tileSize.y
 			);
 			wallGroup.add(tiles);
-			//NOTE: THIS SHOULD BE ADDING FOREGROUND BUT I'M NOT SEEING IT.
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(FOREGROUND, 131),
@@ -826,7 +825,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy0:Enemy = new Enemy(waypointList0, player, enemyLight, 1600.0, 1328.0); 
+			var enemy0:Enemy = new CookEnemy(waypointList0, player, enemyLight, 1600.0, 1328.0); 
 			enemies.push(enemy0); 
 			
 			var waypointList2: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -839,7 +838,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy2:Enemy = new Enemy(waypointList2, player, enemyLight, 1488.0, 1392.0); 
+			var enemy2:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList2, player, enemyLight, 1488.0, 1392.0); 
 			enemies.push(enemy2); 
 
 			var waypointList3: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -852,7 +851,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy3:Enemy = new Enemy(waypointList3, player, enemyLight, 1216.0, 1376.0); 
+			var enemy3:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList3, player, enemyLight, 1216.0, 1376.0); 
 			enemies.push(enemy3); 
 
 			var waypointList4: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -863,7 +862,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy4:Enemy = new Enemy(waypointList4, player, enemyLight, 880.0, 1296.0); 
+			var enemy4:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList4, player, enemyLight, 880.0, 1296.0); 
 			enemies.push(enemy4); 
 
 			var waypointList7: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -874,7 +873,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy7:Enemy = new Enemy(waypointList7, player, enemyLight, 784.0, 1216.0); 
+			var enemy7:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList7, player, enemyLight, 784.0, 1216.0); 
 			enemies.push(enemy7); 
 
 			var waypointList8: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -885,7 +884,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy8:Enemy = new Enemy(waypointList8, player, enemyLight, 752.0, 1024.0); 
+			var enemy8:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList8, player, enemyLight, 752.0, 1024.0); 
 			enemies.push(enemy8); 
 
 			var waypointList9: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -896,7 +895,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy9:Enemy = new Enemy(waypointList9, player, enemyLight, 720.0, 1120.0); 
+			var enemy9:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList9, player, enemyLight, 720.0, 1120.0); 
 			enemies.push(enemy9); 
 
 			var waypointList11: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -909,7 +908,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy11:Enemy = new Enemy(waypointList11, player, enemyLight, 480.0, 1232.0); 
+			var enemy11:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList11, player, enemyLight, 480.0, 1232.0); 
 			enemies.push(enemy11); 
 
 			var waypointList12: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -922,7 +921,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy12:Enemy = new Enemy(waypointList12, player, enemyLight, 480.0, 1344.0); 
+			var enemy12:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList12, player, enemyLight, 480.0, 1344.0); 
 			enemies.push(enemy12); 
 
 			var waypointList13: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -933,7 +932,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy13:Enemy = new Enemy(waypointList13, player, enemyLight, 640.0, 1216.0); 
+			var enemy13:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList13, player, enemyLight, 640.0, 1216.0); 
 			enemies.push(enemy13); 
 
 			var waypointList14: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -946,7 +945,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy14:Enemy = new Enemy(waypointList14, player, enemyLight, 480.0, 1456.0); 
+			var enemy14:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList14, player, enemyLight, 480.0, 1456.0); 
 			enemies.push(enemy14); 
 
 			var waypointList15: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -959,7 +958,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy15:Enemy = new Enemy(waypointList15, player, enemyLight, 336.0, 1456.0); 
+			var enemy15:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList15, player, enemyLight, 336.0, 1456.0); 
 			enemies.push(enemy15); 
 
 			var waypointList16: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -972,7 +971,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy16:Enemy = new Enemy(waypointList16, player, enemyLight, 192.0, 1456.0); 
+			var enemy16:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList16, player, enemyLight, 192.0, 1456.0); 
 			enemies.push(enemy16); 
 
 			var waypointList17: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -985,7 +984,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy17:Enemy = new Enemy(waypointList17, player, enemyLight, 192.0, 1344.0); 
+			var enemy17:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList17, player, enemyLight, 192.0, 1344.0); 
 			enemies.push(enemy17); 
 
 			var waypointList18: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -998,7 +997,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy18:Enemy = new Enemy(waypointList18, player, enemyLight, 192.0, 1232.0); 
+			var enemy18:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList18, player, enemyLight, 192.0, 1232.0); 
 			enemies.push(enemy18); 
 
 			var waypointList19: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1011,7 +1010,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy19:Enemy = new Enemy(waypointList19, player, enemyLight, 336.0, 1232.0); 
+			var enemy19:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList19, player, enemyLight, 336.0, 1232.0); 
 			enemies.push(enemy19); 
 
 			var waypointList20: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1024,7 +1023,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy20:Enemy = new Enemy(waypointList20, player, enemyLight, 400.0, 1280.0); 
+			var enemy20:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList20, player, enemyLight, 400.0, 1280.0); 
 			enemies.push(enemy20); 
 
 			var waypointList22: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1035,7 +1034,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy22:Enemy = new Enemy(waypointList22, player, enemyLight, 256.0, 1104.0); 
+			var enemy22:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList22, player, enemyLight, 256.0, 1104.0); 
 			enemies.push(enemy22); 
 
 			var waypointList23: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1046,7 +1045,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy23:Enemy = new Enemy(waypointList23, player, enemyLight, 272.0, 1056.0); 
+			var enemy23:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList23, player, enemyLight, 272.0, 1056.0); 
 			enemies.push(enemy23); 
 
 			var waypointList24: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1057,7 +1056,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy24:Enemy = new Enemy(waypointList24, player, enemyLight, 256.0, 1008.0); 
+			var enemy24:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList24, player, enemyLight, 256.0, 1008.0); 
 			enemies.push(enemy24); 
 
 			var waypointList25: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1068,7 +1067,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy25:Enemy = new Enemy(waypointList25, player, enemyLight, 272.0, 960.0); 
+			var enemy25:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList25, player, enemyLight, 272.0, 960.0); 
 			enemies.push(enemy25); 
 
 			var waypointList26: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1082,7 +1081,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy26:Enemy = new Enemy(waypointList26, player, enemyLight, 192.0, 704.0); 
+			var enemy26:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList26, player, enemyLight, 192.0, 704.0); 
 			enemies.push(enemy26); 
 
 			var waypointList27: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1096,7 +1095,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy27:Enemy = new Enemy(waypointList27, player, enemyLight, 192.0, 720.0); 
+			var enemy27:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList27, player, enemyLight, 192.0, 720.0); 
 			enemies.push(enemy27); 
 
 			var waypointList28: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1110,7 +1109,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy28:Enemy = new Enemy(waypointList28, player, enemyLight, 384.0, 560.0); 
+			var enemy28:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList28, player, enemyLight, 384.0, 560.0); 
 			enemies.push(enemy28); 
 
 			var waypointList29: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1124,7 +1123,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy29:Enemy = new Enemy(waypointList29, player, enemyLight, 384.0, 576.0); 
+			var enemy29:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList29, player, enemyLight, 384.0, 576.0); 
 			enemies.push(enemy29); 
 
 			var waypointList30: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1135,7 +1134,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy30:Enemy = new Enemy(waypointList30, player, enemyLight, 448.0, 288.0); 
+			var enemy30:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList30, player, enemyLight, 448.0, 288.0); 
 			enemies.push(enemy30); 
 
 			var waypointList32: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1146,7 +1145,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy32:Enemy = new Enemy(waypointList32, player, enemyLight, 480.0, 368.0); 
+			var enemy32:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList32, player, enemyLight, 480.0, 368.0); 
 			enemies.push(enemy32); 
 
 			var waypointList33: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1157,7 +1156,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy33:Enemy = new Enemy(waypointList33, player, enemyLight, 656.0, 288.0); 
+			var enemy33:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList33, player, enemyLight, 656.0, 288.0); 
 			enemies.push(enemy33); 
 
 			var waypointList34: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1168,7 +1167,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy34:Enemy = new Enemy(waypointList34, player, enemyLight, 672.0, 368.0); 
+			var enemy34:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList34, player, enemyLight, 672.0, 368.0); 
 			enemies.push(enemy34); 
 
 			var waypointList35: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1182,7 +1181,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy35:Enemy = new Enemy(waypointList35, player, enemyLight, 912.0, 384.0); 
+			var enemy35:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList35, player, enemyLight, 912.0, 384.0); 
 			enemies.push(enemy35); 
 
 			var waypointList36: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1196,7 +1195,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy36:Enemy = new Enemy(waypointList36, player, enemyLight, 912.0, 400.0); 
+			var enemy36:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList36, player, enemyLight, 912.0, 400.0); 
 			enemies.push(enemy36); 
 
 			var waypointList37: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1210,7 +1209,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy37:Enemy = new Enemy(waypointList37, player, enemyLight, 912.0, 208.0); 
+			var enemy37:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList37, player, enemyLight, 912.0, 208.0); 
 			enemies.push(enemy37); 
 
 			var waypointList38: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1224,7 +1223,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy38:Enemy = new Enemy(waypointList38, player, enemyLight, 912.0, 224.0); 
+			var enemy38:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList38, player, enemyLight, 912.0, 224.0); 
 			enemies.push(enemy38); 
 
 			var waypointList39: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1238,7 +1237,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy39:Enemy = new Enemy(waypointList39, player, enemyLight, 800.0, 288.0); 
+			var enemy39:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList39, player, enemyLight, 800.0, 288.0); 
 			enemies.push(enemy39); 
 
 			var waypointList40: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1252,7 +1251,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy40:Enemy = new Enemy(waypointList40, player, enemyLight, 784.0, 288.0); 
+			var enemy40:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList40, player, enemyLight, 784.0, 288.0); 
 			enemies.push(enemy40); 
 
 			var waypointList41: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1266,7 +1265,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy41:Enemy = new Enemy(waypointList41, player, enemyLight, 1056.0, 336.0); 
+			var enemy41:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList41, player, enemyLight, 1056.0, 336.0); 
 			enemies.push(enemy41); 
 
 			var waypointList42: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1280,7 +1279,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy42:Enemy = new Enemy(waypointList42, player, enemyLight, 1040.0, 336.0); 
+			var enemy42:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList42, player, enemyLight, 1040.0, 336.0); 
 			enemies.push(enemy42); 
 
 			var waypointList44: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1291,7 +1290,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy44:Enemy = new Enemy(waypointList44, player, enemyLight, 1024.0, 608.0); 
+			var enemy44:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList44, player, enemyLight, 1024.0, 608.0); 
 			enemies.push(enemy44); 
 
 			var waypointList45: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1304,7 +1303,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy45:Enemy = new Enemy(waypointList45, player, enemyLight, 928.0, 512.0); 
+			var enemy45:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList45, player, enemyLight, 928.0, 512.0); 
 			enemies.push(enemy45); 
 
 			var waypointList46: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1318,7 +1317,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy46:Enemy = new Enemy(waypointList46, player, enemyLight, 928.0, 624.0); 
+			var enemy46:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList46, player, enemyLight, 928.0, 624.0); 
 			enemies.push(enemy46); 
 
 			var waypointList47: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1332,7 +1331,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy47:Enemy = new Enemy(waypointList47, player, enemyLight, 848.0, 688.0); 
+			var enemy47:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList47, player, enemyLight, 848.0, 688.0); 
 			enemies.push(enemy47); 
 
 			var waypointList48: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1343,7 +1342,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy48:Enemy = new Enemy(waypointList48, player, enemyLight, 976.0, 640.0); 
+			var enemy48:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList48, player, enemyLight, 976.0, 640.0); 
 			enemies.push(enemy48); 
 
 			var waypointList49: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1354,7 +1353,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy49:Enemy = new Enemy(waypointList49, player, enemyLight, 1104.0, 608.0); 
+			var enemy49:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList49, player, enemyLight, 1104.0, 608.0); 
 			enemies.push(enemy49); 
 
 			var waypointList50: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1365,7 +1364,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy50:Enemy = new Enemy(waypointList50, player, enemyLight, 1104.0, 624.0); 
+			var enemy50:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList50, player, enemyLight, 1104.0, 624.0); 
 			enemies.push(enemy50); 
 
 			var waypointList51: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1380,7 +1379,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy51:Enemy = new Enemy(waypointList51, player, enemyLight, 1392.0, 544.0); 
+			var enemy51:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList51, player, enemyLight, 1392.0, 544.0); 
 			enemies.push(enemy51); 
 
 			var waypointList52: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1395,7 +1394,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy52:Enemy = new Enemy(waypointList52, player, enemyLight, 1392.0, 560.0); 
+			var enemy52:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList52, player, enemyLight, 1392.0, 560.0); 
 			enemies.push(enemy52); 
 
 			var waypointList56: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1406,7 +1405,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy56:Enemy = new Enemy(waypointList56, player, enemyLight, 1632.0, 400.0); 
+			var enemy56:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList56, player, enemyLight, 1632.0, 400.0); 
 			enemies.push(enemy56); 
 
 			var waypointList57: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1417,7 +1416,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy57:Enemy = new Enemy(waypointList57, player, enemyLight, 1616.0, 400.0); 
+			var enemy57:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList57, player, enemyLight, 1616.0, 400.0); 
 			enemies.push(enemy57); 
 
 			var waypointList58: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1428,7 +1427,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy58:Enemy = new Enemy(waypointList58, player, enemyLight, 1600.0, 400.0); 
+			var enemy58:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList58, player, enemyLight, 1600.0, 400.0); 
 			enemies.push(enemy58); 
 
 			var waypointList61: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1439,7 +1438,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy61:Enemy = new Enemy(waypointList61, player, enemyLight, 1712.0, 384.0); 
+			var enemy61:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList61, player, enemyLight, 1712.0, 384.0); 
 			enemies.push(enemy61); 
 
 			var waypointList62: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1450,7 +1449,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy62:Enemy = new Enemy(waypointList62, player, enemyLight, 1696.0, 384.0); 
+			var enemy62:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList62, player, enemyLight, 1696.0, 384.0); 
 			enemies.push(enemy62); 
 
 			var waypointList63: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1461,7 +1460,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy63:Enemy = new Enemy(waypointList63, player, enemyLight, 1680.0, 384.0); 
+			var enemy63:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList63, player, enemyLight, 1680.0, 384.0); 
 			enemies.push(enemy63); 
 
 			var waypointList64: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1472,7 +1471,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy64:Enemy = new Enemy(waypointList64, player, enemyLight, 1696.0, 464.0); 
+			var enemy64:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList64, player, enemyLight, 1696.0, 464.0); 
 			enemies.push(enemy64); 
 
 			var waypointList65: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1483,7 +1482,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy65:Enemy = new Enemy(waypointList65, player, enemyLight, 1696.0, 480.0); 
+			var enemy65:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList65, player, enemyLight, 1696.0, 480.0); 
 			enemies.push(enemy65); 
 
 			var waypointList66: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1494,7 +1493,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy66:Enemy = new Enemy(waypointList66, player, enemyLight, 1696.0, 496.0); 
+			var enemy66:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList66, player, enemyLight, 1696.0, 496.0); 
 			enemies.push(enemy66); 
 
 			var waypointList67: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1505,7 +1504,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy67:Enemy = new Enemy(waypointList67, player, enemyLight, 1696.0, 528.0); 
+			var enemy67:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList67, player, enemyLight, 1696.0, 528.0); 
 			enemies.push(enemy67); 
 
 			var waypointList68: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1516,7 +1515,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy68:Enemy = new Enemy(waypointList68, player, enemyLight, 1696.0, 544.0); 
+			var enemy68:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList68, player, enemyLight, 1696.0, 544.0); 
 			enemies.push(enemy68); 
 
 			var waypointList69: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1527,7 +1526,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy69:Enemy = new Enemy(waypointList69, player, enemyLight, 1696.0, 560.0); 
+			var enemy69:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList69, player, enemyLight, 1696.0, 560.0); 
 			enemies.push(enemy69); 
 
 			var waypointList70: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1538,7 +1537,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy70:Enemy = new Enemy(waypointList70, player, enemyLight, 1744.0, 432.0); 
+			var enemy70:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList70, player, enemyLight, 1744.0, 432.0); 
 			enemies.push(enemy70); 
 
 			var waypointList71: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1549,7 +1548,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy71:Enemy = new Enemy(waypointList71, player, enemyLight, 1744.0, 416.0); 
+			var enemy71:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList71, player, enemyLight, 1744.0, 416.0); 
 			enemies.push(enemy71); 
 
 			var waypointList72: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1560,7 +1559,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy72:Enemy = new Enemy(waypointList72, player, enemyLight, 1744.0, 400.0); 
+			var enemy72:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList72, player, enemyLight, 1744.0, 400.0); 
 			enemies.push(enemy72); 
 
 			var waypointList73: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1571,7 +1570,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy73:Enemy = new Enemy(waypointList73, player, enemyLight, 1824.0, 560.0); 
+			var enemy73:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList73, player, enemyLight, 1824.0, 560.0); 
 			enemies.push(enemy73); 
 
 			var waypointList74: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1582,7 +1581,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy74:Enemy = new Enemy(waypointList74, player, enemyLight, 1840.0, 560.0); 
+			var enemy74:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList74, player, enemyLight, 1840.0, 560.0); 
 			enemies.push(enemy74); 
 
 			var waypointList75: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1593,7 +1592,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy75:Enemy = new Enemy(waypointList75, player, enemyLight, 1856.0, 560.0); 
+			var enemy75:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList75, player, enemyLight, 1856.0, 560.0); 
 			enemies.push(enemy75); 
 
 			var waypointList76: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1604,7 +1603,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy76:Enemy = new Enemy(waypointList76, player, enemyLight, 1824.0, 480.0); 
+			var enemy76:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList76, player, enemyLight, 1824.0, 480.0); 
 			enemies.push(enemy76); 
 
 			var waypointList78: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1615,7 +1614,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy78:Enemy = new Enemy(waypointList78, player, enemyLight, 1840.0, 480.0); 
+			var enemy78:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList78, player, enemyLight, 1840.0, 480.0); 
 			enemies.push(enemy78); 
 
 			var waypointList79: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1626,7 +1625,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy79:Enemy = new Enemy(waypointList79, player, enemyLight, 1856.0, 480.0); 
+			var enemy79:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList79, player, enemyLight, 1856.0, 480.0); 
 			enemies.push(enemy79); 
 
 			var waypointList80: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1637,7 +1636,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy80:Enemy = new Enemy(waypointList80, player, enemyLight, 1888.0, 560.0); 
+			var enemy80:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList80, player, enemyLight, 1888.0, 560.0); 
 			enemies.push(enemy80); 
 
 			var waypointList81: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1648,7 +1647,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy81:Enemy = new Enemy(waypointList81, player, enemyLight, 1904.0, 560.0); 
+			var enemy81:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList81, player, enemyLight, 1904.0, 560.0); 
 			enemies.push(enemy81); 
 
 			var waypointList82: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1659,7 +1658,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy82:Enemy = new Enemy(waypointList82, player, enemyLight, 1920.0, 560.0); 
+			var enemy82:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList82, player, enemyLight, 1920.0, 560.0); 
 			enemies.push(enemy82); 
 
 			var waypointList83: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1670,7 +1669,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy83:Enemy = new Enemy(waypointList83, player, enemyLight, 1888.0, 480.0); 
+			var enemy83:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList83, player, enemyLight, 1888.0, 480.0); 
 			enemies.push(enemy83); 
 
 			var waypointList84: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1681,7 +1680,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy84:Enemy = new Enemy(waypointList84, player, enemyLight, 1920.0, 480.0); 
+			var enemy84:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList84, player, enemyLight, 1920.0, 480.0); 
 			enemies.push(enemy84); 
 
 			var waypointList85: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1692,7 +1691,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy85:Enemy = new Enemy(waypointList85, player, enemyLight, 1872.0, 400.0); 
+			var enemy85:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList85, player, enemyLight, 1872.0, 400.0); 
 			enemies.push(enemy85); 
 
 			var waypointList86: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1703,7 +1702,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy86:Enemy = new Enemy(waypointList86, player, enemyLight, 1872.0, 384.0); 
+			var enemy86:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList86, player, enemyLight, 1872.0, 384.0); 
 			enemies.push(enemy86); 
 
 			var waypointList87: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1714,7 +1713,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy87:Enemy = new Enemy(waypointList87, player, enemyLight, 1760.0, 384.0); 
+			var enemy87:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList87, player, enemyLight, 1760.0, 384.0); 
 			enemies.push(enemy87); 
 
 			var waypointList88: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1725,7 +1724,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy88:Enemy = new Enemy(waypointList88, player, enemyLight, 1776.0, 384.0); 
+			var enemy88:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList88, player, enemyLight, 1776.0, 384.0); 
 			enemies.push(enemy88); 
 
 			var waypointList89: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1736,7 +1735,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy89:Enemy = new Enemy(waypointList89, player, enemyLight, 1792.0, 384.0); 
+			var enemy89:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList89, player, enemyLight, 1792.0, 384.0); 
 			enemies.push(enemy89); 
 
 			var waypointList90: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1747,7 +1746,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy90:Enemy = new Enemy(waypointList90, player, enemyLight, 1648.0, 352.0); 
+			var enemy90:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList90, player, enemyLight, 1648.0, 352.0); 
 			enemies.push(enemy90); 
 
 			var waypointList91: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1758,7 +1757,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy91:Enemy = new Enemy(waypointList91, player, enemyLight, 1664.0, 352.0); 
+			var enemy91:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList91, player, enemyLight, 1664.0, 352.0); 
 			enemies.push(enemy91); 
 
 			var waypointList92: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1769,7 +1768,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy92:Enemy = new Enemy(waypointList92, player, enemyLight, 1632.0, 240.0); 
+			var enemy92:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList92, player, enemyLight, 1632.0, 240.0); 
 			enemies.push(enemy92); 
 
 			var waypointList93: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1780,7 +1779,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy93:Enemy = new Enemy(waypointList93, player, enemyLight, 1648.0, 240.0); 
+			var enemy93:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList93, player, enemyLight, 1648.0, 240.0); 
 			enemies.push(enemy93); 
 
 			var waypointList94: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1791,7 +1790,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy94:Enemy = new Enemy(waypointList94, player, enemyLight, 1824.0, 352.0); 
+			var enemy94:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList94, player, enemyLight, 1824.0, 352.0); 
 			enemies.push(enemy94); 
 
 			var waypointList95: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1802,7 +1801,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy95:Enemy = new Enemy(waypointList95, player, enemyLight, 1840.0, 352.0); 
+			var enemy95:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList95, player, enemyLight, 1840.0, 352.0); 
 			enemies.push(enemy95); 
 
 			var waypointList96: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1813,7 +1812,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy96:Enemy = new Enemy(waypointList96, player, enemyLight, 1680.0, 272.0); 
+			var enemy96:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList96, player, enemyLight, 1680.0, 272.0); 
 			enemies.push(enemy96); 
 
 			var waypointList98: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1824,7 +1823,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy98:Enemy = new Enemy(waypointList98, player, enemyLight, 1696.0, 272.0); 
+			var enemy98:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList98, player, enemyLight, 1696.0, 272.0); 
 			enemies.push(enemy98); 
 
 			var waypointList99: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1835,7 +1834,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy99:Enemy = new Enemy(waypointList99, player, enemyLight, 1728.0, 320.0); 
+			var enemy99:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList99, player, enemyLight, 1728.0, 320.0); 
 			enemies.push(enemy99); 
 
 			var waypointList100: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1846,7 +1845,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy100:Enemy = new Enemy(waypointList100, player, enemyLight, 1728.0, 304.0); 
+			var enemy100:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList100, player, enemyLight, 1728.0, 304.0); 
 			enemies.push(enemy100); 
 
 			var waypointList101: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
@@ -1857,7 +1856,7 @@ package
 
 			enemyLight = new Light(Assets.LightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.65,0.65);
 
-			var enemy101:Enemy = new Enemy(waypointList101, player, enemyLight, 816.0, 480.0); 
+			var enemy101:Enemy = new Enemy(Assets.GUARD_SPRITE, waypointList101, player, enemyLight, 816.0, 480.0); 
 			enemies.push(enemy101); 
 			
 			enemyController = new EnemyController(enemies);

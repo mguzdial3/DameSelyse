@@ -20,6 +20,7 @@ package
 		
 		//FOR DEBUGGING
 		private var num: Number;
+		private var fpsToUse: int = 8;
 		
 		/**
 		 * Constructor
@@ -27,7 +28,7 @@ package
 		 * @param	Y	Y location of the entity
 		 */
 		public function Player(X:Number=100, Y:Number=100):void {
-			super(Assets.RANGERLEGS_SPRITE, new FlxPoint(12,2), new FlxPoint(16,18), X, Y);
+			super(Assets.RANGERLEGS_SPRITE, new FlxPoint(14,2), new FlxPoint(15,18), X, Y);
 			num=0;
 			bodySprite = new FlxSprite(X,Y);
 			headSprite = new FlxSprite(X,Y);
@@ -43,41 +44,44 @@ package
 			bodySprite.loadGraphic(
 				Assets.RANGERBODY_SPRITE, // image to use
 				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
-				16, // width of each frame (in pixels)
+				true, // don't generate "flipped" images since they're already in the image
+				15, // width of each frame (in pixels)
 				18 // height of each frame (in pixels)
 			);
 			
-			bodySprite.addAnimation("idle_up", [1]);
+			bodySprite.addAnimation("idle_up", [4]);
 			
-			bodySprite.addAnimation("idle_right", [5]);
-			bodySprite.addAnimation("idle_down", [9]);
-			bodySprite.addAnimation("idle_left", [13]);
-			bodySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			bodySprite.addAnimation("walk_right", [4, 5, 6], 12);
-			bodySprite.addAnimation("walk_down", [8, 9, 10], 12);
-			bodySprite.addAnimation("walk_left", [12, 13, 14], 12);
+			bodySprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+			bodySprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 10, true);
+			bodySprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+			bodySprite.addAnimation("walk_up", [13, 14, 15, 16], fpsToUse); // 12 = frames per second for this animation
+			//bodySprite.addAnimation("walk_right", [5, 6, 7,8], 12);
+			bodySprite.addAnimation("walk_down", [9, 10, 11, 12], fpsToUse);
+			bodySprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
+			
+			
+			bodySprite.facing=LEFT;
 			
 			//HEAD SPRITE SET UP
 			headSprite.loadGraphic(
 				Assets.RANGERHEAD_SPRITE, // image to use
 				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
-				16, // width of each frame (in pixels)
+				true, // don't generate "flipped" images since they're already in the image
+				15, // width of each frame (in pixels)
 				18 // height of each frame (in pixels)
 			);
 			
-			headSprite.addAnimation("idle_up", [1]);
+			headSprite.addAnimation("idle_up", [4]);
 			
-			headSprite.addAnimation("idle_right", [5]);
-			headSprite.addAnimation("idle_down", [9]);
-			headSprite.addAnimation("idle_left", [13]);
-			headSprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			headSprite.addAnimation("walk_right", [4, 5, 6], 12);
-			headSprite.addAnimation("walk_down", [8, 9, 10], 12);
-			headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+			headSprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+			headSprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 10, true);
+			headSprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+			headSprite.addAnimation("walk_up", [13, 14, 15, 16], fpsToUse); // 12 = frames per second for this animation
+			//headSprite.addAnimation("walk_right", [5, 6, 7,8], 12);
+			headSprite.addAnimation("walk_down", [9, 10, 11, 12], fpsToUse);
+			headSprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
 			
-			
+			headSprite.facing=LEFT;
 		}
 		
 		
@@ -91,6 +95,29 @@ package
 			groupToAddTo.add(headSprite);
 		}
 		
+		public function keepBodyTogether(): void
+		{
+		
+			mySprite.update();
+			
+			//Set your sprite to be at the position you'd expect it to be at
+			mySprite.x = x;
+			mySprite.y = y-(mySprite.height-height);
+		
+			//MOVE BODY AND HEAD
+			bodySprite.update();
+			
+			//Set your sprite to be at the position you'd expect it to be at
+			bodySprite.x = x;
+			bodySprite.y = y-(bodySprite.height-height);
+			
+			headSprite.update();
+			
+			//Set your sprite to be at the position you'd expect it to be at
+			headSprite.x = x;
+			headSprite.y = y-(headSprite.height-height);
+		}
+		
 		
 		override public function updateAnimations():void {
 			// use abs() so that we can animate for the dominant motion
@@ -99,13 +126,35 @@ package
 			var absY:Number = Math.abs(velocity.y);
 			// determine facing
 			if (velocity.y < 0 && absY >= absX)
+			{
 				facing = UP;
+				mySprite.facing = facing;
+				headSprite.facing = facing;
+				bodySprite.facing = facing;
+				
+			}
 			else if (velocity.y > 0 && absY >= absX)
+			{
 				facing = DOWN;
+				mySprite.facing = facing;
+				headSprite.facing = facing;
+				bodySprite.facing = facing;
+			}
 			else if (velocity.x > 0 && absX >= absY)
+			{
 				facing = RIGHT;
+				mySprite.facing = LEFT;
+				headSprite.facing = LEFT;
+				bodySprite.facing = LEFT;
+			}
 			else if (velocity.x < 0 && absX >= absY)
-				facing = LEFT
+			{
+				facing = LEFT;
+				mySprite.facing = RIGHT;
+				headSprite.facing = RIGHT;
+				bodySprite.facing = RIGHT;
+			}
+			
 			// up
 			if (facing == UP) {
 				if (velocity.y != 0 || velocity.x != 0)
@@ -140,9 +189,9 @@ package
 			else if (facing == RIGHT) {
 				if (velocity.x != 0)
 				{
-					mySprite.play("walk_right");
-					bodySprite.play("walk_right");
-					headSprite.play("walk_right");
+					mySprite.play("walk_horz");
+					bodySprite.play("walk_horz");
+					headSprite.play("walk_horz");
 				}
 				else
 				{
@@ -155,9 +204,9 @@ package
 			else if (facing == LEFT) {
 				if (velocity.x != 0)
 				{
-					mySprite.play("walk_left");
-					bodySprite.play("walk_left");
-					headSprite.play("walk_left");
+					mySprite.play("walk_horz");
+					bodySprite.play("walk_horz");
+					headSprite.play("walk_horz");
 				}
 				else
 				{
@@ -241,21 +290,22 @@ package
 				mySprite.loadGraphic(
 					outfit, // image to use
 					true, // animated
-					false, // don't generate "flipped" images since they're already in the image
-					16, // width of each frame (in pixels)
+					true, // don't generate "flipped" images since they're already in the image
+					15, // width of each frame (in pixels)
 					18 // height of each frame (in pixels)
 				);
-			
-			
-				mySprite.addAnimation("idle_right", [5]);
-				mySprite.addAnimation("idle_down", [9]);
-				mySprite.addAnimation("idle_left", [13]);
-				mySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-				mySprite.addAnimation("walk_right", [4, 5, 6], 12);
-				mySprite.addAnimation("walk_down", [8, 9, 10], 12);
-				mySprite.addAnimation("walk_left", [12, 13, 14], 12);
 				
+				mySprite.addAnimation("idle_up", [4]);
+			
+				mySprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				mySprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 10, true);
+				mySprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				mySprite.addAnimation("walk_up", [13, 14, 15, 16], fpsToUse); // 12 = frames per second for this animation
+				//mySprite.addAnimation("walk_right", [5, 6, 7,8], 12);
+				mySprite.addAnimation("walk_down", [9, 10, 11, 12], fpsToUse);
+				mySprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
 				
+				mySprite.facing = facing;
 				
 			}
 			else if(outfitType==PlayerOutfit.BODY_OUTFIT)
@@ -263,46 +313,48 @@ package
 				bodySprite.loadGraphic(
 					outfit, // image to use
 					true, // animated
-					false, // don't generate "flipped" images since they're already in the image
-					16, // width of each frame (in pixels)
+					true, // don't generate "flipped" images since they're already in the image
+					15, // width of each frame (in pixels)
 					18 // height of each frame (in pixels)
 				);
 			
-				bodySprite.addAnimation("idle_up", [1]);
+				bodySprite.addAnimation("idle_up", [4]);
 			
-				bodySprite.addAnimation("idle_right", [5]);
-				bodySprite.addAnimation("idle_down", [9]);
-				bodySprite.addAnimation("idle_left", [13]);
-				bodySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-				bodySprite.addAnimation("walk_right", [4, 5, 6], 12);
-				bodySprite.addAnimation("walk_down", [8, 9, 10], 12);
-				bodySprite.addAnimation("walk_left", [12, 13, 14], 12);
+				bodySprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				bodySprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 10, true);
+				bodySprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				bodySprite.addAnimation("walk_up", [13, 14, 15, 16], fpsToUse); // 12 = frames per second for this animation
+				//bodySprite.addAnimation("walk_right", [5, 6, 7,8], 10);
+				bodySprite.addAnimation("walk_down", [9, 10, 11, 12], fpsToUse);
+				bodySprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
+				
+				bodySprite.facing = facing;
 			}
 			else if(outfitType==PlayerOutfit.HEAD_OUTFIT)
 			{
 				headSprite.loadGraphic(
 					outfit, // image to use
 					true, // animated
-					false, // don't generate "flipped" images since they're already in the image
-					16, // width of each frame (in pixels)
+					true, // don't generate "flipped" images since they're already in the image
+					15, // width of each frame (in pixels)
 					18 // height of each frame (in pixels)
 				);
 			
-				headSprite.addAnimation("idle_up", [1]);
+				headSprite.addAnimation("idle_up", [4]);
 			
-				headSprite.addAnimation("idle_right", [5]);
-				headSprite.addAnimation("idle_down", [9]);
-				headSprite.addAnimation("idle_left", [13]);
-				headSprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-				headSprite.addAnimation("walk_right", [4, 5, 6], 12);
-				headSprite.addAnimation("walk_down", [8, 9, 10], 12);
-				headSprite.addAnimation("walk_left", [12, 13, 14], 12);
+				headSprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				headSprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 10, true);
+				headSprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 10, true);
+				headSprite.addAnimation("walk_up", [13, 14, 15, 16], fpsToUse); // 12 = frames per second for this animation
+				//headSprite.addAnimation("walk_right", [5, 6, 7,8], 10);
+				headSprite.addAnimation("walk_down", [9, 10, 11, 12], fpsToUse);
+				headSprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
 				
 				
 				//This is quite cheating
-				facing = DOWN;
-				headSprite.play("idle_down");
-				
+				//facing = DOWN;
+				//headSprite.play("idle_down");
+				headSprite.facing = facing;
 				
 			}
 			
@@ -365,15 +417,18 @@ package
 			return hiding;
 		}
 		
-		public function setHiding (_hiding: Boolean): void
+		public function setHiding (_hiding: Boolean, makeInvisible: Boolean = true): void
 		{
 			hiding = _hiding;
 			
 			if(hiding)
 			{
-				mySprite.alpha=0;
-				headSprite.alpha = 0;
-				bodySprite.alpha = 0;
+				if(makeInvisible)
+				{
+					mySprite.alpha=0;
+					headSprite.alpha = 0;
+					bodySprite.alpha = 0;
+				}
 			}
 			else
 			{

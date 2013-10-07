@@ -5,14 +5,10 @@ package
 	//Called HideableObject as in the character can hide within it
 	public class HideableObject extends FlxSprite
 	{
-		private var timeToEnter: int; //The amount of time, in seconds, it takes to enter this hiding space
-		private var timeToExit: int; //Amount of time, in seconds, it takes to exit this hiding space
+		private var timeToEnter: Number; //The amount of time, in seconds, it takes to enter this hiding space
+		private var timeToExit: Number; //Amount of time, in seconds, it takes to exit this hiding space
 		
-		//These determine the directions the player can go from hiding in here
-		private var canMoveLeft: Boolean;
-		private var canMoveRight: Boolean;
-		private var canMoveUp: Boolean;
-		private var canMoveDown:Boolean;
+		private var forcesOut: Boolean;
 		
 		//Original image
 		private var origImage:Class;
@@ -22,8 +18,7 @@ package
 		
 		//CONSTRUCTOR
 		
-		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _timeToEntry: int=2, _timeToExit :int=2,
-		_canMoveLeft:Boolean=true,_canMoveRight:Boolean=true, _canMoveUp:Boolean=true, _canMoveDown:Boolean=true
+		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=1, _timeToExit :Number=2
 		, _inUseImage: Class=null)
 		{
 			super(X,Y, imageOfObject);
@@ -33,6 +28,7 @@ package
 			
 			inUseImage = _inUseImage;
 			
+			forcesOut = _forcesOut;
 			
 			//HideableObjects cannot be moved
 			super.immovable = true;
@@ -40,43 +36,24 @@ package
 			
 			timeToExit = _timeToExit;
 			
-			canMoveLeft = _canMoveLeft;
-			canMoveRight = _canMoveRight;
-			canMoveUp = _canMoveUp;
-			canMoveDown = _canMoveDown;
 			
 		}
 		
 		//GETTERS
 		
-		public function getTimeToEnter(): int
+		public function getTimeToEnter(): Number
 		{
 			return timeToEnter;
 		}
 		
-		public function getTimeToExit(): int
+		public function getTimeToExit(): Number
 		{
 			return timeToExit;
 		}
 		
-		public function getCanMoveLeft(): Boolean
+		public function getForcesOut(): Boolean
 		{
-			return canMoveLeft;
-		}
-		
-		public function getCanMoveRight(): Boolean
-		{
-			return canMoveRight;
-		}
-		
-		public function getCanMoveUp(): Boolean
-		{
-			return canMoveUp;
-		}		
-		
-		public function getCanMoveDown(): Boolean
-		{
-			return canMoveDown;
+			return forcesOut;
 		}
 		
 		//NOT GETTERS

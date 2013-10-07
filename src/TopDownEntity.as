@@ -49,7 +49,7 @@ package
 			mySprite.loadGraphic(
 				spriteSheet, // image to use
 				true, // animated
-				false, // don't generate "flipped" images since they're already in the image
+				true, // do generate "flipped" images since they're not already in the image
 				frameSize.x, // width of each frame (in pixels)
 				frameSize.y // height of each frame (in pixels)
 			);
@@ -66,15 +66,16 @@ package
 		 */
 		public function createAnimations():void {
 			
-			mySprite.addAnimation("idle_up", [1]);
+			mySprite.addAnimation("idle_up", [4]);
 			
-			mySprite.addAnimation("idle_right", [5]);
-			mySprite.addAnimation("idle_down", [9]);
-			mySprite.addAnimation("idle_left", [13]);
-			mySprite.addAnimation("walk_up", [0, 1, 2], 12); // 12 = frames per second for this animation
-			mySprite.addAnimation("walk_right", [4, 5, 6], 12);
-			mySprite.addAnimation("walk_down", [8, 9, 10], 12);
-			mySprite.addAnimation("walk_left", [12, 13, 14], 12);
+			mySprite.addAnimation("idle_right", [0,0,0,0,0,0,0,0,0,0,0,1], 12, true);
+			mySprite.addAnimation("idle_down", [2,2,2,2,2,2,2,2,2,2,2,3], 12, true);
+			mySprite.addAnimation("idle_left", [0,0,0,0,0,0,0,0,0,0,0,1], 12, true);
+			mySprite.addAnimation("walk_up", [13, 14, 15, 16], 12); // 12 = frames per second for this animation
+			mySprite.addAnimation("walk_down", [9, 10, 11, 12], 12);
+			mySprite.addAnimation("walk_horz", [5, 6, 7,8], 12);
+			
+			mySprite.facing=LEFT;
 			
 		}
 
@@ -171,15 +172,20 @@ package
 			}
 			// right
 			else if (facing == RIGHT) {
+				mySprite.facing = LEFT;
+			
 				if (velocity.x != 0)
-					mySprite.play("walk_right");
+					mySprite.play("walk_horz");
 				else
 					mySprite.play("idle_right");
 			}
 			// left
 			else if (facing == LEFT) {
+				mySprite.facing = RIGHT;
+			
+			
 				if (velocity.x != 0)
-					mySprite.play("walk_left");
+					mySprite.play("walk_horz");
 				else
 					mySprite.play("idle_left");
 			}

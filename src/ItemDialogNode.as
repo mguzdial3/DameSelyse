@@ -7,11 +7,10 @@ package
 		protected var takesItem: InventoryItem;
 		
 		public function ItemDialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String,_itemToReturn:InventoryItem,
-		_takesItem:InventoryItem=null,
-		 _pausesGame:Boolean=false, 
+		_takesItem:InventoryItem=null, 
 		_alternateNode:DialogNode=null)
 		{
-			super(_nextNode,_faceToDisplay, _displayText,_pausesGame,_alternateNode);
+			super(_nextNode,_faceToDisplay, _displayText);
 			takesItem=_takesItem;
 			itemToReturn = _itemToReturn;
 		}
@@ -19,10 +18,9 @@ package
 		//Called before moving to this node
 		override public function canTransfer(inventory:Inventory):Boolean
 		{
-			if(inventory.getInventoryItem()==takesItem)
-			{
-				inventory.retrieveInventoryItem();
-			}
+			
+			inventory.retrieveInventoryItem();
+			
 			
 			
 			

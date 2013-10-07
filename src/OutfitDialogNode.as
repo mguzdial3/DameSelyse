@@ -9,7 +9,7 @@ package
 		 _pausesGame:Boolean=false, 
 		_alternateNode:DialogNode=null)
 		{
-			super(_nextNode,_faceToDisplay, _displayText,_pausesGame,_alternateNode);
+			super(_nextNode,_faceToDisplay, _displayText);
 			playerOutfit = _playerOutfit;
 		}
 		

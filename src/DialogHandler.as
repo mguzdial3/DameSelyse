@@ -17,10 +17,16 @@ package
 		//Constants for various different heads
 		public static const PLAYER_HEAD:uint=0;
 		//For example purposes
-		public static const FIRE_HEAD:uint=1;
+		public static const CAT_HEAD:uint=1;
 		
-		public static const GOOD_GUARD_HEAD:uint=2;
+		public static const RAT_HEAD:uint=2;
 		public static const PRISONER_HEAD:uint=3;
+		
+		
+		//Potential Responses From Handling Dialog
+		public static const KEEP_GOING: int = 0;
+		public static const END: int = 1;
+		public static const QUESTION_NEXT:int = 2;
 		
 		
 		public function DialogHandler()
@@ -61,21 +67,19 @@ package
 			//Set up head
 			if(currNode.getFaceToDisplay()==PLAYER_HEAD)
 			{
-				
 				head = new FlxSprite(head.x,head.y,Assets.CHARACTER_HEAD);
 				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay() ==CAT_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.CAT_HEAD);
 				
 				add(head);
 			}
-			else if(currNode.getFaceToDisplay() ==FIRE_HEAD)
+			else if(currNode.getFaceToDisplay() ==RAT_HEAD)
 			{
-				head = new FlxSprite(head.x,head.y,Assets.FIRE_HEAD);
-				
-				add(head);
-			}
-			else if(currNode.getFaceToDisplay() ==GOOD_GUARD_HEAD)
-			{
-				head = new FlxSprite(head.x,head.y,Assets.GOOD_GUARD_HEAD);
+				head = new FlxSprite(head.x,head.y,Assets.RAT_HEAD);
 				
 				add(head);
 			}
@@ -86,6 +90,11 @@ package
 				add(head);
 			}
 			
+		}
+		
+		public function getCurrNode() :DialogNode
+		{
+			return currNode;
 		}
 		
 		public function showDialogHandler(currLevel: FlxGroup):void
@@ -100,8 +109,11 @@ package
 		
 		
 		//Return true if we're done
-		public function displayDialogHandler(cameraScroll: FlxPoint, inventory:Inventory, player:Player):Boolean
+		public function displayDialogHandler(cameraScroll: FlxPoint, inventory:Inventory, player:Player):int
 		{
+		
+			var toReturn:int = KEEP_GOING;
+			
 			head.x = 10+cameraScroll.x;
 			head.y= 170+cameraScroll.y;
 			
@@ -137,20 +149,30 @@ package
 					var nextNode: DialogNode = currNode.getNextNode();
 					
 					
-					if(nextNode!=null && nextNode.canTransfer(inventory))
+					if(nextNode!=null && nextNode.canTransfer(inventory) && !nextNode.getHasQuestions())
 					{
 						setCurrNode(nextNode);
+					}
+					else if(nextNode!=null && nextNode.canTransfer(inventory) && nextNode.getHasQuestions())
+					{
+						setCurrNode(nextNode);
+						toReturn = QUESTION_NEXT;
 					}
 					else
 					{
 						//We're done here
-						return true;
+						toReturn = END;
 					}
 				}	
 			}
 			
-			return false;
+			return toReturn;
 			
+		}
+		
+		public function getAfterEnd(): uint
+		{
+			return currNode.getAfterEnd();
 		}
 
 		//Sets question up in one go without the letter by letter display		

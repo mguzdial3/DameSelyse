@@ -25,7 +25,13 @@ package
 		//Pass in player and Inventory for your descendants so you can check both for proper stuff
 		public function triggerDialogueZone(player: Player=null, inventory:Inventory=null): DialogNode
 		{
-			return myDialogNode;
+			if(myDialogNode.canTransfer(inventory))
+			{
+				return myDialogNode;
+			}
+		
+		
+			return null;
 		}
 		
 		public function getPausesPlayer(): Boolean

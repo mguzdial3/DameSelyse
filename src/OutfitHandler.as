@@ -8,6 +8,8 @@ package
 		public static const NORMAL_OUTFIT:uint=0;
 		public static const PRINCESS_OUTFIT:uint =1;
 		public static const GUARD_OUTFIT:uint=2;
+		public static const CHEF_OUTFIT: uint=3;
+		public static const LADY_OUTFIT:uint = 4;
 		
 		
 		//The current outfit Positions in the Outfit Vector

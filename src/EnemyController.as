@@ -27,6 +27,7 @@ package
 		
 		
 		protected var currQuestion: DialogNode;
+		protected var currResponses: Vector.<DialogNode>;
 		protected var currAnswers: Vector.<EnemyAnswer>;
 		
 		public function EnemyController(_enemies: Vector.<Enemy>)
@@ -37,8 +38,7 @@ package
 			var i:int;
 			for(i=0; i<enemies.length; i++)
 			{
-				add(enemies[i]);
-				add(enemies[i].mySprite);	
+				enemies[i].addEnemy(this);	
 			}
 			
 		}
@@ -49,8 +49,10 @@ package
 			
 			currQuestion = enemy.getQuestion();
 			currAnswers = enemy.getAnswers();
-						
+			currResponses = enemy.getResponses(currAnswers);
 		}
+		
+		
 		
 		//After player answers questions correctly, reset enemies to original position
 		public function resetEnemies(): void
@@ -66,6 +68,11 @@ package
 			currState=NORMAL_GAMEPLAY;
 		}
 		
+		public function setNormalGameplay(): void
+		{
+			currState = NORMAL_GAMEPLAY;
+		}
+		
 		
 		
 		public function getQuestion(): DialogNode
@@ -76,6 +83,11 @@ package
 		public function getAnswers(): Vector.<EnemyAnswer>
 		{
 			return currAnswers;
+		}
+		
+		public function getResponses(): Vector.<DialogNode>
+		{
+			return currResponses;
 		}
 		
 		/**
@@ -155,12 +167,12 @@ package
 			}
 			else if(specialCommand==PAUSE_ALL)
 			{
-					for(i=0; i<enemies.length; i++)
-					{
-						enemies[i].hardStop();
+				for(i=0; i<enemies.length; i++)
+				{
+					enemies[i].hardStop();
 					
 						
-					}
+				}
 			}
 		
 			return messageToReturn;

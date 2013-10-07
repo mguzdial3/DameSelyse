@@ -38,11 +38,13 @@ package
 		protected static const INVENTORY_GAMEPLAY:int=2;
 		protected static const HIDING_GAMEPLAY:int=3;
 		protected static const SAVING_GAMEPLAY:int=4;
+		protected static const DIALOG_GAMEPLAY:int=5;
 		
 		/**
 		 * Question Stuff
 		 */
 		 protected var answers: Vector.<EnemyAnswer>;
+		 protected var responses: Vector.<DialogNode>;
 		 protected var answerDisplays: Vector.<FlxText>;
 		
 		/*
@@ -61,7 +63,6 @@ package
 		
 		//DialogHandler
 		protected var dialogHandler: DialogHandler;
-		protected var displayingDialog: Boolean;
 		
 		//List of dialogue triggers
 		protected var dialogueTriggers: Vector.<DialogueTriggerZone>;
@@ -92,6 +93,7 @@ package
 		protected var hideableObjects: Vector.<HideableObject>; //List of all hdieableObjects
 		protected var hideableObjectIndex: int; //Current index of object we're looking at
 		protected var hidingTimer : Number; //The amount of time till we're done hiding/unhiding
+		protected var hidingLocation:FlxPoint; 
 		//HideableObjects Loading Bar
 		protected var hidingBarBackground: FlxSprite;
 		protected var hidingBar:FlxSprite;
@@ -107,10 +109,18 @@ package
 		protected var saveIndex: int; //The index of the save we're currently working with
 		private var resetSave: Boolean=false;
 
+
+		private var enemyTimer:int = 10;
+		
+		//Level Names
+		public var levelName: String;
+
 		//MiniMap
+		/**
 		private var map: FlxSprite;
 		private var wallStamp: FlxSprite;
 		private var playerStamp: FlxSprite;
+		*/
 		
 		/**
 		 * Constructor
@@ -121,6 +131,8 @@ package
 		public function TopDownLevel( levelSize:FlxPoint, tileSize:FlxPoint, _playerStart: FlxPoint):void 
 		{
 			super();
+			
+			FlxG.mouse.hide();
 			reloadThisLevel=false;
 			
 			this.levelSize = levelSize;
@@ -133,9 +145,11 @@ package
 			this.foreGroundGroup = new FlxGroup();
 			this.guiGroup = new FlxGroup();
 			
+			
+			
 			this.playerStart=_playerStart;
 			
-			
+			enemyTimer= 10;
 			
 			
 			FlxG.camera.setBounds(0, 0, levelSize.x, levelSize.y); 
@@ -144,13 +158,37 @@ package
 			answers = new Vector.<EnemyAnswer>();
 		 	answerDisplays = new Vector.<FlxText>;
 			
+			
+			
+			
+			
 			// create the level
 			this.create();
+			
+			saver = new FlxSave();
+			saveTimer=0;
+			
+			if(checkSaveSetup())
+			{
+			
+				setUpSaveInformation();
+				loadInformation();
+				
+				debugText.text = "Drops Collected: "+0;
+			}
+			else
+			{
+				loadInformation();
+				
+				
+				debugText.text = "Drops Collected: "+saver.data.numDrops;
+				
+			}
 			
 			//Hooks the inventory up to the player
 			inventory = new Inventory(player.getOutfitHandler());
 			
-			
+			add(dialogHandler);
 			
 			
 			//Sets up the timer for the question
@@ -168,27 +206,12 @@ package
 			
 			hidingTimer=0;
 			
-			saver = new FlxSave();
-			saveTimer=0;
 			
-			if(checkSaveSetup())
-			{
 			
-				setUpSaveInformation();
-				
-				
-				debugText.text = "Drops Collected: "+0;
-			}
-			else
-			{
-				loadInformation();
-				
-				
-				debugText.text = "Drops Collected: "+saver.data.numDrops;
-				
-			}
+			//Potentially particle effect to outfits more obvious
 
 			//MiniMap
+			/**
 			wallStamp = new FlxSprite();
 			wallStamp.makeGraphic(2,2,0xff000000);
 			playerStamp = new FlxSprite();
@@ -196,6 +219,9 @@ package
 			map = new FlxSprite();
 			map.makeGraphic(80,60,0xffffffff);
 			add(map);
+			*/
+			
+			
 		}
 		
 		
@@ -221,6 +247,9 @@ package
 			addEnemies();
 			addGroups();
 			setUpLevelSpecificAssets();
+			
+			
+			
 			createGUI();
 			createCamera();
 			
@@ -397,8 +426,6 @@ package
 			var i: int;
 			for(i=0; i<waterDrops.length; i++)
 			{
-			
-			
 				//WARNING: Might be a problem later if the array gets too long
 				if( !waterDrops[i].alive )//&& arraySoFar.indexOf(i)==-1)
 				{
@@ -418,9 +445,17 @@ package
 		//Overrideable load function
 		protected function loadInformation(): void
 		{
-			player.x = saver.data.playerX;
-			player.y = saver.data.playerY;
-				
+			if(saver.data.playerX!=null)
+			{
+				player.x = saver.data.playerX;
+				player.y = saver.data.playerY;
+			}	
+			else
+			{
+				player.x = playerStart.x;
+				player.y= playerStart.y;
+			}
+			
 			if(saver.data.currSavePointIndex!=-1)
 			{
 				savePoints[saver.data.currSavePointIndex].openSavePoint();
@@ -455,6 +490,8 @@ package
 		override public function update():void {
 			super.update();
 			
+			debugText.text = "Test";
+			
 			//For printing stuff out
 			debugText.x = FlxG.camera.scroll.x;
 			debugText.y =  FlxG.camera.scroll.y;
@@ -485,6 +522,10 @@ package
 			else if(currState==SAVING_GAMEPLAY)
 			{
 				savingGameplay();
+			}
+			else if(currState==DIALOG_GAMEPLAY)
+			{
+				conversationGameplay();
 			}
 		}
 		
@@ -529,7 +570,7 @@ package
 				
 		}
 		
-		public function hiddenNormalGameplay():void
+		protected function hiddenNormalGameplay():void
 		{	
 			//ENEMY CONTROLLER
 			FlxG.collide(enemyController, player);
@@ -538,11 +579,112 @@ package
 			//THIS MOVES THE ENEMIES
 			var enemyMessage: int = enemyController.commandEnemies();
 
+			var potentialX:int = 0;
+			var potentialY:int=0;
 
-	
-			if (FlxG.keys.pressed("LEFT") || FlxG.keys.pressed("RIGHT")
+			if(hideableObjects[hideableObjectIndex].getForcesOut())
+			{
+			if(hidingTimer>0)
+			{
+				hidingTimer -=FlxG.elapsed;
+				
+				
+				hidingBar.color = 0x00AA0000;
+				
+				hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
+					
+					
+					hidingBar.alpha=1;
+					hidingBarBackground.alpha = 1;
+					
+					hidingBar.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBar.width/2;
+					hidingBar.y = hideableObjects[hideableObjectIndex].y-hidingBar.height;	
+						
+					hidingBarBackground.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBarBackground.width/2;
+					hidingBarBackground.y = hideableObjects[hideableObjectIndex].y-hidingBarBackground.height;
+					
+						
+				if (FlxG.keys.pressed("LEFT") || FlxG.keys.pressed("RIGHT")
 				|| FlxG.keys.pressed("UP") ||FlxG.keys.pressed("DOWN"))
 				{
+					//Reset hidingLocation based on positions
+					if(FlxG.keys.pressed("LEFT"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.x+player.width/2<hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							potentialX= hideableObjects[hideableObjectIndex].x-player.width-1;
+						
+							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							{
+								hidingLocation.x=potentialX;
+							}
+						
+						}
+						
+						
+					}
+					else if(FlxG.keys.pressed("RIGHT"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.x+player.width/2>hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+1;
+						
+							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							{
+								hidingLocation.x=potentialX;
+							}
+						}
+						
+						
+					}
+					if(FlxG.keys.pressed("DOWN"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.y+player.height/2>hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							 potentialY= hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height+1;
+						
+							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							{
+								hidingLocation.y=potentialY;
+							}
+						
+						}
+						
+						
+					}
+					else if(FlxG.keys.pressed("UP"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.y+player.height/2<hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							 potentialY= hideableObjects[hideableObjectIndex].y-player.height-1;
+						
+							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							{
+								hidingLocation.y=potentialY;
+							}
+						
+						}
+						
+						
+					}
+					
+				
 					
 					hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
 					
@@ -563,6 +705,147 @@ package
 					}
 					else
 					{
+						player.x = hidingLocation.x;
+						player.y = hidingLocation.y;
+						player.setHiding(false);
+						player.setPaused(false);
+						hidingBar.scale.x=0.5;
+						hidingBar.color = 0xFFFFFFFF;
+						hidingBar.alpha=0;
+						hidingBarBackground.alpha=0;
+						hidingTimer=0;
+						
+						//playerLight.alpha=1;
+						hideableObjects[hideableObjectIndex].transferToNormalImage();
+						setGameState(NORMAL_GAMEPLAY);					
+					}
+				}
+			}
+			else
+			{
+				player.x = hidingLocation.x;
+						player.y = hidingLocation.y;
+						player.setHiding(false);
+						player.setPaused(false);
+						hidingBar.scale.x=0.5;
+						hidingBar.alpha=0;
+						hidingBar.color = 0xFFFFFFFF;
+						hidingBarBackground.alpha=0;
+						hidingTimer=0;
+						
+						//playerLight.alpha=1;
+						hideableObjects[hideableObjectIndex].transferToNormalImage();
+						setGameState(NORMAL_GAMEPLAY);					
+				}
+			}
+			else
+			{
+
+	
+			if (FlxG.keys.pressed("LEFT") || FlxG.keys.pressed("RIGHT")
+				|| FlxG.keys.pressed("UP") ||FlxG.keys.pressed("DOWN"))
+				{
+					
+					//Reset hidingLocation based on positions
+					if(FlxG.keys.pressed("LEFT"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.x+player.width/2<hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							potentialX= hideableObjects[hideableObjectIndex].x-player.width-1;
+						
+							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							{
+								hidingLocation.x=potentialX;
+							}
+						
+						}
+						
+						
+					}
+					else if(FlxG.keys.pressed("RIGHT"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.x+player.width/2>hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+1;
+						
+							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							{
+								hidingLocation.x=potentialX;
+							}
+						}
+						
+						
+					}
+					if(FlxG.keys.pressed("DOWN"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.y+player.height/2>hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							 potentialY= hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height+1;
+						
+							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							{
+								hidingLocation.y=potentialY;
+							}
+						
+						}
+						
+						
+					}
+					else if(FlxG.keys.pressed("UP"))
+					{
+						//If location was already on left do nothing
+						if(hidingLocation.y+player.height/2<hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2)
+						{}
+						else
+						{
+							//Check to make sure there isn't a wall there
+							 potentialY= hideableObjects[hideableObjectIndex].y-player.height-1;
+						
+							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							{
+								hidingLocation.y=potentialY;
+							}
+						
+						}
+						
+						
+					}
+					
+				
+					
+					hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
+					
+					
+					hidingBar.alpha=1;
+					hidingBarBackground.alpha = 1;
+					
+					hidingBar.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBar.width/2;
+					hidingBar.y = hideableObjects[hideableObjectIndex].y-hidingBar.height;	
+						
+					hidingBarBackground.x = hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width/2 -hidingBarBackground.width/2;
+					hidingBarBackground.y = hideableObjects[hideableObjectIndex].y-hidingBarBackground.height;
+					
+					
+					if(hidingTimer>0)
+					{
+						hidingTimer -=FlxG.elapsed;
+					}
+					else
+					{
+						player.x = hidingLocation.x;
+						player.y = hidingLocation.y;
 						player.setHiding(false);
 						player.setPaused(false);
 						hidingBar.scale.x=0.5;
@@ -570,11 +853,16 @@ package
 						hidingBarBackground.alpha=0;
 						hidingTimer=0;
 						
-						playerLight.alpha=1;
+						//playerLight.alpha=1;
 						hideableObjects[hideableObjectIndex].transferToNormalImage();
 						setGameState(NORMAL_GAMEPLAY);					
 					}
 				}
+				
+				}
+				
+				
+				
 				
 		}
 		
@@ -588,6 +876,24 @@ package
 		}
 		
 		
+		protected function canHavePlayerAt(xPos: int, yPos:int): Boolean
+		{
+			return FlxTilemap(wallGroup.getFirstAlive()).getTile(xPos/16,yPos/16) == 0;	
+		}				
+		//Level Name Stuff
+		public function setLevelName(_levelName: String): void
+		{
+			levelName=_levelName;
+		}
+		
+		public function getLevelName(): String
+		{
+			return levelName;
+		}
+		
+		
+		
+		
 		public function normalGameplay():void
 		{
 			FlxG.camera.follow(player, 2);
@@ -597,11 +903,11 @@ package
 			var i:int=0;
 			for(i=0; i<waterDrops.length; i++)
 			{
-				
-				FlxG.overlap(waterDrops[i],player,getWaterDrops);
+				FlxG.overlap(waterDrops[i],player.mySprite,getWaterDrops);
 			}
 
 			//update minimap
+			/**
 			map.fill(0xffffffff);
 			var stx: int = int(FlxG.camera.scroll.x / 16) - 10; //start x
 			var sty: int = int(FlxG.camera.scroll.y / 16) - 7; //start y
@@ -619,7 +925,7 @@ package
 			map.stamp(playerStamp,(px*2),py*2);
 			map.x = FlxG.camera.scroll.x;
 			map.y = FlxG.camera.scroll.y;
-			
+			*/
 			
 			//Update collection text
 			dropletText.text = ""+player.getDrops()+"/"+player.getMaxDrops();
@@ -643,15 +949,8 @@ package
 					
 					if(currNode!=null)
 					{
-						if(dialogueTriggers[i].getPausesPlayer())
-						{
-							player.setPaused(true);
-						}
-					
-						dialogHandler.setCurrNode(currNode);
-						dialogHandler.showDialogHandler(this);
-						dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
-						displayingDialog=true;
+
+						setUpConversation(currNode);
 						
 						if(!dialogueTriggers[i].getRepeatable())
 						{
@@ -669,23 +968,6 @@ package
 					saveIndex = i;
 					setGameState(SAVING_GAMEPLAY);
 					player.setPaused(true); //Pause player while saving
-				}
-			}
-			
-			
-			//Handle Displaying Dialog
-			if(displayingDialog)
-			{
-				//Returns true when it's done
-				displayingDialog = !dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
-				
-				if(!displayingDialog)
-				{
-					dialogHandler.hideDialogHandler(this);
-					player.setPaused(false);
-						
-					//hideableObjects[hideableObjectIndex].transferToHidingImage();
-					setGameState(NORMAL_GAMEPLAY);
 				}
 			}
 			
@@ -718,10 +1000,12 @@ package
 						player.setHiding(true);
 						player.setPaused(true);
 						
-						playerLight.alpha=0;
+						//playerLight.alpha=0;
 						hideableObjects[hideableObjectIndex].transferToHidingImage();
-						setGameState(HIDING_GAMEPLAY);
 						
+						hidingTimer = hideableObjects[hideableObjectIndex].getTimeToExit();
+						setGameState(HIDING_GAMEPLAY);
+						hidingLocation = new FlxPoint(player.x,player.y);
 						enemyController.clearAllSuspicions();
 					}
 				}
@@ -754,8 +1038,8 @@ package
 			}
 			
 			
-			playerLight.x=(player.x+player.width/2);
-			playerLight.y = (player.y-player.height/2);
+			//playerLight.x=(player.x+player.width/2);
+			//playerLight.y = (player.y-player.height/2);
 			
 			var newOutfit:Boolean=false;
 			
@@ -820,6 +1104,70 @@ package
 			
 		}
 		
+		protected function setUpConversation( currNode: DialogNode): void
+		{
+			player.setPaused(true);
+			player.setHiding(true,false);
+		
+			//remove(dialogHandler);
+			//add(dialogHandler);
+			dialogHandler.setCurrNode(currNode);
+			dialogHandler.showDialogHandler(this);
+			dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
+			setGameState(DIALOG_GAMEPLAY);
+		}
+		
+		protected function conversationGameplay(): void
+		{
+		
+		
+			enemyController.commandEnemies(0);
+		
+			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, wallGroup);
+			
+			player.keepBodyTogether();
+			
+			//Returns true when it's done
+			var displayingDialog: int = dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
+				
+			if(displayingDialog== DialogHandler.END)
+			{
+				dialogHandler.hideDialogHandler(this);
+				player.setPaused(false);
+				player.setHiding(false);
+				
+				var afterEnd: uint = dialogHandler.getAfterEnd();
+				
+				if(afterEnd==DialogNode.BACK_TO_NORMAL)
+				{
+					setGameState(NORMAL_GAMEPLAY);
+				}
+				else if(afterEnd== DialogNode.RESET_GAME)
+				{
+					reloadLevel();
+				}
+				else if(afterEnd==DialogNode.RESET_ENEMIES)
+				{
+					
+					
+					if(enemyTimer-3>0)
+					{
+						enemyTimer-=3;
+					}
+					enemyController.resetEnemies();
+					setGameState(NORMAL_GAMEPLAY);
+				}
+				
+				
+			}
+			else if(displayingDialog==DialogHandler.QUESTION_NEXT)
+			{
+				setUpQuestionStateNode(dialogHandler.getCurrNode());
+			}
+			
+		}
+		
 		public function questionGameplay():void
 		{			
 			questionTimer-=FlxG.elapsed;
@@ -844,14 +1192,14 @@ package
 			{
 				//MAKE SURE THEY STAY ON SCREEN
 				answerDisplays[i].alignment = "right";
-				if(answerDisplays[i].x>(FlxG.camera.scroll.x+80))
+				if(answerDisplays[i].x +answerDisplays[i].size*answerDisplays[i].text.length/4 >(FlxG.camera.scroll.x+80))
 				{
 					answerDisplays[i].velocity.x*=-1;
 				}
 				
 				
 				answerDisplays[i].alignment = "left";
-				if(answerDisplays[i].x<(FlxG.camera.scroll.x-120))
+				if(answerDisplays[i].x-answerDisplays[i].size*0.5*answerDisplays[i].text.length/4<(FlxG.camera.scroll.x-120))
 				{
 					answerDisplays[i].velocity.x*=-1;
 				}
@@ -871,18 +1219,9 @@ package
 				//Check if the user hit the right key
 				if(FlxG.keys.justReleased(answers[i].getKey()))
 				{
-					if(answers[i].isCorrectAnswer())
-					{
-						dialogHandler.hideDialogHandler(this);
-						enemyController.resetEnemies();
-					}
-					else
-					{
-						dialogHandler.hideDialogHandler(this);
-						reloadLevel();
-					}
 						
 					fromQuestionState();
+					setUpConversation(responses[i]);//new DialogNode(responses[i], DialogHandler.PLAYER_HEAD, answers[i].getAnswerText()));
 				}
 			}
 			
@@ -916,13 +1255,14 @@ package
 			enemyController.commandEnemies(EnemyController.PAUSE_ALL);
 		}
 		
-		//BEGINNING QUESTiON STATE
+		//BEGINNING QUESTiON STATE FOR ENEMY QUESTION
 		protected function setUpQuestionState():void
 		{
 			
 			//Pause player
 			player.setPaused(true);
 			//400 is width, center allignment put's in mid of that
+			
 			
 			//Display the head of the enemy asking this question
 			dialogHandler.setCurrNode(enemyController.getQuestion());
@@ -936,8 +1276,9 @@ package
 				
 			
 			answers = enemyController.getAnswers();
+			responses = enemyController.getResponses();
 			
-			questionTimer=10;
+			questionTimer=enemyTimer;
 			add(questionTimerDisplay);
 			
 			//Deploy answers randomly
@@ -946,7 +1287,7 @@ package
 			{
 				//X has to be within -100 to +100, y within +50 to +150
 				
-				var xValue:Number =  FlxG.camera.scroll.x + (Math.random()*200 -100);
+				var xValue:Number =  FlxG.camera.scroll.x + (Math.random()*200 -120);
 			
 				var yValue:Number =  FlxG.camera.scroll.y + (Math.random()*100 +50);
 			
@@ -957,6 +1298,83 @@ package
 				answerDisplays.push(answerText);
 				
 				answerDisplays[i].velocity = new FlxPoint(100*(Math.random()-0.5),100*(Math.random()-0.5));
+			
+				answerDisplays[i].alignment = "right";
+				if(answerDisplays[i].x +answerDisplays[i].size*answerDisplays[i].text.length/4 >(FlxG.camera.scroll.x+80))
+				{
+					answerDisplays[i].x=FlxG.camera.scroll.x;
+				}
+				
+				
+				answerDisplays[i].alignment = "left";
+				if(answerDisplays[i].x-answerDisplays[i].size*0.5*answerDisplays[i].text.length/4<(FlxG.camera.scroll.x-120))
+				{
+					answerDisplays[i].x=FlxG.camera.scroll.x;
+				}
+				
+				answerText.alignment = "center";
+			}
+			
+			
+			
+		}
+		
+		protected function setUpQuestionStateNode(currNode: DialogNode):void
+		{
+			
+			//Pause player
+			player.setPaused(true);
+			//400 is width, center allignment put's in mid of that
+			
+			//Display the head of the enemy asking this question
+			dialogHandler.setCurrNode(currNode);
+			//Show dialog handler
+			dialogHandler.showDialogHandler(this);
+			//Show full text all at once, no slow typing
+			dialogHandler.displayDialogHandlerTotal(FlxG.camera.scroll);
+			
+			//Set Question Time State
+			setGameState(QUESTION_TIME);
+				
+			
+			answers = currNode.getAnswers();
+			responses = currNode.getResponses();
+			
+			questionTimer=currNode.getTimeToAnswer();
+			add(questionTimerDisplay);
+			
+			//Deploy answers randomly
+			var i: int=0;
+			for(i =0; i<answers.length; i++)
+			{
+				//X has to be within -100 to +100, y within +50 to +150
+				
+				var xValue:Number =  FlxG.camera.scroll.x + (Math.random()*200 -120);
+			
+				var yValue:Number =  FlxG.camera.scroll.y + (Math.random()*100 +50);
+			
+				var answerText:FlxText = new FlxText(xValue, yValue, 400, answers[i].getKey()+"). "+answers[i].getAnswerText());
+				answerText.alignment = "center";
+				add(answerText);
+				
+				answerDisplays.push(answerText);
+				
+				answerDisplays[i].velocity = new FlxPoint(100*(Math.random()-0.5),100*(Math.random()-0.5));
+			
+				answerDisplays[i].alignment = "right";
+				if(answerDisplays[i].x +answerDisplays[i].size*answerDisplays[i].text.length/4 >(FlxG.camera.scroll.x+80))
+				{
+					answerDisplays[i].x=FlxG.camera.scroll.x;
+				}
+				
+				
+				answerDisplays[i].alignment = "left";
+				if(answerDisplays[i].x-answerDisplays[i].size*0.5*answerDisplays[i].text.length/4<(FlxG.camera.scroll.x-120))
+				{
+					answerDisplays[i].x=FlxG.camera.scroll.x;
+				}
+				
+				answerText.alignment = "center";
 			}
 			
 			
@@ -983,5 +1401,15 @@ package
 			answerDisplays= new Vector.<FlxText>();
 			answers = new Vector.<EnemyAnswer>();
 		}	
+		
+		public function getRandomKeyboardKey(): String
+		{
+			var keys:Array = new Array("Q", "W", "E", "R", "T",
+			"Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", 
+			"J", "K", "L", "Z", "C", "V", "B", "N", "M");
+			
+			return keys[((int)(Math.random()*25 ))];
+		
+		}
 	}
 }

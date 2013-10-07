@@ -11,7 +11,7 @@ package
 		 * Constructor
 		 */
 		public function Main() {
-			super(320, 240, GameState, 2);
+			super(320, 240, MainMenuState, 2);
 		}
 	}
 }

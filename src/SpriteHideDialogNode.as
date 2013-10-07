@@ -12,7 +12,7 @@ package
 		 _pausesGame:Boolean=false, 
 		_alternateNode:DialogNode=null)
 		{
-			super(_nextNode,_faceToDisplay, _displayText,true,_alternateNode);
+			super(_nextNode,_faceToDisplay, _displayText);
 			sprites = _sprites;
 			showSprites = _showSprites;
 		}

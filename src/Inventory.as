@@ -31,6 +31,12 @@ package
 		
 		private var displaying: Boolean;
 		
+		//Minimap
+		private var map: FlxSprite;
+		private var mapBorder: FlxSprite;
+		private var wallStamp: FlxSprite;
+		private var playerStamp: FlxSprite;
+		
 		public function Inventory(_outfitHandler: OutfitHandler)
 		{
 			super();
@@ -42,6 +48,10 @@ package
 			//Overall Background
 			menuBackground = new FlxSprite(10,10);
 			menuBackground.makeGraphic(300,220,0xfa333333);
+			
+			//Map Background
+			mapBorder = new FlxSprite(10, 150);
+			mapBorder.makeGraphic(100,80, 0xff111111);
 			
 			//Inventory Background
 			inventoryBoxBackground = new FlxSprite(210,130);
@@ -68,6 +78,15 @@ package
 			legsRepresentation = new FlxSprite(245,90);
 			legsRepresentation.makeGraphic(30,20, 0xff000000);
 			
+			wallStamp = new FlxSprite();
+			wallStamp.makeGraphic(2,2,0xff000000);
+			playerStamp = new FlxSprite();
+			playerStamp.makeGraphic(2,2,0xffff0000);
+			map = new FlxSprite(20,160);
+			map.makeGraphic(80,60,0xffffffff);
+			
+			
+			
 			add(menuBackground);
 			add(inventoryBoxBackground);
 			add(inventoryBox);
@@ -75,9 +94,12 @@ package
 			add(headRepresentation);
 			add(bodyRepresentation);
 			add(legsRepresentation);
-			
+			add(mapBorder);
+			add(map);
 			
 			add(inventoryText);
+			
+			
 			
 			displaying=false;
 		}
@@ -107,6 +129,28 @@ package
 			
 			legsRepresentation.x+=cameraOffset.x;
 			legsRepresentation.y+=cameraOffset.y;
+			
+			mapBorder.x+=cameraOffset.x;
+			mapBorder.y+=cameraOffset.y;
+			
+			map.fill(0xffffffff);
+			var stx: int = int(FlxG.camera.scroll.x / 16) - 10; //start x
+			var sty: int = int(FlxG.camera.scroll.y / 16) - 7; //start y
+			var tx: int; //tile x
+			var ty: int; //tile y
+			for (tx = 0; tx < 40; tx++){
+				for (ty = 0; ty < 30; ty++){
+					if (FlxTilemap(currLevel.wallGroup.getFirstAlive()).getTile(stx+tx,sty+ty) != 0){
+						map.stamp(wallStamp,tx*2,ty*2);
+					}
+				}
+			}
+			var px: int = int((currLevel.player.x - cameraOffset.x)/16) + 11; //player x
+			var py: int = int((currLevel.player.y - cameraOffset.y)/16) + 7; //player y
+			map.stamp(playerStamp,(px*2),py*2);
+			map.x += cameraOffset.x;
+			map.y += cameraOffset.y;
+			
 			
 			if(inventoryItem!=null)
 			{
@@ -208,6 +252,12 @@ package
 			
 			legsRepresentation.x-=cameraOffset.x;
 			legsRepresentation.y-=cameraOffset.y;
+			
+			mapBorder.x-=cameraOffset.x;
+			mapBorder.y-=cameraOffset.y;
+			
+			map.x-=cameraOffset.x;
+			map.y-=cameraOffset.y;
 			
 			
 			if(inventoryItem!=null)

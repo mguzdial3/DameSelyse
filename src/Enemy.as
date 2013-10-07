@@ -57,8 +57,14 @@ package
 		
 		protected var hasSeenPlayer: Boolean;
 		
-		public function Enemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null ):void {
-			super(Assets.RANGER2_SPRITE, new FlxPoint(10,4), new FlxPoint(16,18), X, Y,30);
+		//Expression Sprite
+		protected var expressionSprite: FlxSprite; 
+		protected var expressionTimer: Number; 
+		protected var expressionTimerMax:Number = 1.0;
+		
+		
+		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 30):void {
+			super(imgToUse, new FlxPoint(10,4), new FlxPoint(15,18), X, Y,_runSpeed);
 			
 			
 			originalPosition = new FlxPoint(X,Y);
@@ -89,8 +95,13 @@ package
 			}
 			else
 			{
-				enemyQuestion = new DialogNode(null, DialogHandler.FIRE_HEAD, "What are you doing here?");
+				enemyQuestion = new DialogNode(null, DialogHandler.CAT_HEAD, "What are you doing here?");
 			}
+			
+			//Instantiate exclamation thing
+			expressionSprite = new FlxSprite(x,y);
+			expressionSprite.makeGraphic(4, 8, 0xFFFFFF00); 
+			expressionSprite.alpha = 0;
 			
 			hasSeenPlayer=false;
 			
@@ -104,39 +115,63 @@ package
 			//Reset to undetected state
 			lightFOV.setColor(undetectedColor);
 			
+			
+			//Hide sprite if showing
+			expressionTimer = 0;
+			expressionSprite.makeGraphic(4, 8, 0xFFFFFF00); 
+			expressionSprite.alpha = 0;
+			
+			currentState=WAYPOINTING;
 		}
 		
+		override public function createAnimations():void {
+			
+			mySprite.addAnimation("idle_up", [4]);
+			
+			mySprite.addAnimation("idle_right", [2,2,2,2,2,2,2,2,2,2,2,3], 12, true);
+			mySprite.addAnimation("idle_down", [0,0,0,0,0,0,0,0,0,0,0,1],12, true);
+			mySprite.addAnimation("idle_left", [2,2,2,2,2,2,2,2,2,2,2,3], 12, true);
+			mySprite.addAnimation("walk_up", [13, 14, 15, 16], 10); // 12 = frames per second for this animation
+			mySprite.addAnimation("walk_down", [9, 10, 11, 12], 10);
+			mySprite.addAnimation("walk_horz", [5, 6, 7,8], 10);
+			
+		}
 		
-		
+		//Get Positive Response
+		protected function getPositiveResponse(): DialogNode
+		{
+			return new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, well carry on then.",DialogNode.RESET_ENEMIES);
+		}
+	
 		
 		//To be overriden by later enemies
 		protected function setUpQuestion():void
 		{	
-			var enemyAnswer1: String = "Failure";
-			var enemyAnswer2: String = "Just guard stuff";
-			var enemyAnswer3: String = 	"Losing";
-			var enemyAnswer4: String = "EPIC FAILS";
-			var enemyAnswer5: String = "Your Mom";
-			var enemyAnswer6: String = "Sucking";
-			var enemyAnswer7: String = "Being Terrible";
-			var enemyAnswer8: String = "I'm the Prisoner";
+			var enemyAnswer1: String = "Impersonating a guard";
+			var enemyAnswer2: String = "You know... Guard stuff";
+			var enemyAnswer3: String = 	"Getting caught.";
+			var enemyAnswer4: String = "Nothing...";
+			var enemyAnswer5: String = "Your Mother";
+			var enemyAnswer6: String = "This is not the prisoner you're looking for.";
+			var enemyAnswer7: String = "What are YOU doing?";
+			var enemyAnswer8: String = "I'm the Prisoner!";
 			var enemyAnswer9: String = "Escaping!";
-			var enemyAnswer10: String = "Not winning";
+			var enemyAnswer10: String = "MEOW";
 			
 			
 			enemyAnswers = 	new Vector.<EnemyAnswer>();
 			
 			//THE CORRECT ANSWER NEEDS TO BE THE FIRST ONE
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,getRandomKeyboardKey(),true));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer5, getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer8, getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey()));
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey()));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, alright- WAIT A MINUTE. You're Dame Celeste! Back to your cell, young lady!",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Wait. What? Oh! You must be Celeste. Let's get you back to your cell.",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, just chilling? WAIT- You're Dame Celeste! Back to prison with you!",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer5, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "...That's really rude. Back to your cell, Celeste, and think about what you've done.",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "You aren't the prisoner I'm looking for... Wait, yes you are!",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Um, you know, guard stuff? Wait a second, I don't have to explain myself! Back to your cell!",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer8, getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Oh! What are you doing out of your cell then? Let's get you back.",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "Not anymore! Back to your cell, young lady!",DialogNode.RESET_GAME)));
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(null, DialogHandler.CAT_HEAD, "First of all, how dare you. Second, back to your cell!",DialogNode.RESET_GAME)));
 			
 		}
 		
@@ -145,9 +180,9 @@ package
 		{
 			var keys:Array = new Array("Q", "W", "E", "R", "T",
 			"Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", 
-			"J", "K", "L", "Z", "X", "C", "V", "B", "N", "M");
+			"J", "K", "L", "Z", "C", "V", "B", "N", "M");
 			
-			return keys[((int)(Math.random()*26 ))];
+			return keys[((int)(Math.random()*25 ))];
 		
 		}
 		
@@ -172,14 +207,49 @@ package
 			
 			var i:int;
 			
+			
+			
 			while(i<numberOfAnswers-1)
 			{
 				//Grab a random answer that isn't the first one
-				answersToReturn.push(enemyAnswers[(int)(Math.random()*(enemyAnswers.length-1))+1]);
-				i++;
+				var answer: EnemyAnswer = enemyAnswers[(int)(Math.random()*(enemyAnswers.length-1))+1];
+				
+				
+				if(answersToReturn.indexOf(answer)==-1)
+				{
+					answersToReturn.push(answer);
+					i++;
+				}
+				
 			}
 			
 			return answersToReturn;
+		}
+		
+		public function getResponses(answers: Vector.<EnemyAnswer>): Vector.<DialogNode>
+		{
+			var responsesToReturn: Vector.<DialogNode> = new Vector.<DialogNode>();
+			responsesToReturn.push(getPositiveResponse());
+			
+			var i: int=1; 
+			
+			while(i<answers.length)
+			{
+				responsesToReturn.push(answers[i].getResponse());
+				
+				i++;
+			}
+			
+			return responsesToReturn;
+			
+		}
+		
+		
+		public function addEnemy(groupToAddTo: FlxGroup): void
+		{
+			groupToAddTo.add(this);
+			groupToAddTo.add(mySprite);
+			groupToAddTo.add(expressionSprite);
 		}
 		
 		
@@ -256,13 +326,33 @@ package
 		{
 			//MOVE THE LIGHT SOURCE
 			moveLightSource();
+			
+			//Move to above player
+			expressionSprite.x = mySprite.x+mySprite.width/2-expressionSprite.width/2;
+			expressionSprite.y = this.y-this.height*4-expressionSprite.height;
+				
+				
+			
+			//Handle the expressionSprite; 
+			if(expressionTimer>0)
+			{
+				expressionTimer-=FlxG.elapsed; 
+
+				if(expressionTimer<=0)
+				{
+					expressionSprite.makeGraphic(4, 8, 0xFFFF0000);
+					expressionSprite.alpha = 0;
+				}
+			}
+			
 		
 			var goalPoint: FlxPoint = new FlxPoint(this.x,this.y);
 			var minimumDist:Number = 15;
 			if(currentState==WAYPOINTING)
 			{	
 			
-				lightFOV.lerpColor(0xFFFFFFFF,80);	
+				//lightFOV.lerpColor(0xFFFFFFFF,80);	
+				lightFOV.color = 0xFFFFFFFF;	
 		
 				goalPoint =waypoints[currWaypoint];
 				//goalPoint = new FlxPoint(player.x,player.y);
@@ -289,6 +379,9 @@ package
 				//Check how to transfer into seeking player state
 				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding())
 				{
+					expressionSprite.loadGraphic(Assets.EXCLAMATION); 
+					expressionSprite.alpha = 1;
+					expressionTimer=expressionTimerMax;
 					currentState=SEEKINGPLAYER;
 				}
 				
@@ -297,7 +390,7 @@ package
 			else if(currentState==SEEKINGPLAYER)
 			{
 			
-				if(lightFOV.lerpColor(0xFFFF0000,50))
+				if(lightFOV.lerpColor(0xFFFF0000,80))
 				{
 					return QUESTION_TIME;
 				}
@@ -308,8 +401,9 @@ package
 				
 				if(!withinView(new FlxPoint(player.x,player.y)))
 				{
-				
-					
+					expressionSprite.loadGraphic(Assets.QUESTION_MARK); 
+					expressionSprite.alpha = 1;
+					expressionTimer=expressionTimerMax;
 					currentState=WAYPOINTING;
 				}
 				
@@ -364,10 +458,10 @@ package
 			if(commandMessage==NOT_ANY)
 			{
 			
-			if(pausedPosition.x!=0)
-			{
-				pausedPosition = new FlxPoint(0,0);
-			}			
+				if(pausedPosition.x!=0)
+				{
+					pausedPosition = new FlxPoint(0,0);
+				}			
 				return regularGameplay();
 			}		
 			else if(commandMessage==PAUSE)
