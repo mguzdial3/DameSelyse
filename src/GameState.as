@@ -20,37 +20,46 @@ package
 		 
 		override public function create():void 
 		{
+		
+			FlxG.flashFramerate = 60;
+		
 			saveStuff = new FlxSave();
 		
 			var _loaded: Boolean = saveStuff.bind("levelNameData");
 			
 			if(!_loaded)
 			{
-				LEVEL = new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
+				LEVEL = new celeste1(new FlxPoint(4512, 2592),new FlxPoint(16, 16));
 			}
 			else
 			{
 				if(saveStuff.data.levelName==null)
 				{
 					saveStuff.data.levelName="Dungeon";
-					LEVEL = new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
+					LEVEL = new celeste1(new FlxPoint(4512, 2592),new FlxPoint(16, 16));
 				}
 				else
 				{
 					//Load level based on levelName
 					if(saveStuff.data.levelName=="Dungeon")
 					{
-						LEVEL = new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
+						LEVEL = new celeste1(new FlxPoint(4512, 2592),new FlxPoint(16, 16));
+						//LEVEL = new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
 					}
 					else if(saveStuff.data.levelName=="Kitchen")
 					{
-						LEVEL = new kitchenLevel(new FlxPoint(3424, 2592),new FlxPoint(16, 16));
+					
+						LEVEL = new celeste2(new FlxPoint(4224, 2592),new FlxPoint(16, 16));
+					
+						//LEVEL = new kitchenLevel(new FlxPoint(3424, 2592),new FlxPoint(16, 16));
 					}
 				}
 			}
 			
+			//LEVEL = new kitchenLevel(new FlxPoint(3424, 2592),new FlxPoint(16, 16));
+
 			//Testing purposes
-			//LEVEL = new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
+			LEVEL = new celeste1(new FlxPoint(4512, 2592),new FlxPoint(16, 16));//new celeste1a(new FlxPoint(4512, 2592),new FlxPoint(16, 16));//new dungeonLevel1(new FlxPoint(3712, 2784),new FlxPoint(16, 16)); 
 			this.add(LEVEL);
 			
 		}

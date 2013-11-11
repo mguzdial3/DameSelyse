@@ -27,23 +27,32 @@ package
 			//This one is the chef outfit
 			outfitToUse=OutfitHandler.LADY_OUTFIT;
 			
-			resetFOV();
+			noMatchFOV();
 		}
 		
-		//To be overriden for how other lightFOV's shrink
-		override protected function shrinkFOV():void
+		
+		
+		
+		override protected function allMatchFOV():void
 		{
-			shrunkenLight=true;
-			lightFOV.scale= new FlxPoint(0.4,0.4);
-			lightFOV2.scale= new FlxPoint(0.4,0.4);
+			lightFOV.scale= new FlxPoint(0.35,0.35);
 		}
 		
-		override protected function resetFOV():void
+		override protected function noMatchFOV():void
 		{
-			shrunkenLight=false;
 			lightFOV.scale= new FlxPoint(0.5,0.5);
-			lightFOV2.scale= new FlxPoint(0.5,0.5);
 		}
+		
+		override protected function oneMatchFOV():void
+		{
+			lightFOV.scale= new FlxPoint(0.475,0.5475);
+		}
+		
+		override protected function twoMatchFOV():void
+		{
+			lightFOV.scale= new FlxPoint(0.45,0.45);
+		}
+		
 		
 		
 		
@@ -65,7 +74,7 @@ package
 		override protected function getPositiveResponse(): DialogNode
 		{
 		
-			var node1: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Oh! Of course! Haha, I didn't recognize you at first!",DialogNode.RESET_ENEMIES)
+			var node1: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Oh! Of course! Haha, I didn't recognize you at first!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_ENEMIES)
 		
 			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "I’m the guest-of-honor, and the dress is Retro.");
 		}
@@ -92,31 +101,31 @@ package
 			
 			//THE CORRECT ANSWER NEEDS TO BE THE FIRST ONE
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,getRandomKeyboardKey(),true));
-			var response2: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Wow, you're such a rebel, you should be in jail!",DialogNode.RESET_GAME);
+			var response2: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Wow, you're such a rebel, you should be in jail!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(response2, DialogHandler.PLAYER_HEAD, enemyAnswer1)));
 			
-			var response3: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Fish puns, really? Let's get you otter here.",DialogNode.RESET_GAME);
+			var response3: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Fish puns, really? Let's get you otter here.",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(response3, DialogHandler.PLAYER_HEAD, enemyAnswer3)));
 			
-			var response4: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Not on my watch! You must be that Dame Celeste!",DialogNode.RESET_GAME);
+			var response4: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Not on my watch! You must be that Dame Celeste!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(response4, DialogHandler.PLAYER_HEAD, enemyAnswer4)));
 			
-			var response5: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "I am NOT confused. You're confused! And the prisoner!",DialogNode.RESET_GAME);
+			var response5: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "I am NOT confused. You're confused! And the prisoner!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer5,getRandomKeyboardKey(), false,  new DialogNode(response5, DialogHandler.PLAYER_HEAD, enemyAnswer5)));
 			
-			var response6: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Yeah, I caught you. 'Cause I'm the best.",DialogNode.RESET_GAME);
+			var response6: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Yeah, I caught you. 'Cause I'm the best.",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(response6, DialogHandler.PLAYER_HEAD, enemyAnswer6)));
 			
-			var response7: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Well let's get you unlost, straight back to jail.",DialogNode.RESET_GAME);
+			var response7: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Well let's get you unlost, straight back to jail.",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(response7, DialogHandler.PLAYER_HEAD, enemyAnswer7)));
 			
-			var response8: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "I didn't- I... what? You confuse me, to the dungeon with you!",DialogNode.RESET_GAME);
+			var response8: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "I didn't- I... what? You confuse me, to the dungeon with you!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer8,getRandomKeyboardKey(), false,  new DialogNode(response8, DialogHandler.PLAYER_HEAD, enemyAnswer8)));
 			
-			var response9: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Not anymore! Back to the dungeon, lady!",DialogNode.RESET_GAME);
+			var response9: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "Not anymore! Back to the dungeon, lady!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer9)));
 			
-			var response10: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "AHHH! A Cat! Wait. I'm a shark... Go to jaiL!",DialogNode.RESET_GAME);
+			var response10: DialogNode = new DialogNode(null, DialogHandler.SHARK_HEAD, "AHHH! A Cat! Wait. I'm a shark... Go to jaiL!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer10)));
 			
 			
@@ -138,10 +147,20 @@ package
 				lightFOV.scale = new FlxPoint(0.6, 0.4);
 				lightFOV2.scale = new FlxPoint(0.6, 0.4);
 			
-				if(shrunkenLight)
+				if(suspicious==3)
 				{
 					lightFOV.scale = new FlxPoint(0.4, 0.3);
 					lightFOV2.scale = new FlxPoint(0.4, 0.3);
+				}
+				else if(suspicious==2)
+				{
+					lightFOV.scale = new FlxPoint(0.58, 0.38);
+					lightFOV2.scale = new FlxPoint(0.58, 0.38);
+				}
+				else if(suspicious==1)
+				{
+					lightFOV.scale = new FlxPoint(0.55, 0.35);
+					lightFOV2.scale = new FlxPoint(0.55, 0.35);
 				}
 			
 			
@@ -157,11 +176,22 @@ package
 				lightFOV.scale = new FlxPoint(0.6, 0.4);
 				lightFOV2.scale = new FlxPoint(0.6, 0.4);
 			
-				if(shrunkenLight)
+				if(suspicious==3)
 				{
 					lightFOV.scale = new FlxPoint(0.4, 0.3);
 					lightFOV2.scale = new FlxPoint(0.4, 0.3);
 				}
+				else if(suspicious==2)
+				{
+					lightFOV.scale = new FlxPoint(0.58, 0.38);
+					lightFOV2.scale = new FlxPoint(0.58, 0.38);
+				}
+				else if(suspicious==1)
+				{
+					lightFOV.scale = new FlxPoint(0.55, 0.35);
+					lightFOV2.scale = new FlxPoint(0.55, 0.35);
+				}
+				
 			
 				lightSourceGoal.x = this.x-(lightFOV.width)*(lightFOV.scale.x)*0.3;
 				lightSourceGoal.y = this.y+this.height;
@@ -175,10 +205,20 @@ package
 				lightFOV.scale = new FlxPoint(0.2, 0.6);
 				lightFOV2.scale = new FlxPoint(0.2, 0.6);
 			
-				if(shrunkenLight)
+				if(suspicious==3)
 				{
 					lightFOV.scale = new FlxPoint(0.15, 0.4);
 					lightFOV2.scale = new FlxPoint(0.15, 0.4);
+				}
+				else if(suspicious==2)
+				{
+					lightFOV.scale = new FlxPoint(0.18, 0.58);
+					lightFOV2.scale = new FlxPoint(0.18, 0.58);
+				}
+				else if(suspicious==1)
+				{
+					lightFOV.scale = new FlxPoint(0.14, 0.55);
+					lightFOV2.scale = new FlxPoint(0.14, 0.55);
 				}
 				
 				lightSourceGoal.x = this.x+this.width*0.25;
@@ -193,10 +233,20 @@ package
 				lightFOV.scale = new FlxPoint(0.3, 0.6);
 				lightFOV2.scale = new FlxPoint(0.3, 0.6);
 			
-				if(shrunkenLight)
+				if(suspicious==3)
 				{
 					lightFOV.scale = new FlxPoint(0.15, 0.4);
 					lightFOV2.scale = new FlxPoint(0.15, 0.4);
+				}
+				else if(suspicious==2)
+				{
+					lightFOV.scale = new FlxPoint(0.18, 0.58);
+					lightFOV2.scale = new FlxPoint(0.18, 0.58);
+				}
+				else if(suspicious==1)
+				{
+					lightFOV.scale = new FlxPoint(0.14, 0.55);
+					lightFOV2.scale = new FlxPoint(0.14, 0.55);
 				}
 			
 				lightSourceGoal.x = this.x+this.width*0.75;

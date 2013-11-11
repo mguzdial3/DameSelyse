@@ -6,10 +6,11 @@ package
 		protected var playerOutfit:PlayerOutfit;
 		
 		public function OutfitDialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String,_playerOutfit:PlayerOutfit,
+		 _sound: Class=null,
 		 _pausesGame:Boolean=false, 
 		_alternateNode:DialogNode=null)
 		{
-			super(_nextNode,_faceToDisplay, _displayText);
+			super(_nextNode,_faceToDisplay, _displayText,_sound);
 			playerOutfit = _playerOutfit;
 		}
 		

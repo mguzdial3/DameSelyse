@@ -9,8 +9,6 @@ package
 		private var outfitHandler: OutfitHandler;
 		
 		//Various FlxSprites used in display
-		private var inventoryBox: FlxSprite; //Box that inventory item is placed in
-		private var inventoryBoxBackground: FlxSprite; //Background for Box to divorce it fully from the rest of the menu
 		private var menuBackground: FlxSprite; //The entire background for the menu
 		
 		//Current Outfit Squares
@@ -33,7 +31,6 @@ package
 		
 		//Minimap
 		private var map: FlxSprite;
-		private var mapBorder: FlxSprite;
 		private var wallStamp: FlxSprite;
 		private var playerStamp: FlxSprite;
 		
@@ -46,55 +43,78 @@ package
 			//Make the sprites
 			
 			//Overall Background
-			menuBackground = new FlxSprite(10,10);
-			menuBackground.makeGraphic(300,220,0xfa333333);
+			menuBackground = new FlxSprite(10,10, Assets.MENU_BACKGROUND);
 			
-			//Map Background
-			mapBorder = new FlxSprite(10, 150);
-			mapBorder.makeGraphic(100,80, 0xff111111);
-			
-			//Inventory Background
-			inventoryBoxBackground = new FlxSprite(210,130);
-			inventoryBoxBackground.makeGraphic(100,100,0xff995511); //Inventory area means brown, right?
-			
-			
-			
-			//Inventory Box which surrounds the inventory item
-			inventoryBox = new FlxSprite(220,140);
-			inventoryBox.makeGraphic(80,80,0xff000000); //Black as my soul
+			inventoryItem=null;
 			
 			//Inventory Text
-			inventoryText = new FlxText(220,210,80);
+			inventoryText = new FlxText(200,210,80);
 			inventoryText.alignment = "center";
 			inventoryText.text = "Inventory";
 			
 			//Current Outfit Sprite Representations
-			headRepresentation = new FlxSprite(245,30);
-			headRepresentation.makeGraphic(30,20, 0xff000000);
+			headRepresentation = new FlxSprite(253,70);
+			headRepresentation.loadGraphic(
+				Assets.MENU_HEADS, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				15, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
 			
-			bodyRepresentation = new FlxSprite(245,60);
-			bodyRepresentation.makeGraphic(30,20, 0xff000000);
+			headRepresentation.addAnimation("princess", [0]);
+			headRepresentation.addAnimation("guard", [1]);
+			headRepresentation.addAnimation("chef", [2]);
+			headRepresentation.addAnimation("lady", [3]);
 			
-			legsRepresentation = new FlxSprite(245,90);
-			legsRepresentation.makeGraphic(30,20, 0xff000000);
+			headRepresentation.play("princess");
+			
+			bodyRepresentation = new FlxSprite(253,70);
+			bodyRepresentation.loadGraphic(
+				Assets.MENU_BODIES, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				15, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
+			
+			bodyRepresentation.addAnimation("princess", [0]);
+			bodyRepresentation.addAnimation("guard", [1]);
+			bodyRepresentation.addAnimation("chef", [2]);
+			bodyRepresentation.addAnimation("lady", [3]);
+			
+			bodyRepresentation.play("princess");
+			
+			legsRepresentation = new FlxSprite(253,70);
+			legsRepresentation.loadGraphic(
+				Assets.MENU_LEGS, // image to use
+				true, // animated
+				false, // don't generate "flipped" images since they're already in the image
+				15, // width of each frame (in pixels)
+				18 // height of each frame (in pixels)
+			);
+			
+			legsRepresentation.addAnimation("princess", [0]);
+			legsRepresentation.addAnimation("guard", [1]);
+			legsRepresentation.addAnimation("chef", [2]);
+			legsRepresentation.addAnimation("lady", [3]);
+			
+			legsRepresentation.play("princess");
 			
 			wallStamp = new FlxSprite();
-			wallStamp.makeGraphic(2,2,0xff000000);
+			wallStamp.makeGraphic(2,2,0xffffffff);
 			playerStamp = new FlxSprite();
 			playerStamp.makeGraphic(2,2,0xffff0000);
-			map = new FlxSprite(20,160);
-			map.makeGraphic(80,60,0xffffffff);
-			
+			map = new FlxSprite(45,150);
+			map.makeGraphic(80,60,0xff0000ff);
 			
 			
 			add(menuBackground);
-			add(inventoryBoxBackground);
-			add(inventoryBox);
 			
-			add(headRepresentation);
-			add(bodyRepresentation);
 			add(legsRepresentation);
-			add(mapBorder);
+			add(bodyRepresentation);
+			add(headRepresentation);
+		
 			add(map);
 			
 			add(inventoryText);
@@ -107,16 +127,12 @@ package
 		public function showInventory(currLevel: TopDownLevel, cameraOffset: FlxPoint): void
 		{
 		
-			FlxG.mouse.show()
+			FlxG.mouse.show();
+			
 			currLevel.add(this);
 			menuBackground.x+=cameraOffset.x;
 			menuBackground.y+=cameraOffset.y;
 			
-			inventoryBoxBackground.x+=cameraOffset.x;
-			inventoryBoxBackground.y+=cameraOffset.y;
-			
-			inventoryBox.x+=cameraOffset.x;
-			inventoryBox.y+=cameraOffset.y;
 			
 			inventoryText.x+=cameraOffset.x;
 			inventoryText.y+=cameraOffset.y;
@@ -130,10 +146,10 @@ package
 			legsRepresentation.x+=cameraOffset.x;
 			legsRepresentation.y+=cameraOffset.y;
 			
-			mapBorder.x+=cameraOffset.x;
-			mapBorder.y+=cameraOffset.y;
 			
-			map.fill(0xffffffff);
+			
+			//Map Color
+			map.fill(0xff4f7fcf);
 			var stx: int = int(FlxG.camera.scroll.x / 16) - 10; //start x
 			var sty: int = int(FlxG.camera.scroll.y / 16) - 7; //start y
 			var tx: int; //tile x
@@ -154,8 +170,8 @@ package
 			
 			if(inventoryItem!=null)
 			{
-				inventoryItem.x+=cameraOffset.x;
-				inventoryItem.y+=cameraOffset.y;
+				inventoryItem.x=cameraOffset.x+240-inventoryItem.width/2;
+				inventoryItem.y=cameraOffset.y+170-inventoryItem.height/2;
 			}
 			
 			
@@ -174,10 +190,28 @@ package
 					if(outfits[i]==outfitHandler.getCurrLegsOutfit())
 					{
 						//Put in center of legRepresentation
-						outfits[i].x= legsRepresentation.x+legsRepresentation.width/2-outfits[i].width/2;
-						outfits[i].y= legsRepresentation.y+legsRepresentation.height/2-outfits[i].height/2;
+						outfits[i].x= cameraOffset.x+215-outfits[i].width/2;//legsRepresentation.x+legsRepresentation.width/2-outfits[i].width/2;
+						outfits[i].y= cameraOffset.y+110-outfits[i].height/2;//legsRepresentation.y+legsRepresentation.height/2-outfits[i].height/2;
 						
 						placed=true;
+						
+						
+						if(outfits[i].getOutfitSet()==OutfitHandler.PRINCESS_OUTFIT)
+						{
+							legsRepresentation.play("princess");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+						{
+							legsRepresentation.play("guard");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+						{
+							legsRepresentation.play("chef");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+						{
+							legsRepresentation.play("lady");
+						}
 					}
 				}
 				else if(outfits[i].getOutfitType()==PlayerOutfit.BODY_OUTFIT)
@@ -185,10 +219,27 @@ package
 					if(outfits[i]==outfitHandler.getCurrBodyOutfit())
 					{
 						//Put in center of bodyRepresentation
-						outfits[i].x= bodyRepresentation.x+bodyRepresentation.width/2-outfits[i].width/2;
-						outfits[i].y= bodyRepresentation.y+bodyRepresentation.height/2-outfits[i].height/2;
+						outfits[i].x= cameraOffset.x+216-outfits[i].width/2;//bodyRepresentation.x+bodyRepresentation.width/2-outfits[i].width/2;
+						outfits[i].y= cameraOffset.y+80-outfits[i].height/2;//bodyRepresentation.y+bodyRepresentation.height/2-outfits[i].height/2;
 						
 						placed=true;
+						
+						if(outfits[i].getOutfitSet()==OutfitHandler.PRINCESS_OUTFIT)
+						{
+							bodyRepresentation.play("princess");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+						{
+							bodyRepresentation.play("guard");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+						{
+							bodyRepresentation.play("chef");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+						{
+							bodyRepresentation.play("lady");
+						}
 					}
 				}
 				else if(outfits[i].getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
@@ -196,29 +247,41 @@ package
 					if(outfits[i]==outfitHandler.getCurrHeadOutfit())
 					{
 						//Put in center of headRepresentation
-						outfits[i].x= headRepresentation.x+headRepresentation.width/2-outfits[i].width/2;
-						outfits[i].y= headRepresentation.y+headRepresentation.height/2-outfits[i].height/2;
+						outfits[i].x= cameraOffset.x+215-outfits[i].width/2;//headRepresentation.x+headRepresentation.width/2-outfits[i].width/2;
+						outfits[i].y= cameraOffset.y+50-outfits[i].height/2;//headRepresentation.y+headRepresentation.height/2-outfits[i].height/2;
 						
 						placed=true;
+						
+						
+						if(outfits[i].getOutfitSet()==OutfitHandler.PRINCESS_OUTFIT)
+						{
+							headRepresentation.play("princess");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+						{
+							headRepresentation.play("guard");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+						{
+							headRepresentation.play("chef");
+						}
+						if(outfits[i].getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+						{
+							headRepresentation.play("lady");
+						}
 					}
 				}
 				
 				
 				if(!placed)
 				{
-					outfits[i].x = cameraOffset.x+origPos.x-outfits[i].width/2;
-					outfits[i].y = cameraOffset.y+origPos.y-outfits[i].height/2;
+					setToCorrectPosition(outfits[i]);
 				}
 				
-				//Alter position
-				origPos.x +=20;
-				if((i+1)%3==0)
-				{
-					//Every third object, set a line below
-					origPos.x-=60;
-					origPos.y+=20;
-				}
 				
+				
+				
+				outfits[i].alpha=1;
 				add(outfits[i]);
 			}
 			
@@ -235,11 +298,6 @@ package
 			menuBackground.x-=cameraOffset.x;
 			menuBackground.y-=cameraOffset.y;
 			
-			inventoryBoxBackground.x-=cameraOffset.x;
-			inventoryBoxBackground.y-=cameraOffset.y;
-			
-			inventoryBox.x-=cameraOffset.x;
-			inventoryBox.y-=cameraOffset.y;
 			
 			inventoryText.x-=cameraOffset.x;
 			inventoryText.y-=cameraOffset.y;
@@ -253,8 +311,6 @@ package
 			legsRepresentation.x-=cameraOffset.x;
 			legsRepresentation.y-=cameraOffset.y;
 			
-			mapBorder.x-=cameraOffset.x;
-			mapBorder.y-=cameraOffset.y;
 			
 			map.x-=cameraOffset.x;
 			map.y-=cameraOffset.y;
@@ -273,12 +329,54 @@ package
 			var i: int=0;
 			for(i=0; i<outfits.length; i++)
 			{
-				
+				outfits[i].alpha=0;
 				remove(outfits[i]);
 			}
 			
 			
 			displaying=false;
+		}
+		
+		
+		private function setToCorrectPosition(outfit: PlayerOutfit): void
+		{
+			var placePnt: FlxPoint = new FlxPoint(FlxG.camera.scroll.x,FlxG.camera.scroll.y);
+		
+			if(outfit.getOutfitType()==PlayerOutfit.HEAD_OUTFIT)
+			{
+				placePnt.x+=60-outfit.width/2;
+			}
+			else if(outfit.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
+			{
+				placePnt.x+=85-outfit.width/2;
+			}
+			else if(outfit.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
+			{
+				placePnt.x+=110-outfit.width/2;
+			}
+			
+			
+			if(outfit.getOutfitSet()==OutfitHandler.PRINCESS_OUTFIT)
+			{
+				placePnt.y+=40-outfit.height/2;
+			}
+			else if(outfit.getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+			{
+				placePnt.y+=70-outfit.height/2;
+			}
+			else if(outfit.getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+			{
+				placePnt.y+=100-outfit.height/2;
+			}
+			else if(outfit.getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+			{
+				placePnt.y+=130-outfit.height/2;
+			}
+			
+			outfit.x=placePnt.x;
+			outfit.y=placePnt.y;
+
+			
 		}
 		
 		public function getDisplaying(): Boolean
@@ -316,6 +414,8 @@ package
 							outfits[i]!=outfitHandler.getCurrBodyOutfit() && 
 							outfits[i]!=outfitHandler.getCurrHeadOutfit())
 						{
+						
+							FlxG.play(Assets.GUI_SHORT_NOISE);
 							//Start dragging this outfit
 							origPos = new FlxPoint(outfits[i].x,outfits[i].y);
 							draggedObject=outfits[i];
@@ -337,30 +437,53 @@ package
 				{
 					if(
 					(draggedObject.getOutfitType()==PlayerOutfit.BODY_OUTFIT && 
-					withinSprite(bodyRepresentation, draggedObject, 5))
+					(withinBox(draggedObject,FlxG.camera.scroll.x+220,FlxG.camera.scroll.y+70,30,20,50) ||withinSprite(bodyRepresentation, draggedObject, 5)))
 					||
 					(draggedObject.getOutfitType()==PlayerOutfit.LEGS_OUTFIT && 
-					withinSprite(legsRepresentation, draggedObject, 5))
+					(withinBox(draggedObject,FlxG.camera.scroll.x+220,FlxG.camera.scroll.y+100,30,20,50) ||withinSprite(legsRepresentation, draggedObject, 5)))
 					||
 					(draggedObject.getOutfitType()==PlayerOutfit.HEAD_OUTFIT && 
-					withinSprite(headRepresentation, draggedObject, 5))
+					(withinBox(draggedObject,FlxG.camera.scroll.x+220,FlxG.camera.scroll.y+40,30,20,50) || withinSprite(headRepresentation, draggedObject, 5)))
 					)
 					{
+						FlxG.play(Assets.GUI_LONG_NOISE);
+					
 						var currWorn:PlayerOutfit = outfitHandler.getCurrBodyOutfit();
 						var outfitIndex: int = outfitHandler.getIndexOf(currWorn);
 						if(draggedObject.getOutfitType()==PlayerOutfit.BODY_OUTFIT)
 						{
 							
-							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
-							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
+							//Put CurrWorn in Correct Position
+							setToCorrectPosition(currWorn);
 							
 							outfitHandler.setCurrOutfit(draggedObject);
 							
-							draggedObject.x= bodyRepresentation.x+bodyRepresentation.width/2-draggedObject.width/2;
-							draggedObject.y= bodyRepresentation.y+bodyRepresentation.height/2-draggedObject.height/2;
+							draggedObject.x= FlxG.camera.scroll.x+215-draggedObject.width/2;//bodyRepresentation.x+bodyRepresentation.width/2-draggedObject.width/2;
+							draggedObject.y= FlxG.camera.scroll.y+80-draggedObject.height/2;//bodyRepresentation.y+bodyRepresentation.height/2-draggedObject.height/2;
 							
 							playa.setNewOutfit(draggedObject.getOutfitType(), draggedObject.getOutfit());
 							draggingOutfit=false;
+							
+							
+							if(draggedObject.getOutfitSet()==0)
+							{
+								bodyRepresentation.play("princess");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+							{
+								bodyRepresentation.play("guard");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+							{
+								bodyRepresentation.play("chef");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+							{
+								bodyRepresentation.play("lady");
+							}
+							draggedObject=null;
+
+							
 							
 							return true;
 						}
@@ -369,34 +492,70 @@ package
 							currWorn= outfitHandler.getCurrHeadOutfit();
 							outfitIndex= outfitHandler.getIndexOf(currWorn);
 							
-							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
-							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
-							
+							setToCorrectPosition(currWorn);
 							outfitHandler.setCurrOutfit(draggedObject);
 							
-							draggedObject.x= headRepresentation.x+headRepresentation.width/2-draggedObject.width/2;
-							draggedObject.y= headRepresentation.y+headRepresentation.height/2-draggedObject.height/2;
+							draggedObject.x= FlxG.camera.scroll.x+215-draggedObject.width/2;//headRepresentation.x+headRepresentation.width/2-draggedObject.width/2;
+							draggedObject.y= FlxG.camera.scroll.y+50-draggedObject.height/2;//headRepresentation.y+headRepresentation.height/2-draggedObject.height/2;
 						
 							playa.setNewOutfit(draggedObject.getOutfitType(), draggedObject.getOutfit());
 							draggingOutfit=false;
 							
+							
+							
+							if(outfitHandler.getCurrHeadOutfitSet()==0)
+							{
+								headRepresentation.play("princess");
+							}
+							else if(outfitHandler.getCurrHeadOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+							{
+								headRepresentation.play("guard");
+							}
+							else if(outfitHandler.getCurrHeadOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+							{
+								headRepresentation.play("chef");
+							}
+							else if(outfitHandler.getCurrHeadOutfitSet()==OutfitHandler.LADY_OUTFIT)
+							{
+								headRepresentation.play("lady");
+							}
+							draggedObject=null;
+	
 							return true;
 						}
 						else if(draggedObject.getOutfitType()==PlayerOutfit.LEGS_OUTFIT)
 						{
+						
 							currWorn = outfitHandler.getCurrLegsOutfit();
 							outfitIndex = outfitHandler.getIndexOf(currWorn);
 							
-							currWorn.x = FlxG.camera.scroll.x+30+(((outfitIndex)%3)*20)-currWorn.width/2;
-							currWorn.y = FlxG.camera.scroll.y+30+(((int)(outfitIndex/3)))*20-currWorn.height/2;
-							
+							setToCorrectPosition(currWorn);
 							outfitHandler.setCurrOutfit(draggedObject);
 							
-							draggedObject.x= legsRepresentation.x+legsRepresentation.width/2-draggedObject.width/2;
-							draggedObject.y= legsRepresentation.y+legsRepresentation.height/2-draggedObject.height/2;
+							draggedObject.x= FlxG.camera.scroll.x+215-draggedObject.width/2;//legsRepresentation.x+legsRepresentation.width/2-draggedObject.width/2;
+							draggedObject.y= FlxG.camera.scroll.y+110-draggedObject.height/2;//legsRepresentation.y+legsRepresentation.height/2-draggedObject.height/2;
 						
 							playa.setNewOutfit(draggedObject.getOutfitType(), draggedObject.getOutfit());
 							draggingOutfit=false;
+							
+							
+							if(draggedObject.getOutfitSet()==0)
+							{
+								legsRepresentation.play("princess");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.GUARD_OUTFIT)
+							{
+								legsRepresentation.play("guard");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.CHEF_OUTFIT)
+							{
+								legsRepresentation.play("chef");
+							}
+							else if(draggedObject.getOutfitSet()==OutfitHandler.LADY_OUTFIT)
+							{
+								legsRepresentation.play("lady");
+							}
+							draggedObject=null;
 							
 							return true;
 						}
@@ -422,6 +581,12 @@ package
 			&& (point.y+extraBit>sprite.y && point.y-extraBit<sprite.y+sprite.height));
 		}
 		
+		private function withinBox(point: FlxSprite, boxX:Number, boxY: Number, boxWidth: Number, boxHeight: Number, extraBit:int=0): Boolean
+		{
+			return ((point.x+extraBit>boxX && point.x-extraBit<boxX+boxWidth)
+			&& (point.y+extraBit>boxY && point.y-extraBit<boxY+boxHeight));
+		}
+		
 		//Returns true if managed to set inventoryItem, false otherwise
 		public function setInventoryItem(_inventoryItem: InventoryItem):Boolean
 		{
@@ -429,19 +594,20 @@ package
 			if(inventoryItem==null)
 			{
 				//Bring up to the size of the inventoryItem Box
-				_inventoryItem.scale = new FlxPoint(inventoryBox.width*0.75/(_inventoryItem.width),
-				inventoryBox.height*0.75/(_inventoryItem.height));
+				_inventoryItem.scale = new FlxPoint(80.0*0.75/_inventoryItem.width,
+				80.0*0.75/_inventoryItem.height);
 				
 				inventoryItem = _inventoryItem;
 				
 				
-				remove(inventoryText);
-				//But it in middle of the inventoryBox
-				inventoryItem.x = inventoryBox.x+inventoryBox.width/2-inventoryItem.width/2;
-				inventoryItem.y = inventoryBox.y+inventoryBox.height/2-inventoryItem.height/2;
-				add(inventoryItem);
-				add(inventoryText);
+				//remove(inventoryText);
+			
+				//Put it in middle of the box
+				inventoryItem.x = 0;
+				inventoryItem.y = 0;
 				
+				//add(inventoryText);
+				add(inventoryItem);
 				
 				return true;
 			}

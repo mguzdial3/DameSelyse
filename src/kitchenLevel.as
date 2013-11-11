@@ -270,15 +270,51 @@ package
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 4, 5, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 0, 0, 0, 0, 0, 0, 0, 
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		); 
+		
+		
+		
+		//[Embed(source = "/assets/mp3/kitchen_intro_loop.mp3")] public static var KITCHEN_INTRO:Class;
+		protected var introMusic: FlxSound;
+		
+		protected var otherBits: Vector.<FlxSound>;
 
 		protected var decalGroup:FlxGroup;
 		protected var objectGroup:FlxGroup;
 
-		public function kitchenLevel(levelSize:FlxPoint, blockSize:FlxPoint):void {
+		public function kitchenLevel(levelSize:FlxPoint, blockSize:FlxPoint):void {			
 			super(levelSize, blockSize, new FlxPoint(1368.0,1256.0));
 			
 			setLevelName("Kitchen");
-			FlxG.playMusic(Assets.DUNGEON_SONG);
+			
+			otherBits = new Vector.<FlxSound>();
+			
+			var loopSound: FlxSound = new FlxSound;
+			loopSound.loadEmbedded(Assets.KITCHEN_SONG1);
+			otherBits.push(loopSound);
+			
+			loopSound = new FlxSound;
+			loopSound.loadEmbedded(Assets.KITCHEN_SONG2);
+			otherBits.push(loopSound);
+			
+			loopSound = new FlxSound;
+			loopSound.loadEmbedded(Assets.KITCHEN_SONG3);
+			otherBits.push(loopSound);
+			
+			loopSound = new FlxSound;
+			loopSound.loadEmbedded(Assets.KITCHEN_SONG4);
+			otherBits.push(loopSound);
+			
+			
+			
+			
+			introMusic = new FlxSound();
+			introMusic.loadEmbedded(Assets.KITCHEN_INTRO);
+			FlxG.music=introMusic;
+			
+			FlxG.music.play();
+			
+			
+			
 		}
 
 		override protected function addHideableObjects():void {
@@ -294,7 +330,7 @@ package
 			hideableObjects.push(new HideableObject(376.0,461.0,Assets.Cauldron, true,0.5));
 			hideableObjects.push(new HideableObject(225.0,364.0,Assets.Cauldron, true,0.5));
 			hideableObjects.push(new HideableObject(85.0*16,75.0*16,Assets.Cauldron, true,0.5));
-		hideableObjects.push(new HideableObject(66.0*16,48.0*16,Assets.Cauldron, true,0.5));
+			hideableObjects.push(new HideableObject(66.0*16,48.0*16,Assets.Cauldron, true,0.5));
 		}
 
 		override protected function savePointCreation():void{
@@ -320,14 +356,14 @@ package
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(WALLS, 107),
-				Assets.WALLS_TILE, tileSize.x, tileSize.y
+				Assets.celesteTileset, tileSize.x, tileSize.y
 			);
 			wallGroup.add(tiles);
 
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(FOREGROUND, 107),
-				Assets.WALLS_TILE, tileSize.x, tileSize.y
+				Assets.celesteTileset, tileSize.x, tileSize.y
 			);
 			foreGroundGroup.add(tiles);
 			darkness = new FlxSprite(0,0);
@@ -339,6 +375,16 @@ package
 		}
 		
 		protected function createObjects():void {
+			legsLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			legsLight.scale=new FlxPoint(0.3,0.3);
+			
+			bodyLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			bodyLight.scale=new FlxPoint(0.3,0.3);
+			
+			headLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			headLight.scale=new FlxPoint(0.3,0.3);
+		
+		
 			var sprite:FlxSprite;
 			decalGroup = new FlxGroup();
 			objectGroup = new FlxGroup();
@@ -1205,9 +1251,9 @@ package
 			player = new Player(playerStart.x, playerStart.y);
 		}
 
-		override protected function createGUI():void {
-			super.createGUI();
-		}
+		//override protected function createGUI():void {
+		//	super.createGUI();
+		//}
 
 		override protected function createWaterDroplets():void {
 			var waterDrop:FlxSprite;
@@ -2250,7 +2296,12 @@ package
 			player.addSprites(this);
 			add(enemyController);
 			add(foreGroundGroup);
-			add(playerLight);
+			
+			add(legsLight);
+			add(bodyLight);
+			add(headLight);
+			
+			//add(playerLight);
 			add(darkness);
 			add(guiGroup);
 			//absolutely necessary for some reason
@@ -2307,6 +2358,8 @@ package
 			
 			if(saver.data.headOutfitGot)
 			{
+				remove(headLight);
+			
 				headOutfit.setGrabbed();
 				player.setNewOutfitPiece(headOutfit);
 				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
@@ -2315,7 +2368,8 @@ package
 			{
 				add(headOutfit); 
 				
-				
+				headLight.x=headOutfit.x+headOutfit.width/2;
+				headLight.y = headOutfit.y+headOutfit.height/2;
 			
 				
 				//Starting off dialog
@@ -2335,6 +2389,8 @@ package
 			bodyOutfit = new PlayerOutfit(64*16,65*16,Assets.CHEF_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.CHEFBODY_SPRITE, OutfitHandler.CHEF_OUTFIT);
 			if(saver.data.bodyOutfitGot)
 			{
+				remove(bodyLight);
+			
 				bodyOutfit.setGrabbed();
 				player.setNewOutfitPiece(bodyOutfit);
 				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
@@ -2344,7 +2400,8 @@ package
 			else
 			{
 				add(bodyOutfit);
-				
+				bodyLight.x=bodyOutfit.x+bodyOutfit.width/2;
+				bodyLight.y = bodyOutfit.y+bodyOutfit.height/2;
 			
 			
 			}
@@ -2357,6 +2414,9 @@ package
 			
 			if(saver.data.legsOutfitGot)
 			{
+				remove(legsLight);
+			
+				legsLight
 				legOutfit.setGrabbed();
 				player.setNewOutfitPiece(legOutfit);
 				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
@@ -2365,7 +2425,8 @@ package
 			{
 				add(legOutfit);
 				
-				
+				legsLight.x=legOutfit.x+legOutfit.width/2;
+				legsLight.y = legOutfit.y+legOutfit.height/2;
 			
 			}
 			
@@ -2374,6 +2435,20 @@ package
 
 		override public function update():void {
 			super.update();
+			
+			
+			if(!FlxG.music.active)
+			{
+				
+				var currIndex:int = (int)(Math.random()*4);
+					
+				FlxG.music = otherBits[currIndex];
+				FlxG.music.play();
+				
+				
+			
+			}
+			
 		}
 
 		override public function normalGameplay():void {

@@ -18,7 +18,7 @@ package
 		
 		//CONSTRUCTOR
 		
-		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=1, _timeToExit :Number=2
+		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=1, _timeToExit :Number=1
 		, _inUseImage: Class=null)
 		{
 			super(X,Y, imageOfObject);

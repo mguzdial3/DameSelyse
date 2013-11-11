@@ -305,7 +305,6 @@ package
 		private var prisonerSprite: FlxSprite;
 		private var prisonerLight: Light;
 		
-		private var prisonerFirstDialogIndex:int=0;
 		
 
 		public function dungeonLevel1(levelSize:FlxPoint, blockSize:FlxPoint):void {
@@ -314,7 +313,12 @@ package
 			
 			setLevelName("Dungeon");
 			
-			FlxG.playMusic(Assets.DUNGEON_SONG);
+			var dungeonMusic: FlxSound = new FlxSound;
+			dungeonMusic.loadEmbedded(Assets.DUNGEON_SONG,true);
+			FlxG.music = (dungeonMusic);
+			FlxG.music.volume = 0.8;
+			FlxG.music.play();
+			
 		}
 
 		override protected function addHideableObjects():void {
@@ -408,21 +412,21 @@ package
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(FLOORS, 116),
-				Assets.FLOORS_TILE, tileSize.x, tileSize.y, 0, 0, 0, uint.MAX_VALUE
+				Assets.celesteFloorTilesheetFin, tileSize.x, tileSize.y, 0, 0, 0, uint.MAX_VALUE
 			);
 			floorGroup.add(tiles);
 
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(WALLS, 116),
-				Assets.WALLS_TILE, tileSize.x, tileSize.y
+				Assets.celesteTileset, tileSize.x, tileSize.y
 			);
 			wallGroup.add(tiles);
 
 			tiles = new FlxTilemap();
 			tiles.loadMap(
 				FlxTilemap.arrayToCSV(FOREGROUND, 116),
-				Assets.WALLS_TILE, tileSize.x, tileSize.y
+				Assets.celesteTileset, tileSize.x, tileSize.y
 			);
 			foreGroundGroup.add(tiles);
 			darkness = new FlxSprite(0,0);
@@ -430,6 +434,16 @@ package
 			darkness.scrollFactor.x = darkness.scrollFactor.y = 0;
 			darkness.blend = "multiply";
 			//playerLight = new Light(Assets.LightImageClass, FlxG.width / 2, FlxG.height / 2, darkness);
+			
+			legsLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			legsLight.scale=new FlxPoint(0.3,0.3);
+			
+			bodyLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			bodyLight.scale=new FlxPoint(0.3,0.3);
+			
+			headLight= new Light(Assets.SquareLightImageClass, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFF00); 
+			headLight.scale=new FlxPoint(0.3,0.3);
+			
 			createObjects();
 		}
 
@@ -625,7 +639,7 @@ package
 			sprite.immovable=true;
 			objectGroup.add(sprite);
 			
-			drunkCat = new FlxSprite(96.0*16,69*16,Assets.DRUNK_CAT);
+			drunkCat = new FlxSprite(96.0*16,69*16,Assets.DrunkCat);
 			drunkCat.immovable=true;
 			objectGroup.add(drunkCat);
 
@@ -1606,11 +1620,11 @@ package
 			var enemyLight:Light;
 			var waypointList0: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
 
-			//waypointList0.push(new FlxPoint(1768.0,1352.0)); 
+			waypointList0.push(new FlxPoint(1768.0,1352.0)); 
 			waypointList0.push(new FlxPoint(1700.0,1352.0)); 
 			waypointList0.push(new FlxPoint(1700.0,1256.0)); 
-			//waypointList0.push(new FlxPoint(1768.0,1256.0)); 
-			//waypointList0.push(new FlxPoint(1784.0,1352.0)); 
+			waypointList0.push(new FlxPoint(1768.0,1256.0)); 
+			waypointList0.push(new FlxPoint(1784.0,1352.0)); 
 
 			enemyLight = new Light(Assets.SharkLightImage, FlxG.width*3/ 4, FlxG.height/ 4, darkness, 0xFFFFFFFF); add(enemyLight); enemyLight.scale=new FlxPoint(0.75,0.75);
 
@@ -2523,8 +2537,6 @@ package
 				}
 			}
 			add(objectGroup);
-			
-			
 			add(decalGroup);
 			if(waterDrops!=null)			{
 				for(i = 0; i<waterDrops.length; i++)
@@ -2542,9 +2554,16 @@ package
 			add(foreGroundGroup);
 			
 			
+			add(legsLight);
+			add(bodyLight);
+			add(headLight);
+			
+			
 			add(darkness);
+			
 			add(guiGroup);
-			add(prisonerLight);
+			
+			
 			//absolutely necessary for some reason
 			debugText = new FlxText(FlxG.camera.scroll.x,FlxG.camera.scroll.y,100);
 			debugText.text = "Debug: ";
@@ -2576,6 +2595,9 @@ package
 			super.loadInformation();
 			
 			headOutfit = new PlayerOutfit(78*16,78*16,Assets.RANGER2_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGER2HEAD_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			
+			remove(headLight);
+			
 			if(saver.data.headOutfitGot)
 			{
 				headOutfit.setGrabbed();
@@ -2584,9 +2606,6 @@ package
 			}
 			else
 			{
-
-
-				//add(headOutfit); 
 				
 				
 				var hideHatSprites: Vector.<FlxSprite>= new Vector.<FlxSprite>();
@@ -2594,6 +2613,8 @@ package
 				
 				var dialogNodeHat7:SpriteHideDialogNode = new SpriteHideDialogNode(null,DialogHandler.PLAYER_HEAD, "Maybe I can find other pieces of the guard's uniform to help me blend in better later on.", hideHatSprites);
 				var dialogNodeHat6: OutfitDialogNode = new OutfitDialogNode(dialogNodeHat7, DialogHandler.PLAYER_HEAD, "Fits like a charm! Hmm... I'm no fashion expert, but this clashes a bit",headOutfit);
+				
+				
 				
 				var dialogNodeHat5b:DialogNode = new DialogNode(dialogNodeHat6, DialogHandler.PLAYER_HEAD, "You know what. No, I should grab it. He's really deep into his catnap.");
 				var hatAnswers: Vector.<EnemyAnswer> = new Vector.<EnemyAnswer>();
@@ -2604,7 +2625,7 @@ package
 				hatResponses.push(dialogNodeHat6);
 				hatResponses.push(dialogNodeHat5b);
 				
-				var questionHat:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "I don't know, is it worth it?", 0, true,hatResponses, hatAnswers);
+				var questionHat:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "I don't know, is it worth it?",Assets.CAT_GUARD_DISAGREE, 0, true,hatResponses, hatAnswers);
 				questionHat.setTimeToAnswer(30);
 		
 				
@@ -2618,7 +2639,6 @@ package
 				//Index 0
 				dialogueTriggers.push(new  DialogueTriggerZone(96*16, 67*16, 5*16, 2*16, dialogNodeHat1, false, true));
 
-
 			}
 			
 			
@@ -2627,33 +2647,44 @@ package
 			bodyOutfit = new PlayerOutfit(78*16,73*16,Assets.RANGER2_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGER2BODY_SPRITE, OutfitHandler.GUARD_OUTFIT);
 			if(saver.data.bodyOutfitGot)
 			{
+				remove(bodyOutfit);
+			
 				bodyOutfit.setGrabbed();
 				player.setNewOutfitPiece(bodyOutfit);
 				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
-				
 				
 			}
 			else
 			{
 			
+				
+			
 				//If we don't have the body outfit yet, spawn 
 				var dialogNodeCat3:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Still, I don’t want to get thrown back into my cell. I’m sure I can hide in that rusty armor till he passes by.");
 
-				var dialogNodeCat2:DialogNode = new DialogNode(dialogNodeCat3, DialogHandler.PLAYER_HEAD, "Since most of them probably started out as burglars raiding his milk reserves, I doubt they’re all that good at their jobs or even really know how to do them.");
+				var dialogNodeCat2:DialogNode = new DialogNode(dialogNodeCat3, DialogHandler.PLAYER_HEAD, "Since most of them probably started out as burglars raiding his milk reserves, I can probably fool most of them by just claiming to be a guard doing 'Guard Stuff', for a while anyway.");
 				var dialogNodeCat1:DialogNode = new DialogNode(dialogNodeCat2, DialogHandler.PLAYER_HEAD, "Alright so the Walrus King employs cats as guards. Must be to keep the cooks in line.");
 			
 			
 				//Index 0
-				dialogueTriggers.push(new  DialogueTriggerZone(112*16, 75*16, 5*16, 2*16, dialogNodeCat1, false, true));
+				dialogueTriggers.push(new  DialogueTriggerZone(112*16, 77*16, 5*16, 2*16, dialogNodeCat1, false, true));
 
 			
 				add(bodyOutfit);
+				
+				bodyLight.x=bodyOutfit.x+bodyOutfit.width/2;
+				bodyLight.y = bodyOutfit.y+bodyOutfit.height/2;
+				
+				//add(bodyLight);
 			}
 			
 			
-			legOutfit = new PlayerOutfit(31*16,78*16,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			legOutfit = new PlayerOutfit(playerStart.x,playerStart.y+16,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
+			//new PlayerOutfit(31*16,78*16,Assets.RANGER2_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.RANGER2LEGS_SPRITE, OutfitHandler.GUARD_OUTFIT);
 			if(saver.data.legsOutfitGot)
 			{
+				remove(legsLight);
+			
 				key2=null;
 				legOutfit.setGrabbed();
 				player.setNewOutfitPiece(legOutfit);
@@ -2669,7 +2700,7 @@ package
 				//key is no longer in world, but is given to the player
 				key = new InventoryItem(Assets.KEY, 0,0,"Key", new FlxPoint(0.5,0.5));
 				//Key2 is within the world
-				key2 = new InventoryItem(Assets.KEY2, 25*16,64*16,"Key2", new FlxPoint(0.5,0.5));
+				key2 = new InventoryItem(Assets.KEY2, 45*16,74*16,"Key2", new FlxPoint(0.5,0.5));
 				add(key2);
 				
 				
@@ -2734,12 +2765,17 @@ package
 				
 				add(legOutfit);
 				
+				legsLight.x=legOutfit.x+legOutfit.width/2;
+				legsLight.y = legOutfit.y+legOutfit.height/2;
+				//add(legsLight);
+				
 			}
 			
 			enemyController.checkCorrectOutfit();
 		}
 
 		override public function update():void {
+			darkness.fill(0xff888888); //Add this
 			super.update();
 		}
 
@@ -2747,14 +2783,19 @@ package
 			super.normalGameplay();
 			FlxG.collide(objectGroup, player);
 			
+			//Extra level stuff
 			if(key2!=null && FlxG.collide(key2,player))
 			{
 				if(inventory.setInventoryItem(key2))
 				{
 				
+					FlxG.play(Assets.KEY_PICKUP);
+				
 					key2.velocity.x=key2.velocity.y=0;
 					key2.acceleration.x=key2.acceleration.y=0;
-					key2.alpha=0;
+					
+					key2.x=-10;
+					key2.y=-10;
 					
 					//Add new node
 					key2=null;
@@ -2768,6 +2809,9 @@ package
 			{
 				if(inventory.getInventoryItem()!=null && inventory.getInventoryItem().getItemName()=="Key")
 				{
+				
+					FlxG.play(Assets.UNLOCK_NOISE);
+					
 					//Just move it
 					lockedDoor2.x=-16;
 					lockedDoor2.y=-16;

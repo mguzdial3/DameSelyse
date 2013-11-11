@@ -22,6 +22,9 @@ package
 		private var num: Number;
 		private var fpsToUse: int = 8;
 		
+		
+		protected var footfallSound: FlxSound;
+		
 		/**
 		 * Constructor
 		 * @param	X	X location of the entity
@@ -39,6 +42,11 @@ package
 			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
 			
 			outfitHandler = new OutfitHandler(legOutfit,bodyOutfit,headOutfit);
+			
+			//Footfall sound
+			footfallSound = new FlxSound();
+			footfallSound.loadEmbedded(Assets.FOOTSTEP_NOISE);
+			
 			
 			//BODY SPRITE SET UP
 			bodySprite.loadGraphic(
@@ -97,29 +105,30 @@ package
 		
 		public function keepBodyTogether(): void
 		{
-		
-			mySprite.update();
+			//mySprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
 			mySprite.x = x;
-			mySprite.y = y-(mySprite.height-height);
+			mySprite.y = y-(18-height);
 		
 			//MOVE BODY AND HEAD
-			bodySprite.update();
+			//bodySprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
 			bodySprite.x = x;
-			bodySprite.y = y-(bodySprite.height-height);
+			bodySprite.y = y-(18-height);
 			
-			headSprite.update();
+			//headSprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
 			headSprite.x = x;
-			headSprite.y = y-(headSprite.height-height);
+			headSprite.y = y-(18-height);
 		}
 		
 		
 		override public function updateAnimations():void {
+			keepBodyTogether();
+		
 			// use abs() so that we can animate for the dominant motion
 			// ex: if we're moving slightly up and largely right, animate right
 			var absX:Number = Math.abs(velocity.x);
@@ -237,6 +246,17 @@ package
 			headSprite.x = x;
 			headSprite.y = y-(mySprite.height-height);
 			
+			if(velocity.x!=0 || velocity.y!=0)
+			{
+				if(!footfallSound.active)
+				{
+					footfallSound.play();
+				}
+			}
+			else
+			{
+				footfallSound.stop();
+			}
 			
 			
 			// check keys

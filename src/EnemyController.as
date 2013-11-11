@@ -43,6 +43,15 @@ package
 			
 		}
 		
+		public function addGUIBits(group:FlxGroup):void
+		{
+			var i:int;
+			for(i=0; i<enemies.length; i++)
+			{
+				enemies[i].addExpressionSprite(group);	
+			}
+		}
+		
 		private function enterQuestionMode(enemy: Enemy):void
 		{
 			currState = QUESTION_TIME;
@@ -63,6 +72,7 @@ package
 			{
 				enemies[i].setPaused(false);
 				enemies[i].resetToOriginalPositions();
+				enemies[i].setNoLongerSuspicious();
 			}
 			
 			currState=NORMAL_GAMEPLAY;
@@ -115,7 +125,7 @@ package
 			
 		}
 		
-		public function commandEnemies(specialCommand: int=NOT_ANY):int
+		public function commandEnemies(currLevel: TopDownLevel, specialCommand: int=NOT_ANY):int
 		{
 			var messageToReturn:int=NOTHING_SPECIAL;
 			
@@ -133,34 +143,48 @@ package
 				{
 					
 					for(i=0; i<enemies.length; i++)
-					{
-						myMessage= enemies[i].command();
+					{	
+					/**
+						if(enemies[i].x>FlxG.camera.scroll.x-100 &&
+						enemies[i].x<FlxG.camera.scroll.x+100 +320
+						&& enemies[i].y>FlxG.camera.scroll.y-100 
+						&& enemies[i].y<FlxG.camera.scroll.y+240+100)
+						{ 
+					*/
 					
-						//Enter Question Time
-						if(myMessage==enemies[i].QUESTION_TIME)
-						{
-							enterQuestionMode(enemies[i]);
-							
-							if(enemies[i].getHasSeenPlayer())
+							myMessage= enemies[i].command(currLevel);
+					
+							//Enter Question Time
+							if(myMessage==enemies[i].QUESTION_TIME)
 							{
-								messageToReturn = RELOAD_LEVEL;
-							}
 							
-							else
-							{
-								enemies[i].youSawThePlayer();
-								messageToReturn =ENEMY_SPOTTED_PLAYER;
-							}
+									enterQuestionMode(enemies[i]);
+								
+									/**
+									if(enemies[i].getHasSeenPlayer())
+									{
+										messageToReturn = RELOAD_LEVEL;
+									}
 							
-						}
+									else
+									{
+									*/
+									//	enemies[i].youSawThePlayer();
+									
+									messageToReturn =ENEMY_SPOTTED_PLAYER;
+								
+									//}
+								
+							}
+						//}
 					}
 				}
 				else if(currState==QUESTION_TIME)
 				{
 					for(i=0; i<enemies.length; i++)
 					{
-						myMessage = enemies[i].command(1);
-						
+						//myMessage = enemies[i].command(1);
+						enemies[i].hardStop();
 						
 					}
 				}

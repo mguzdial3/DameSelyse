@@ -49,7 +49,7 @@ package
 		
 		protected var numberAnswersSuspicious: int=8; //Number of answers to have when enemy is suspicious
 		protected var numberAnswersRelaxed:int = 4; //Number of answers to have when enemy is relaxed
-		protected var suspicious: Boolean; //Whether or not this enemy is suspicious
+		protected var suspicious: int; //Whether or not this enemy is suspicious
 		
 		
 		//For when paused
@@ -62,8 +62,22 @@ package
 		protected var expressionTimer: Number; 
 		protected var expressionTimerMax:Number = 1.0;
 		
+		//Memory Stuff
+		protected var giveUpTimer:Number=0.0; 
+		protected var giveUpTimerMax: Number = 4.0;
+		protected var playerPoint: FlxPoint; //Last point we saw the player at
+		protected var seesPlayer:Boolean;
 		
-		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 30, xSize:int = 15, ySize:int = 18):void {
+		//Sound Stuff
+		protected var sightedSound: Class;
+		protected var lostSound: Class;
+		
+		//Timer for small bit of freedom escaping the guards gives you
+		protected var cantFindPlayerTimer:Number=0;
+		protected var cantFindPlayerTimerMax:Number = 2;
+		
+		
+		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 48, xSize:int = 15, ySize:int = 18):void {
 			super(imgToUse, new FlxPoint(10,4), new FlxPoint(xSize,ySize), X, Y,_runSpeed);
 			
 			
@@ -81,7 +95,7 @@ package
 			//This one is just the basic guard outfit
 			outfitToUse=OutfitHandler.GUARD_OUTFIT;
 					
-			suspicious = true;	
+			suspicious = 0;	
 						
 			//Set up movement FlxPoint (Used as a vector)
 			movement = new FlxPoint();
@@ -95,8 +109,12 @@ package
 			}
 			else
 			{
-				enemyQuestion = new DialogNode(null, DialogHandler.CAT_HEAD, "What are you doing here?");
+				enemyQuestion = new DialogNode(null, DialogHandler.CAT_HEAD, "What are you doing here?", Assets.CAT_GUARD_JABBER);
 			}
+			
+			sightedSound=Assets.CAT_GUARD_SIGHTED;
+			
+			lostSound = ( Assets.CAT_GUARD_LOST);
 			
 			//Instantiate exclamation thing
 			expressionSprite = new FlxSprite(x,y);
@@ -107,23 +125,25 @@ package
 			
 		}
 		
-		
-		
 		public function resetToOriginalPositions():void
 		{
-			this.x=originalPosition.x;
-			this.y=originalPosition.y;
+			//this.x=originalPosition.x;
+			//this.y=originalPosition.y;
 			
-			//Reset to undetected state
-			lightFOV.setColor(undetectedColor);
+			if(currentState!=WAYPOINTING)
+			{
+				//Reset to undetected state
+				lightFOV.setColor(undetectedColor);
 			
 			
-			//Hide sprite if showing
-			expressionTimer = 0;
-			expressionSprite.makeGraphic(4, 8, 0xFFFFFF00); 
-			expressionSprite.alpha = 0;
+				//Hide sprite if showing
+				expressionTimer = 0;
+				expressionSprite.makeGraphic(4, 8, 0xFFFFFF00); 
+				expressionSprite.alpha = 0;
 			
-			currentState=WAYPOINTING;
+				currentState=WAYPOINTING;
+				cantFindPlayerTimer = cantFindPlayerTimerMax;
+			}
 		}
 		
 		override public function createAnimations():void {
@@ -139,12 +159,13 @@ package
 			
 		}
 		
+		
 		//Get Positive Response
 		protected function getPositiveResponse(): DialogNode
 		{
-			var node1: DialogNode = 	 new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, well carry on then.",DialogNode.RESET_ENEMIES)
+			var node1: DialogNode = 	 new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, well carry on then.",Assets.CAT_GUARD_AGREE, DialogNode.RESET_ENEMIES)
 		
-			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "You know... Guard stuff");
+			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "You know... Guard stuff",Assets.CELESTE_DETERMINED );
 			
 		
 		}
@@ -168,32 +189,32 @@ package
 			enemyAnswers = 	new Vector.<EnemyAnswer>();
 			
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer2,getRandomKeyboardKey(),true));
-			var response2: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, alright- WAIT A MINUTE. You're Dame Celeste! Back to your cell, young lady!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(response2, DialogHandler.PLAYER_HEAD,  enemyAnswer1)));
+			var response2: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, alright- WAIT A MINUTE. You're Dame Celeste! Back to your cell, young lady!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(response2, DialogHandler.PLAYER_HEAD,  enemyAnswer1, Assets.CELESTE_TOUGH)));
 			
-			var response3: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Wait. What? Oh! You must be Celeste. Let's get you back to your cell.",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(response3, DialogHandler.PLAYER_HEAD, enemyAnswer3)));
+			var response3: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Wait. What? Oh! You must be Celeste. Let's get you back to your cell.", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(response3, DialogHandler.PLAYER_HEAD, enemyAnswer3,Assets.CELESTE_TOUGH)));
 			
-			var response4: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, just chilling? WAIT- You're Dame Celeste! Back to prison with you!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(response4, DialogHandler.PLAYER_HEAD, enemyAnswer4)));
+			var response4: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh, just chilling? WAIT- You're Dame Celeste! Back to prison with you!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(response4, DialogHandler.PLAYER_HEAD, enemyAnswer4,Assets.CELESTE_TOUGH)));
 			
-			var response5: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "...That's really rude. Back to your cell, Celeste, and think about what you've done.",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer5,getRandomKeyboardKey(), false,  new DialogNode(response5, DialogHandler.PLAYER_HEAD, enemyAnswer5)));
+			var response5: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "...That's really rude. Back to your cell, Celeste, and think about what you've done.",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer5,getRandomKeyboardKey(), false,  new DialogNode(response5, DialogHandler.PLAYER_HEAD, enemyAnswer5,Assets.CELESTE_TOUGH)));
 			
-			var response6: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "You aren't the prisoner I'm looking for... Wait, yes you are!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(response6, DialogHandler.PLAYER_HEAD, enemyAnswer6)));
+			var response6: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "You aren't the prisoner I'm looking for... Wait, yes you are!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(response6, DialogHandler.PLAYER_HEAD, enemyAnswer6,Assets.CELESTE_TOUGH)));
 			
-			var response7: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Um, you know, guard stuff? Wait a second, I don't have to explain myself! Back to your cell!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(response7, DialogHandler.PLAYER_HEAD, enemyAnswer7)));
+			var response7: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Um, you know, guard stuff? Wait a second, I don't have to explain myself! Back to your cell!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(response7, DialogHandler.PLAYER_HEAD, enemyAnswer7,Assets.CELESTE_TOUGH)));
 			
-			var response8: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh! What are you doing out of your cell then? Let's get you back.",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer8,getRandomKeyboardKey(), false,  new DialogNode(response8, DialogHandler.PLAYER_HEAD, enemyAnswer8)));
+			var response8: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Oh! What are you doing out of your cell then? Let's get you back.", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer8,getRandomKeyboardKey(), false,  new DialogNode(response8, DialogHandler.PLAYER_HEAD, enemyAnswer8,Assets.CELESTE_TOUGH)));
 			
-			var response9: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Not anymore! Back to your cell, young lady!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer9)));
+			var response9: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "Not anymore! Back to your cell, young lady!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer9,Assets.CELESTE_TOUGH)));
 			
-			var response10: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "First of all, how dare you. Second, back to your cell!",DialogNode.RESET_GAME);
-			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer10)));
+			var response10: DialogNode = new DialogNode(null, DialogHandler.CAT_HEAD, "First of all, how dare you. Second, back to your cell!", Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_GAME);
+			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(response10, DialogHandler.PLAYER_HEAD, enemyAnswer10,Assets.CELESTE_TOUGH)));
 			
 			
 		}
@@ -218,9 +239,13 @@ package
 		{
 			var numberOfAnswers:int = numberAnswersSuspicious;
 			
-			if(!suspicious)
+			if(suspicious==3)
 			{
 				numberOfAnswers = numberAnswersRelaxed;
+			}
+			else if(suspicious==1 || suspicious==2)
+			{
+				numberOfAnswers = 6;
 			}
 			
 			var answersToReturn: Vector.<EnemyAnswer> = new Vector.<EnemyAnswer>();
@@ -272,9 +297,13 @@ package
 		{
 			groupToAddTo.add(this);
 			groupToAddTo.add(mySprite);
-			groupToAddTo.add(expressionSprite);
+			
 		}
 		
+		public function addExpressionSprite(groupToAddTo: FlxGroup): void
+		{
+			groupToAddTo.add(expressionSprite);
+		}
 		
 		//To be overriden in other enemies for different lights
 		protected function moveLightSource(): void{
@@ -339,7 +368,18 @@ package
 		
 		public function setNotSuspicious():void
 		{
+			//lightFOV.setColor(0xFFFFFFFF);
+			
+			
+			
+			//currentState=WAYPOINTING;
+		}
+		
+		public function setNoLongerSuspicious():void
+		{
 			lightFOV.setColor(0xFFFFFFFF);
+			
+			
 			
 			currentState=WAYPOINTING;
 		}
@@ -352,10 +392,10 @@ package
 		
 		protected function suspiciousEnough(): Boolean
 		{
-			return lightFOV.lerpColor(0xFFFF0000,80);
+			return lightFOV.lerpColor(0xFFFF0000,60);
 		}
 		
-		private function regularGameplay():int
+		private function regularGameplay(currLevel: TopDownLevel):int
 		{
 			//MOVE THE LIGHT SOURCE
 			moveLightSource();
@@ -410,12 +450,28 @@ package
 		
 		
 				//Check how to transfer into seeking player state
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding())
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && cantFindPlayerTimer<=0)
 				{
-					expressionSprite.loadGraphic(Assets.EXCLAMATION); 
-					expressionSprite.alpha = 1;
-					expressionTimer=expressionTimerMax;
-					currentState=SEEKINGPLAYER;
+					
+					if(playerSeeable(currLevel))
+					{
+						expressionSprite.loadGraphic(Assets.EXCLAMATION); 
+						expressionSprite.alpha = 1;
+						expressionTimer=expressionTimerMax;
+						currentState=SEEKINGPLAYER;
+						FlxG.play(sightedSound);
+					
+					
+						giveUpTimer = giveUpTimerMax;
+						playerPoint = new FlxPoint(player.x,player.y);
+					
+						seesPlayer=true;
+					}
+				}
+				
+				if(cantFindPlayerTimer>0)
+				{
+					cantFindPlayerTimer-=FlxG.elapsed;
 				}
 				
 		
@@ -423,22 +479,91 @@ package
 			else if(currentState==SEEKINGPLAYER)
 			{
 			
-				if(suspiciousEnough())
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && suspiciousEnough()
+					&& closeEnoughToPlayer(new FlxPoint(player.x,player.y))
+					&& playerSeeable(currLevel))
+				
 				{
+				
+					expressionSprite.alpha = 0;		
+					seesPlayer=true;		
 					return QUESTION_TIME;
+					
 				}
 			
-			
-				goalPoint = new FlxPoint(player.x,player.y);
+				
+				//THIS IS THE PLACE WHERE YOU FIND WHERE YOU SHOULD SEEK
+				goalPoint = getNextPnt(currLevel);//new FlxPoint(playerPoint.x,playerPoint.y);
 				
 				
-				if(!withinView(new FlxPoint(player.x,player.y)))
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				&& playerSeeable(currLevel))
+				{	
+				
+					if(player.x!=playerPoint.x || player.y!=playerPoint.y)
+					{
+						playerPoint = new FlxPoint(player.x,player.y);
+					}
+					giveUpTimer = giveUpTimerMax;
+					
+					if(!seesPlayer)
+					{
+						expressionSprite.loadGraphic(Assets.EXCLAMATION); 
+						expressionSprite.alpha = 1;
+						FlxG.play(sightedSound);
+					}					
+					seesPlayer=true;
+					
+				}
+				else if(giveUpTimer<=0 )
 				{
+					if(seesPlayer)
+					{
+						FlxG.play(lostSound);
+					}
+					
+					if(player.x!=playerPoint.x || player.y!=playerPoint.y)
+					{
+						playerPoint = new FlxPoint(player.x,player.y);
+					}
+
+					seesPlayer=false;
 					expressionSprite.loadGraphic(Assets.QUESTION_MARK); 
+					
 					expressionSprite.alpha = 1;
 					expressionTimer=expressionTimerMax;
 					currentState=WAYPOINTING;
 				}
+				else
+				{
+				
+					var currentTime:Date = new Date();
+					
+					if((currentTime.milliseconds/4)%2==0)
+					{
+					
+						goalPoint.x=playerPoint.x+ Math.random()*32-16;
+						goalPoint.y=playerPoint.y+Math.random()*32-16;
+					}
+				
+					if(seesPlayer)
+					{
+						FlxG.play(lostSound);
+					}
+				
+				
+					seesPlayer=false;
+					expressionSprite.loadGraphic(Assets.QUESTION_MARK);
+					
+					expressionSprite.alpha = 1;
+					expressionTimer=expressionTimerMax;
+				}
+				
+				if(giveUpTimer>0)
+				{
+					giveUpTimer-=FlxG.elapsed;
+				}
+				
 				
 				
 			}
@@ -464,7 +589,7 @@ package
 				//Move right
 					movement.x += 1;
 				}
-				else if(this.x>goalPoint.x+bufferZone)
+				if(this.x>goalPoint.x+bufferZone)
 				{
 					//On left
 					movement.x -= 1;
@@ -475,7 +600,7 @@ package
 					//Move down
 					movement.y += 1;
 				}
-				else if(this.y>goalPoint.y+bufferZone)
+				if(this.y>goalPoint.y+bufferZone)
 				{
 					//Move up
 					movement.y -= 1;
@@ -484,7 +609,7 @@ package
 		}
 		
 		//CALLED FROM ENEMYCONTROLLER, MAKES ALL THE THINGS HAPPEN
-		public function command(commandMessage: int=0):int {
+		public function command(currLevel: TopDownLevel, commandMessage: int=0):int {
 		
 			
 		
@@ -495,7 +620,7 @@ package
 				{
 					pausedPosition = new FlxPoint(0,0);
 				}			
-				return regularGameplay();
+				return regularGameplay(currLevel);
 			}		
 			else if(commandMessage==PAUSE)
 			{
@@ -516,6 +641,14 @@ package
 					
 			return 0;
 		
+		}
+		
+		protected function closeEnoughToPlayer(pnt: FlxPoint): Boolean
+		{
+			return (manhattanDistance(new FlxPoint(this.x,this.y), pnt)<16);
+			
+			
+			
 		}
 		
 		
@@ -566,29 +699,47 @@ package
 				numCorrect++;
 			}
 			
+			suspicious = numCorrect;
+			
 			if(numCorrect==3)
 			{
-				suspicious=false;
-				shrinkFOV();
+				allMatchFOV();
+			}
+			else if(numCorrect==2)
+			{
+				twoMatchFOV()
+			}
+			else if(numCorrect==1)
+			{
+				oneMatchFOV();
 			}
 			else
 			{
-				suspicious=true;
-				resetFOV();
+				noMatchFOV();
 			}
 			
 			
 		}
 		
 		//To be overriden for how other lightFOV's shrink
-		protected function shrinkFOV():void
+		protected function allMatchFOV():void
 		{
 			lightFOV.scale= new FlxPoint(0.35,0.35);
 		}
 		
-		protected function resetFOV():void
+		protected function noMatchFOV():void
 		{
 			lightFOV.scale= new FlxPoint(0.6,0.6);
+		}
+		
+		protected function oneMatchFOV():void
+		{
+			lightFOV.scale= new FlxPoint(0.55,0.55);
+		}
+		
+		protected function twoMatchFOV():void
+		{
+			lightFOV.scale= new FlxPoint(0.45,0.45);
 		}
 		
 		
@@ -611,6 +762,130 @@ package
 		public function youSawThePlayer():void
 		{
 			hasSeenPlayer = true;
+		}
+		
+		
+		//Returns the next spot this enemy should go to (PATHING)
+		public function getNextPnt(currLevel: TopDownLevel): FlxPoint
+		{
+			var leftVec:FlxPoint = new FlxPoint(-1,0);
+			var upVec:FlxPoint = new FlxPoint(0,1);
+			var rightVec:FlxPoint = new FlxPoint(1,0);
+			var downVec: FlxPoint = new FlxPoint(0,-1);
+			var vectors:Array = [leftVec, upVec, rightVec, downVec];
+					
+			var diffVec: FlxPoint = new FlxPoint(playerPoint.x-this.x,playerPoint.y-this.y);
+			
+			
+			var mag: Number =  Math.sqrt(diffVec.x*diffVec.x+diffVec.y*diffVec.y);
+			
+			diffVec.x/=mag;
+			diffVec.y/=mag;
+			
+			var locToCheck:FlxPoint = new FlxPoint(0,0);
+			var scalar: Number = 8.0;
+			locToCheck.x=this.x +diffVec.x*scalar;
+			locToCheck.y=this.y+diffVec.y*scalar;
+			
+			if(currLevel.canHavePlayerAt(locToCheck.x,locToCheck.y))
+			{
+				return locToCheck;
+			}
+			else
+			{
+				var distances: Array = new Array(4);
+				var doesItWork: Array = new Array(4);
+				
+				var i: int = 0;
+				var currLoc : FlxPoint = new FlxPoint();
+				for(i=0; i<4; i++)
+				{
+					currLoc.x = this.x+vectors[i].x;
+					currLoc.y = this.y+vectors[i].y;
+					
+					if(currLevel.canHavePlayerAt(currLoc.x,currLoc.y))
+					{
+						doesItWork[i] = true;
+						var diff: FlxPoint = new FlxPoint(0,0);
+						diff.x = playerPoint.x-currLoc.x;
+						diff.y = playerPoint.y-currLoc.y;
+						distances[i] = Math.sqrt(diff.x*diff.x+diff.y*diff.y);
+					}
+					else
+					{
+						doesItWork[i]=false;
+					}					
+					
+				}
+				
+				
+				//Find minimum of the ones that worked
+				var minIndex: int = -1;
+				var currDist:Number = -1;
+				for(i =0; i<4; i++)
+				{
+					if(doesItWork[i])
+					{
+						if(distances[i]<currDist || currDist==-1)
+						{
+							minIndex = i;
+							currDist = distances[i];
+						}
+					}
+				}
+				
+				if(minIndex!=-1)
+				{
+					return new FlxPoint(this.x+vectors[i],this.y+vectors[i]);
+				}
+				else
+				{
+					return playerPoint;
+				}
+				
+			}
+			
+		}
+		
+		//Returns true if the enemy can see the player through not a wall, false otherwise
+		protected function playerSeeable(currLevel: TopDownLevel): Boolean
+		{
+			var diff: FlxPoint = new FlxPoint(player.x-this.x,player.y-this.y);
+			
+			var magnitude: Number = Math.sqrt(diff.x*diff.x+diff.y*diff.y);
+			
+			if(magnitude<16)
+			{
+				return true;
+			}
+			else
+			{
+				var numPntsToCheck :int = magnitude/16;
+				numPntsToCheck*=2;
+				var magOfDiff:Number = 8.0;
+			
+				var stillViewable: Boolean = true;
+				
+				var ind : int = 0;
+				
+				diff.x/=magnitude;
+				diff.y/=magnitude;
+				
+				while(stillViewable && 	ind<numPntsToCheck)
+				{
+					var currPnt:FlxPoint = new FlxPoint(0,0);
+					
+					currPnt.x = this.x+ind*magOfDiff*diff.x;
+					currPnt.y = this.y +ind*magOfDiff*diff.y;
+					
+					stillViewable = currLevel.canHavePlayerAt(currPnt.x,currPnt.y);
+					
+					ind++;					
+				}			
+				
+				return stillViewable;
+			
+			}
 		}
 		
 	

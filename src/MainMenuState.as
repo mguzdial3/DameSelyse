@@ -22,7 +22,7 @@ package
 		
 		private function startButtonPress(): void
 		{
-			FlxG.switchState( new GameState());
+			FlxG.switchState( new IntroState());
 		}
 		
 		

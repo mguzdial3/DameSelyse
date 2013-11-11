@@ -29,9 +29,12 @@ package
 		protected var answers: Vector.<EnemyAnswer>;
 		
 		protected var timeToAnswer: int = 10;
+		protected var soundToPlay: Class;
 		
-		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, _afterEnd: uint= 0,
-		_hasQuestions:Boolean=false, _responses: Vector.<DialogNode>=null, _answers: Vector.<EnemyAnswer>=null, _alternateNode:DialogNode=null)
+		
+		
+		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, _soundToPlay: Class=null, _afterEnd: uint= 0,
+		_hasQuestions:Boolean=false, _responses: Vector.<DialogNode>=null, _answers: Vector.<EnemyAnswer>=null,  _alternateNode:DialogNode=null)
 		{
 			nextNode=_nextNode;
 			faceToDisplay=_faceToDisplay;
@@ -45,8 +48,20 @@ package
 			alternateNode=_alternateNode;
 			
 			canPlay=true;
+			
+			soundToPlay=_soundToPlay;
 		}
 		
+		
+		public function getSoundToPlay(): Class
+		{
+			return soundToPlay;
+		}
+		
+		public function setNext(_next:DialogNode): void
+		{
+			nextNode= _next;
+		}
 		
 		
 		public function setTimeToAnswer(_timeToAnswer:int): void

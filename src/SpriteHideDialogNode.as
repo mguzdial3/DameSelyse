@@ -7,12 +7,13 @@ package
 		protected var sprites: Vector.<FlxSprite>;
 		protected var showSprites: Vector.<FlxSprite>;
 		
-		public function SpriteHideDialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String,_sprites:Vector.<FlxSprite>,
+		public function SpriteHideDialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String,_sprites:Vector.<FlxSprite>
+		, _sound:Class=null,
 		_showSprites:Vector.<FlxSprite>=null,
 		 _pausesGame:Boolean=false, 
 		_alternateNode:DialogNode=null)
 		{
-			super(_nextNode,_faceToDisplay, _displayText);
+			super(_nextNode,_faceToDisplay, _displayText,_sound);
 			sprites = _sprites;
 			showSprites = _showSprites;
 		}

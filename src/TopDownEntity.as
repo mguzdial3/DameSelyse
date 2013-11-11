@@ -37,7 +37,7 @@ package
 			
 			// movement
 			maxVelocity = new FlxPoint(runSpeed, runSpeed);
-			drag = new FlxPoint(runSpeed * 4, runSpeed * 4); // decelerate to a stop within 1/4 of a second
+			drag = new FlxPoint(runSpeed * 3, runSpeed * 3); // decelerate to a stop within 1/4 of a second
 			// animations
 			
 			

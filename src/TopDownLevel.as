@@ -107,13 +107,23 @@ package
 		protected var savePoints: Vector.<SavePoint>;//List of all save points
 		protected var saveTimer: Number;//Amount of time till we're done opening a closed save point
 		protected var saveIndex: int; //The index of the save we're currently working with
+		//Change this line to reset save stuff
 		private var resetSave: Boolean=false;
 
 
-		private var enemyTimer:int = 10;
+		private var enemyTimer:int = 12;
 		
 		//Level Names
 		public var levelName: String;
+		
+		//Clothing Lights
+		protected var legsLight: Light;
+		protected var bodyLight: Light;
+		protected var headLight: Light;
+		
+		
+		//Question Gameplay countdown sound
+		protected var questioningSound: FlxSound;
 
 		//MiniMap
 		/**
@@ -159,7 +169,9 @@ package
 		 	answerDisplays = new Vector.<FlxText>;
 			
 			
-			
+			//Sound init
+			questioningSound = new FlxSound();
+			questioningSound.loadEmbedded(Assets.COUNTDOWN_NOISE);
 			
 			
 			// create the level
@@ -204,6 +216,13 @@ package
 			menuText.scrollFactor.x = menuText.scrollFactor.y = 0;
 			add(menuText);
 			
+			dropletText =new FlxText(280, 20, 40, "0/"+player.getMaxDrops());
+			dropletText.alignment = "right";
+			dropletText.scrollFactor = new FlxPoint(0, 0);
+			dropletText.color = 0xff4f7fcf;
+			guiGroup.add(dropletText);
+			
+			
 			hidingTimer=0;
 			
 			
@@ -221,6 +240,8 @@ package
 			add(map);
 			*/
 			
+			//add(dropletText);
+			
 			
 		}
 		
@@ -230,6 +251,8 @@ package
 
 		public function reloadLevel(): void
 		{
+		
+			FlxG.music.stop();
 			reloadThisLevel=true;
 		}
 		
@@ -286,6 +309,9 @@ package
 		*/
 		public function transferLevel(): TopDownLevel
 		{
+		
+		
+		
 			return null;
 		}
 		
@@ -311,11 +337,8 @@ package
 		 */
 		protected function createGUI():void 
 		{
-			dropletText =new FlxText(FlxG.camera.scroll.x+220, FlxG.camera.scroll.y+20, 100, "0/"+player.getMaxDrops());
-			dropletText.alignment = "right";
-			dropletText.scrollFactor = new FlxPoint(0, 0);
-			dropletText.color = 0xff4433ff;
-			add(dropletText);
+			//280
+			
 			
 			
 			hidingBarBackground = new FlxSprite(0,0);
@@ -427,7 +450,7 @@ package
 			for(i=0; i<waterDrops.length; i++)
 			{
 				//WARNING: Might be a problem later if the array gets too long
-				if( !waterDrops[i].alive )//&& arraySoFar.indexOf(i)==-1)
+				if( !waterDrops[i].alive )
 				{
 					saver.data.dropsGrabbed.push(i);
 				}
@@ -490,7 +513,48 @@ package
 		override public function update():void {
 			super.update();
 			
-			debugText.text = "Test";
+			
+			var currentTime:Date = new Date();
+			
+			if(legsLight!=null)
+			{
+				if(currentTime.seconds%2==0)
+				{
+					legsLight.alpha = 0.5+0.5*(currentTime.milliseconds/1000);
+				}
+				else
+				{
+					legsLight.alpha = 1.0-0.5*(currentTime.milliseconds/1000);
+				}
+			}
+			
+			if(bodyLight!=null)
+			{
+				if(currentTime.seconds%2==0)
+				{
+					bodyLight.alpha = 0.5+0.5*(currentTime.milliseconds/1000);
+				}
+				else
+				{
+					bodyLight.alpha = 1.0-0.5*(currentTime.milliseconds/1000);
+				}
+				
+				
+			}
+			
+			if(headLight!=null)
+			{
+				if(currentTime.seconds%2==0)
+				{
+					headLight.alpha = 0.5+0.5*(currentTime.milliseconds/1000);
+				}
+				else
+				{
+					headLight.alpha = 1.0-0.5*(currentTime.milliseconds/1000);
+				}
+			}
+			
+			
 			
 			//For printing stuff out
 			debugText.x = FlxG.camera.scroll.x;
@@ -533,17 +597,19 @@ package
 		protected function savingGameplay():void
 		{
 			//ENEMY CONTROLLER
-			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, player.mySprite);
 			FlxG.collide(enemyController, wallGroup);
 			
 			
 				
 			
 			//THIS MOVES THE ENEMIES
-			var enemyMessage: int = enemyController.commandEnemies();
+			var enemyMessage: int = enemyController.commandEnemies(this);
 			
 				if(savePoints[saveIndex].getOpened())
 				{
+					
+				
 					saveInformation();
 					debugText.text = "Drops Collected: "+saver.data.numDrops;
 					saveTimer=0;
@@ -553,10 +619,12 @@ package
 				else
 				{
 				
+				
 					//Open savePoint first
 				
 					if(saveTimer==0)
 					{
+						FlxG.play(Assets.SAVE_UNLOCK_NOISE);
 						savePoints[saveIndex].setOpening();
 					}
 					else if(saveTimer> savePoints[saveIndex].getTimeToOpen())
@@ -573,20 +641,24 @@ package
 		protected function hiddenNormalGameplay():void
 		{	
 			//ENEMY CONTROLLER
-			FlxG.collide(enemyController, player);
 			FlxG.collide(enemyController, wallGroup);
 			
 			//THIS MOVES THE ENEMIES
-			var enemyMessage: int = enemyController.commandEnemies();
+			var enemyMessage: int = enemyController.commandEnemies(this);
 
 			var potentialX:int = 0;
 			var potentialY:int=0;
 
+
+			player.x=hidingLocation.x;
+			player.y = hidingLocation.y;
+
 			if(hideableObjects[hideableObjectIndex].getForcesOut())
 			{
-			if(hidingTimer>0)
-			{
+				if(hidingTimer>0)
+				{
 				hidingTimer -=FlxG.elapsed;
+				
 				
 				
 				hidingBar.color = 0x00AA0000;
@@ -618,7 +690,7 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x-player.width-1;
 						
-							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
 							}
@@ -637,7 +709,7 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+1;
 						
-							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
 							}
@@ -686,7 +758,7 @@ package
 					
 				
 					
-					hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
+					//hidingBar.scale.x = (32.0*(hidingTimer))/32.0;
 					
 					
 					hidingBar.alpha=1;
@@ -705,8 +777,6 @@ package
 					}
 					else
 					{
-						player.x = hidingLocation.x;
-						player.y = hidingLocation.y;
 						player.setHiding(false);
 						player.setPaused(false);
 						hidingBar.scale.x=0.5;
@@ -723,7 +793,7 @@ package
 			}
 			else
 			{
-				player.x = hidingLocation.x;
+						player.x = hidingLocation.x;
 						player.y = hidingLocation.y;
 						player.setHiding(false);
 						player.setPaused(false);
@@ -757,7 +827,7 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x-player.width-1;
 						
-							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
 							}
@@ -776,7 +846,7 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+1;
 						
-							if(canHavePlayerAt(potentialY, hidingLocation.y))
+							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
 							}
@@ -825,7 +895,7 @@ package
 					
 				
 					
-					hidingBar.scale.x = (16.0*(hidingTimer))/32.0;
+					hidingBar.scale.x = (32.0*(hidingTimer))/32.0;
 					
 					
 					hidingBar.alpha=1;
@@ -844,8 +914,6 @@ package
 					}
 					else
 					{
-						player.x = hidingLocation.x;
-						player.y = hidingLocation.y;
 						player.setHiding(false);
 						player.setPaused(false);
 						hidingBar.scale.x=0.5;
@@ -870,15 +938,35 @@ package
 		{		
 			if(player.addDrop())
 			{
+				FlxG.play(Assets.WATER_PICKUP);
+			
 				Drop.kill();
 			}
 			
 		}
 		
 		
-		protected function canHavePlayerAt(xPos: int, yPos:int): Boolean
+		//Returns true if there isn't a wall there, false otherwise
+		public function canHavePlayerAt(xPos: int, yPos:int): Boolean
 		{
-			return FlxTilemap(wallGroup.getFirstAlive()).getTile(xPos/16,yPos/16) == 0;	
+			
+			var canBeThere:Boolean = true;
+			
+			var i:int;
+			var j:int; 
+			for(i=0; i<16; i++)
+			{
+				for(j=0; j<16; j++)
+				{
+					if(FlxTilemap(wallGroup.getFirstAlive()).getTile((xPos+i)/16,(yPos+j)/16) != 0)
+					{
+						canBeThere=false;
+					}
+				}
+			}
+			
+		
+			return canBeThere;	
 		}				
 		//Level Name Stuff
 		public function setLevelName(_levelName: String): void
@@ -906,26 +994,7 @@ package
 				FlxG.overlap(waterDrops[i],player.mySprite,getWaterDrops);
 			}
 
-			//update minimap
-			/**
-			map.fill(0xffffffff);
-			var stx: int = int(FlxG.camera.scroll.x / 16) - 10; //start x
-			var sty: int = int(FlxG.camera.scroll.y / 16) - 7; //start y
-			var tx: int; //tile x
-			var ty: int; //tile y
-			for (tx = 0; tx < 40; tx++){
-				for (ty = 0; ty < 30; ty++){
-					if (FlxTilemap(wallGroup.getFirstAlive()).getTile(stx+tx,sty+ty) != 0){
-						map.stamp(wallStamp,tx*2,ty*2);
-					}
-				}
-			}
-			var px: int = int((player.x - FlxG.camera.scroll.x)/16) + 11; //player x
-			var py: int = int((player.y - FlxG.camera.scroll.y)/16) + 7; //player y
-			map.stamp(playerStamp,(px*2),py*2);
-			map.x = FlxG.camera.scroll.x;
-			map.y = FlxG.camera.scroll.y;
-			*/
+		
 			
 			//Update collection text
 			dropletText.text = ""+player.getDrops()+"/"+player.getMaxDrops();
@@ -975,6 +1044,7 @@ package
 			//Do we have a hideableObject we're checking against presently
 			if(hideableObjectIndex!=-1)
 			{
+			
 				if(FlxG.collide(hideableObjects[hideableObjectIndex],player))
 				{
 					
@@ -983,13 +1053,12 @@ package
 					
 					
 					hidingBar.scale.x = (16*(hidingTimer)/hideableObjects[hideableObjectIndex].getTimeToEnter())/16.0;
-					/**	
-					hidingBar.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBar.width/2;
-					hidingBar.y = hideableObjects[i].y-hidingBar.height;	
-						
-					hidingBarBackground.x = hideableObjects[i].x+hideableObjects[i].width/2 -hidingBarBackground.width/2;
-					hidingBarBackground.y = hideableObjects[i].y-hidingBarBackground.height;
-					*/
+					
+					
+					if(hidingBar.scale.x>1)
+					{
+						hidingBar.scale.x = 1;
+					}
 					
 					if(hidingTimer<hideableObjects[hideableObjectIndex].getTimeToEnter())
 					{
@@ -1022,6 +1091,9 @@ package
 			{
 				for(i = 0; i<hideableObjects.length; i++)
 				{
+				
+					//FlxG.collide(enemyController,hideableObjects[i]);
+				
 					if( FlxG.collide(hideableObjects[i],player))
 					{
 						hideableObjectIndex=i;
@@ -1038,15 +1110,18 @@ package
 			}
 			
 			
-			//playerLight.x=(player.x+player.width/2);
-			//playerLight.y = (player.y-player.height/2);
-			
 			var newOutfit:Boolean=false;
 			
-			if(!legOutfit.getGrabbed() && FlxG.collide(legOutfit, player.mySprite))
+			if(!legOutfit.getGrabbed() && (FlxG.collide(legOutfit, player)|| FlxG.overlap(player.mySprite, legOutfit) ))
 			{
-			
-				remove(legOutfit);
+				FlxG.play(Assets.CLOTHES_NOISE);
+				
+				legsLight.alpha=0;
+				legsLight=null;
+				
+				
+				legOutfit.x=-10;
+				
 				legOutfit.setGrabbed();
 				
 				player.setNewOutfit(legOutfit.getOutfitType(),legOutfit.getOutfit());
@@ -1055,9 +1130,16 @@ package
 				newOutfit=true;
 			}
 			
-			if(!headOutfit.getGrabbed() && FlxG.collide(headOutfit, player.mySprite))
+			if(!headOutfit.getGrabbed() && (FlxG.collide(headOutfit, player) || FlxG.overlap(player.mySprite, headOutfit) ))
 			{
-				remove(headOutfit);
+				
+			
+				FlxG.play(Assets.CLOTHES_NOISE);
+			
+				headLight.alpha=0;
+				headLight=null;
+			
+				headOutfit.x=-10;
 				headOutfit.setGrabbed();
 				
 				player.setNewOutfit(headOutfit.getOutfitType(),headOutfit.getOutfit());
@@ -1066,9 +1148,14 @@ package
 				newOutfit=true;
 			}
 			
-			if(!bodyOutfit.getGrabbed() && FlxG.collide(bodyOutfit, player.mySprite))
+			if(!bodyOutfit.getGrabbed() && (FlxG.collide(bodyOutfit, player) || FlxG.overlap(player.mySprite, bodyOutfit) ))
 			{
-				remove(bodyOutfit);
+				FlxG.play(Assets.CLOTHES_NOISE);
+			
+				bodyLight.alpha=0;
+				bodyLight=null;
+				bodyOutfit.x=-10;
+				
 				bodyOutfit.setGrabbed();
 				
 				player.setNewOutfit(bodyOutfit.getOutfitType(),bodyOutfit.getOutfit());
@@ -1079,18 +1166,17 @@ package
 			}
 			
 			//ENEMY CONTROLLER
-			
-			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, player.mySprite);
 			FlxG.collide(enemyController, wallGroup);
 			if(newOutfit)
 			{
 				//IT DOES WORK NOW. BOOYAH
-				enemyController.commandEnemies(EnemyController.CHECK_COSTUME);
+				enemyController.commandEnemies(this, EnemyController.CHECK_COSTUME);
 			}
 			else
 			{
 				//THIS MOVES THE ENEMIES
-				var enemyMessage: int = enemyController.commandEnemies();
+				var enemyMessage: int = enemyController.commandEnemies(this);
 			
 				if(enemyMessage==EnemyController.ENEMY_SPOTTED_PLAYER)
 				{
@@ -1098,7 +1184,7 @@ package
 				}
 				else if(enemyMessage == EnemyController.RELOAD_LEVEL)
 				{
-					reloadLevel();
+					setUpQuestionState();//No longer allow for just reloading level
 				}
 			}
 			
@@ -1119,11 +1205,8 @@ package
 		
 		protected function conversationGameplay(): void
 		{
-		
-		
-			enemyController.commandEnemies(0);
-		
-			FlxG.collide(enemyController, player);
+			enemyController.commandEnemies(this, 0);
+			FlxG.collide(enemyController, player.mySprite);
 			FlxG.collide(enemyController, wallGroup);
 			
 			player.keepBodyTogether();
@@ -1169,7 +1252,14 @@ package
 		}
 		
 		public function questionGameplay():void
-		{			
+		{		
+		
+			if(!questioningSound.active)
+			{
+				questioningSound.play();
+				FlxG.music.pause();
+			}
+			
 			questionTimer-=FlxG.elapsed;
 			
 			var intTimer:int = 1+questionTimer;
@@ -1182,10 +1272,10 @@ package
 			}
 			
 			//Make sure the enemies didn't just become ghosts
-			FlxG.collide(enemyController, player);
+			FlxG.collide(enemyController, player.mySprite);
 			FlxG.collide(enemyController, wallGroup);
 			
-			enemyController.commandEnemies(EnemyController.PAUSE_ALL);
+			
 			
 			var i:int=0;
 			for(i=0; i<answers.length;i++)
@@ -1219,11 +1309,17 @@ package
 				//Check if the user hit the right key
 				if(FlxG.keys.justReleased(answers[i].getKey()))
 				{
-						
+					
+					questioningSound.stop();
+					FlxG.play(Assets.GUI_SHORT_NOISE);
+					
+					FlxG.music.play();
 					fromQuestionState();
 					setUpConversation(responses[i]);//new DialogNode(responses[i], DialogHandler.PLAYER_HEAD, answers[i].getAnswerText()));
 				}
 			}
+			
+			enemyController.commandEnemies(this, EnemyController.PAUSE_ALL);
 			
 		}
 		
@@ -1231,7 +1327,7 @@ package
 		{
 			if(inventory.updateMenu(player)) //checks enemyController
 			{
-				enemyController.commandEnemies(EnemyController.CHECK_COSTUME);
+				enemyController.commandEnemies(this, EnemyController.CHECK_COSTUME);
 			}
 		
 			if(FlxG.keys.justReleased("M"))
@@ -1252,7 +1348,7 @@ package
 				
 			}
 		
-			enemyController.commandEnemies(EnemyController.PAUSE_ALL);
+			enemyController.commandEnemies(this, EnemyController.PAUSE_ALL);
 		}
 		
 		//BEGINNING QUESTiON STATE FOR ENEMY QUESTION

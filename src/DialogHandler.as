@@ -18,10 +18,12 @@ package
 		public static const PLAYER_HEAD:uint=0;
 		//For example purposes
 		public static const CAT_HEAD:uint=1;
+		public static const CAT_HEAD_FLIP:uint=10;
 		
 		public static const RAT_HEAD:uint=2;
 		public static const PRISONER_HEAD:uint=3;
 		public static const SHARK_HEAD:uint=4;
+		public static const WAITER_HEAD: uint = 5;
 		
 		//Potential Responses From Handling Dialog
 		public static const KEEP_GOING: int = 0;
@@ -37,10 +39,10 @@ package
 			head.makeGraphic(60,60,0xff000000);//Black Background for heads
 			
 			headBackground = new FlxSprite(0,160);
-			headBackground.makeGraphic(80,80,0xff404050);//Gray head back
+			headBackground.loadGraphic(Assets.FACE_BOX);//Gray head back
 			
 			textBackground = new FlxSprite(80,160);
-			textBackground.makeGraphic(240,80, 0xff444454);//Slightly lighter than head background
+			textBackground.loadGraphic(Assets.DIALOG_BOX);//Slightly lighter than head background
 			
 			dialogText = new FlxText(90,170,220);
 						
@@ -77,6 +79,12 @@ package
 				
 				add(head);
 			}
+			else if(currNode.getFaceToDisplay() ==CAT_HEAD_FLIP)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.CAT_HEAD_FLIP);
+				
+				add(head);
+			}
 			else if(currNode.getFaceToDisplay() ==RAT_HEAD)
 			{
 				head = new FlxSprite(head.x,head.y,Assets.RAT_HEAD);
@@ -95,7 +103,21 @@ package
 				
 				add(head);
 			}
+			else if(currNode.getFaceToDisplay()==WAITER_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.WAITER_PORTRAIT); //Replace this with correct head when we get it
+				
+				add(head);
+			}
 			
+			//Play Sound
+			
+			var sound: Class = currNode.getSoundToPlay();
+			
+			if(sound!=null)
+			{
+				FlxG.play(sound);
+			}
 			
 		}
 		
