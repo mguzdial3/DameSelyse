@@ -27,8 +27,8 @@ package
 						Assets.OPEN_PIPE, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						19, // width of each frame (in pixels)
-						16 // height of each frame (in pixels)
+						16, // width of each frame (in pixels)
+						19 // height of each frame (in pixels)
 					);
 				}
 				else
@@ -37,8 +37,8 @@ package
 							Assets.CLOSED_PIPE, // image to use
 							true, // animated
 							false, // don't generate "flipped" images since they're already in the image
-							24, // width of each frame (in pixels)
-							16 // height of each frame (in pixels)
+							16, // width of each frame (in pixels)
+							24 // height of each frame (in pixels)
 					);
 					//Set up animations
 					addAnimation("closed", [0]);
@@ -107,12 +107,12 @@ package
 						Assets.OPEN_PIPE, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						19, // width of each frame (in pixels)
-						16 // height of each frame (in pixels)
+						16, // width of each frame (in pixels)
+						19 // height of each frame (in pixels)
 				);
 			
-			
-				this.x+=6;
+				//Since we go from 19 to 24
+				this.y+=5;
 			}
 			else
 			{
@@ -123,6 +123,8 @@ package
 						19, // width of each frame (in pixels)
 						16 // height of each frame (in pixels)
 				);
+				
+				//this.x+=1;
 			
 			}
 		}

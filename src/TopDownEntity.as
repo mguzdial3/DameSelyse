@@ -15,8 +15,6 @@ package
 		public var mySprite: FlxSprite;
 		
 		//Used in camera room transfering
-		public var center: FlxPoint;
-		
 		
 		
 		
@@ -44,7 +42,6 @@ package
 			
 			mySprite = new FlxSprite(X,Y);
 			
-			center = new FlxPoint(X,Y);
 			
 			mySprite.loadGraphic(
 				spriteSheet, // image to use
@@ -92,16 +89,13 @@ package
 				updateControls();
 			}
 			updateAnimations();
-			mySprite.update();
+			//mySprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
-			mySprite.x = x;
-			mySprite.y = y-(mySprite.height-height);
+			//mySprite.x = x;
+			//mySprite.y = y-(mySprite.height-height);
 			
 			
-			//Center of object used for various calculations
-			center.x = mySprite.x+mySprite.width/2;
-			center.y = mySprite.y+mySprite.height/2;
 			
 			if(!currPaused)
 			{
@@ -161,14 +155,19 @@ package
 				if (velocity.y != 0 || velocity.x != 0)
 					mySprite.play("walk_up");
 				else
+				{
 					mySprite.play("idle_up");
+				}
+						
 			}
 			// down
 			else if (facing == DOWN) {
 				if (velocity.y != 0 || velocity.x != 0)
 					mySprite.play("walk_down");
 				else
+				{
 					mySprite.play("idle_down");
+					}
 			}
 			// right
 			else if (facing == RIGHT) {
@@ -177,7 +176,9 @@ package
 				if (velocity.x != 0)
 					mySprite.play("walk_horz");
 				else
+				{
 					mySprite.play("idle_right");
+				}
 			}
 			// left
 			else if (facing == LEFT) {
@@ -187,7 +188,9 @@ package
 				if (velocity.x != 0)
 					mySprite.play("walk_horz");
 				else
+				{
 					mySprite.play("idle_left");
+				}
 			}
 		}
 		

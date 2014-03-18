@@ -350,7 +350,7 @@ package
 		); 
 		
 		protected var decalGroup:FlxGroup;
-		protected var objectGroup:FlxGroup;
+
 		
 		//Inventory Item-Key (for the pants door)
 		private var key: InventoryItem;

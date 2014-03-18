@@ -12,6 +12,10 @@ package org.flixel
 		[Embed(source="data/button.png")] protected var ImgDefaultButton:Class;
 		[Embed(source="data/beep.mp3")] protected var SndBeep:Class;
 		
+		
+		private var defaultImg:Class;
+		private var highlightImg:Class;
+		
 		/**
 		 * Used with public variable <code>status</code>, means not highlighted or pressed.
 		 */
@@ -99,16 +103,24 @@ package org.flixel
 		 * @param	Label		The text that you want to appear on the button.
 		 * @param	OnClick		The function to call whenever the button is clicked.
 		 */
-		public function FlxButton(X:Number=0,Y:Number=0,Label:String=null,OnClick:Function=null)
+		public function FlxButton(X:Number=0,Y:Number=0,imgToUse:Class=null,OnClick:Function=null, highlight:Class=null)
 		{
 			super(X,Y);
-			if(Label != null)
+			
+			if(imgToUse==null)
 			{
-				label = new FlxText(0,0,80,Label);
-				label.setFormat(null,8,0x333333,"center");
-				labelOffset = new FlxPoint(-1,3);
+				loadGraphic(ImgDefaultButton,true,false,80,20);
 			}
-			loadGraphic(ImgDefaultButton,true,false,80,20);
+			else
+			{
+				loadGraphic(imgToUse);
+				defaultImg=imgToUse;
+				
+				if(highlight!=null)
+				{
+					highlightImg=highlight;
+				}
+			}
 			
 			onUp = OnClick;
 			onDown = null;
@@ -181,22 +193,26 @@ package org.flixel
 
 			//Default button appearance is to simply update
 			// the label appearance based on animation frame.
-			if(label == null)
-				return;
+			
 			switch(frame)
 			{
 				case HIGHLIGHT:	//Extra behavior to accomodate checkbox logic.
-					label.alpha = 1.0;
+					if(highlightImg!=null)
+					{
+						loadGraphic(highlightImg);
+					}
 					break;
 				case PRESSED:
-					label.alpha = 0.5;
-					label.y++;
+					alpha = 0.8;
 					break;
 				case NORMAL:
+					loadGraphic(defaultImg);
 				default:
-					label.alpha = 0.8;
+					alpha = 1.0;
 					break;
 			}
+			
+		
 		}
 		
 		/**

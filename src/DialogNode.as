@@ -24,6 +24,7 @@ package
 		public static var RESET_GAME: uint = 1;
 		public static var RESET_ENEMIES: uint = 2;
 		
+		
 		//Responses and answers are if this node is a question, must be equal in size or everything goes to shit
 		protected var responses: Vector.<DialogNode>;
 		protected var answers: Vector.<EnemyAnswer>;

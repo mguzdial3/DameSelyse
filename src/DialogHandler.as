@@ -15,37 +15,52 @@ package
 		private var stringIndex:int;
 		
 		//Constants for various different heads
-		public static const PLAYER_HEAD:uint=0;
+		public static const PLAYER_HEAD:int=0;
 		//For example purposes
 		public static const CAT_HEAD:uint=1;
-		public static const CAT_HEAD_FLIP:uint=10;
+		public static const CAT_HEAD_FLIP:uint=30;
 		
 		public static const RAT_HEAD:uint=2;
 		public static const PRISONER_HEAD:uint=3;
 		public static const SHARK_HEAD:uint=4;
 		public static const WAITER_HEAD: uint = 5;
+		public static const NELSON_HEAD:uint=6;
+		public static const EYEPATCH_HEAD: uint = 7;
+		public static const NI_HEAD: uint = 8;
+		public static const NIMA_HEAD: uint = 9;
+		public static const SEPAC_HEAD: uint = 10;
+		public static const FEM_HEAD: uint = 11;
+		public static const TAL_HEAD: uint = 12;
+		public static const SIVA_HEAD: uint = 13;
+		public static const HACHI_HEAD: uint = 14;
+		public static const PITU_HEAD: uint = 15;
+		public static const FISH_HEAD: uint = 16;
+		public static const HEAD_COOK_HEAD: uint = 17;
+		public static const HATLESS_COOK_HEAD: uint = 18;
+		
 		
 		//Potential Responses From Handling Dialog
 		public static const KEEP_GOING: int = 0;
 		public static const END: int = 1;
 		public static const QUESTION_NEXT:int = 2;
+		public static const MOVE_RAT_RIGHT:int = 3;
 		
 		
 		public function DialogHandler()
 		{
 			super();
 			//Set up display for a 320 by 240 screen
-			head = new FlxSprite(10,170);
+			head = new FlxSprite(-500,170);
 			head.makeGraphic(60,60,0xff000000);//Black Background for heads
 			
-			headBackground = new FlxSprite(0,160);
+			headBackground = new FlxSprite(-500,160);
 			headBackground.loadGraphic(Assets.FACE_BOX);//Gray head back
 			
-			textBackground = new FlxSprite(80,160);
+			textBackground = new FlxSprite(-500,-160);
 			textBackground.loadGraphic(Assets.DIALOG_BOX);//Slightly lighter than head background
 			
-			dialogText = new FlxText(90,170,220);
-						
+			dialogText = new FlxText(-500,-170,220);
+			dialogText.setFormat("TEST", 8, 0xffffffff, "left");		
 			
 			add(headBackground);
 			
@@ -109,6 +124,84 @@ package
 				
 				add(head);
 			}
+			else if(currNode.getFaceToDisplay()==NELSON_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.NELSON_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==EYEPATCH_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.EYEPATCH_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==NI_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.NI_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==NIMA_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.NIMA_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==SEPAC_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.SEPAC_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==FEM_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.FEM_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==TAL_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.TAL_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==SIVA_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.SIVA_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==HACHI_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.HACHI_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==PITU_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.PITU_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==FISH_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.FISH_HEAD); //Replace this with correct head when we get it
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==HEAD_COOK_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.HEAD_COOK_HEAD);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==HATLESS_COOK_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.HATLESS_COOK_HEAD);
+				
+				add(head);
+			}
 			
 			//Play Sound
 			
@@ -133,6 +226,8 @@ package
 		
 		public function hideDialogHandler(currLevel: FlxGroup):void
 		{
+			
+		
 			currLevel.remove(this);
 		}
 		
@@ -192,6 +287,12 @@ package
 						//We're done here
 						toReturn = END;
 					}
+				}
+				else
+				{
+					//TESTING for "click through"
+					dialogText.text = currNode.getTextToDisplay();
+					stringIndex = currNode.getTextToDisplay().length;
 				}	
 			}
 			

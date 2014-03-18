@@ -16,7 +16,7 @@ package
 	
 		//The number of drops the player is carrying
 		private var numDrops: int;
-		private var MAX_DROPS: int= 100;
+		private var MAX_DROPS: int= 20;
 		
 		//FOR DEBUGGING
 		private var num: Number;
@@ -41,7 +41,18 @@ package
 			var bodyOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.RANGERBODY_SPRITE, OutfitHandler.NORMAL_OUTFIT);
 			var headOutfit:PlayerOutfit = new PlayerOutfit(50,50,Assets.RANGER_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGERHEAD_SPRITE, OutfitHandler.NORMAL_OUTFIT);
 			
+			var legOutfit2:PlayerOutfit = new PlayerOutfit(50,50,Assets.DRESS_PANTS,PlayerOutfit.LEGS_OUTFIT,Assets.DRESS_LEGS, OutfitHandler.PRINCESS_OUTFIT);
+			var bodyOutfit2:PlayerOutfit = new PlayerOutfit(50,50,Assets.DRESS_SHIRT,PlayerOutfit.BODY_OUTFIT,Assets.DRESS_BODY, OutfitHandler.PRINCESS_OUTFIT);
+			var headOutfit2:PlayerOutfit = new PlayerOutfit(50,50,Assets.DRESS_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.DRESS_HEAD, OutfitHandler.PRINCESS_OUTFIT);
+			
+			
 			outfitHandler = new OutfitHandler(legOutfit,bodyOutfit,headOutfit);
+			
+			//Add princess bits
+			outfitHandler.safeAddOutfit(legOutfit2);
+			outfitHandler.safeAddOutfit(bodyOutfit2);
+			outfitHandler.safeAddOutfit(headOutfit2);
+			
 			
 			//Footfall sound
 			footfallSound = new FlxSound();
@@ -90,6 +101,10 @@ package
 			headSprite.addAnimation("walk_horz", [5, 6, 7,8], fpsToUse);
 			
 			headSprite.facing=LEFT;
+			
+			mySprite.immovable = true;
+			bodySprite.immovable = true;
+			headSprite.immovable = true;
 		}
 		
 		
@@ -237,14 +252,14 @@ package
 			bodySprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
-			bodySprite.x = x;
-			bodySprite.y = y-(mySprite.height-height);
+			//bodySprite.x = x;
+			//bodySprite.y = y-(mySprite.height-height);
 			
 			headSprite.update();
 			
 			//Set your sprite to be at the position you'd expect it to be at
-			headSprite.x = x;
-			headSprite.y = y-(mySprite.height-height);
+			//headSprite.x = x;
+			//headSprite.y = y-(mySprite.height-height);
 			
 			if(velocity.x!=0 || velocity.y!=0)
 			{
@@ -305,6 +320,9 @@ package
 		//This changes the display to match the new outfit
 		public function setNewOutfit(outfitType:uint, outfit:Class):void
 		{
+		
+			
+		
 			if(outfitType==PlayerOutfit.LEGS_OUTFIT)
 			{
 				mySprite.loadGraphic(
@@ -378,6 +396,9 @@ package
 				
 			}
 			
+			mySprite.play("idle_down",true);
+			bodySprite.play("idle_down",true);
+			headSprite.play("idle_down",true);
 			
 			
 		}
@@ -457,6 +478,16 @@ package
 				bodySprite.alpha = 1;
 			}
 		}
+		
+		
+		
+		public function setAlpha(alphaVal: Number): void
+		{
+			mySprite.alpha=alphaVal;
+			headSprite.alpha = alphaVal;
+			bodySprite.alpha = alphaVal;
+		}
+		
 		
 		////////////////////////
 		//Water Drop Stuff

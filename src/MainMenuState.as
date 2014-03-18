@@ -13,7 +13,9 @@ package
 			var mainMenu: FlxSprite = new FlxSprite(0,0,Assets.MAIN_MENU);
 			add(mainMenu);
 			
-			startButton = new FlxButton(100,200,"Start", startButtonPress);
+			startButton = new FlxButton(100,200,Assets.START_BUTTON, startButtonPress);
+			
+			
 			
 			add(startButton);
 			

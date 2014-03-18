@@ -8,13 +8,20 @@ package
 		private var currWaypoint: int=0;
 		public var waypoints: Vector.<FlxPoint>;
 		
-		private var currentState:int=0;
-		private var WAYPOINTING: int=0;
-		private var SEEKINGPLAYER: int=1;
+		private var currMomentary:int = 0;
+		public var momentaryWaypoints: Vector.<FlxPoint>;
+		
+		//Random movement off playerpnt
+		private var playerPntDiff: FlxPoint;
+		
+		protected var currentState:int=0;
+		protected var WAYPOINTING: int=0;
+		protected var SEEKINGPLAYER: int=1;
 		
 		//MESSAGES THIS ENEMY CAN RETURN
 		public var QUESTION_TIME:int = 1;
-		private var PAUSED: int=2;
+		public var FOUND_PLAYER: int=2;
+		
 		private var player:Player;
 		
 		//Messages that can be passed into this enemy
@@ -22,19 +29,32 @@ package
 		public static const PAUSE:int=1;
 		public static const CHECK_COSTUME:int=2;
 		
+		//Type of enemy
+		public var enemyType:uint =0;
+		public static const NORMAL_BEHAVIOR:uint = 0;
+		public static const TURNING:uint = 1;
+		
+		//amount of time to wait at each waypoint
+		private var waypointWaitTime:Number = 0;
+		private var waypointWaitTimeMax:Number = 0;
+		
+		//amount of time to wait tu turn
+		private var turningTime:Number = 0;
 		
 		//Used to tell the enemy what direction to move next
-		private var movement: FlxPoint;
+		protected var movement: FlxPoint;
 		
 		//Used to tell the enemy at what speed to move
-		private var speedModifier: Number=1;
+		protected var speedModifier: Number=1;
 		
 		//The light of this enemy (has to be added in EnemyController)
 		protected var lightFOV: Light;
 		
 		
 		protected var undetectedColor: uint = 0xFFFFFFFF;
-		protected var detectedColor: uint =  0xFFFF5555;
+		protected var suspiciousColor: uint =  0xFFFFFF00;
+		protected var detectedColor: uint =  0xFFFF0000;
+		protected var cantFindPlayerColor:uint = 0xFF2222FF;
 		
 		//Question asking stuff
 		protected var enemyQuestion: DialogNode;
@@ -64,7 +84,7 @@ package
 		
 		//Memory Stuff
 		protected var giveUpTimer:Number=0.0; 
-		protected var giveUpTimerMax: Number = 4.0;
+		protected var giveUpTimerMax: Number = 5.0; 
 		protected var playerPoint: FlxPoint; //Last point we saw the player at
 		protected var seesPlayer:Boolean;
 		
@@ -74,12 +94,36 @@ package
 		
 		//Timer for small bit of freedom escaping the guards gives you
 		protected var cantFindPlayerTimer:Number=0;
-		protected var cantFindPlayerTimerMax:Number = 2;
+		protected var cantFindPlayerTimerMax:Number = 6;
+		
+		//FOR TESTING
+		private var hasPrintedOut: Boolean;
+		
+		//Previous direction this char was facing
+		private var prevFacing: uint;
+		
+		//Certainty that the person running aboot it is the player
+		private var certaintyTimer:Number;
+		private var certaintyTimerMax:Number = 3.0; //was 6
+		private var autoCatchDist:Number = 12;
+		
+		//For facing when paused while waypointing
+		private var hasPreferredFacing:Boolean = false;
+		private var preferredFacing: uint;
+		
+		public var d: uint = 4096;
+		public var l: uint = 1;
+		public var r: uint = 16;
+		public var u: uint = 256;
 		
 		
-		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 48, xSize:int = 15, ySize:int = 18):void {
+		protected var goalPoint: FlxPoint;
+		
+		
+		
+		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 40, xSize:int=15,ySize:int=18, _enemyType:uint=0, _waypointWaitTimeMax:Number=0):void {
 			super(imgToUse, new FlxPoint(10,4), new FlxPoint(xSize,ySize), X, Y,_runSpeed);
-			
+			hasPrintedOut= true;
 			
 			originalPosition = new FlxPoint(X,Y);
 			
@@ -92,6 +136,9 @@ package
 			//Question set up
 			setUpQuestion();	
 			
+			enemyType = _enemyType;
+			waypointWaitTimeMax = _waypointWaitTimeMax;
+			
 			//This one is just the basic guard outfit
 			outfitToUse=OutfitHandler.GUARD_OUTFIT;
 					
@@ -101,6 +148,9 @@ package
 			movement = new FlxPoint();
 			currWaypoint = 0;
 			
+			//Tried changing this to 1/2 of a second from 1/6
+			drag = new FlxPoint(runSpeed * 2, runSpeed * 2);
+			
 			pausedPosition = new FlxPoint(0,0);
 			
 			if(_dialogNode!=null)
@@ -109,7 +159,7 @@ package
 			}
 			else
 			{
-				enemyQuestion = new DialogNode(null, DialogHandler.CAT_HEAD, "What are you doing here?", Assets.CAT_GUARD_JABBER);
+				enemyQuestion = new DialogNode(null, DialogHandler.CAT_HEAD, "Who are mew? What are you doing here?", Assets.CAT_GUARD_JABBER);
 			}
 			
 			sightedSound=Assets.CAT_GUARD_SIGHTED;
@@ -123,9 +173,30 @@ package
 			
 			hasSeenPlayer=false;
 			
+			
+			if(waypoints.length==1)
+			{
+				waypoints[0] = new FlxPoint(originalPosition.x,originalPosition.y);
+			}
+			else if(waypoints.length<1)
+			{
+				var waypointList0: Vector.<FlxPoint> = new Vector.<FlxPoint>(); 
+
+				
+
+				waypointList0.push(originalPosition.x, originalPosition.y);
+				waypoints = waypointList0; 
+			}
+			
+			lightFOV.x = this.x+this.width/2;
+			lightFOV.y = this.y+this.height;
+			
+			//Set certainty timer to 0
+			certaintyTimer=0;
+			
 		}
 		
-		public function resetToOriginalPositions():void
+		public function resetToOriginalPositions(currLevel:TopDownLevel):void
 		{
 			//this.x=originalPosition.x;
 			//this.y=originalPosition.y;
@@ -136,6 +207,10 @@ package
 				lightFOV.setColor(undetectedColor);
 			
 			
+				//Set certainty timer to 0 again
+				certaintyTimer = 0;
+			
+				
 				//Hide sprite if showing
 				expressionTimer = 0;
 				expressionSprite.makeGraphic(4, 8, 0xFFFFFF00); 
@@ -143,6 +218,43 @@ package
 			
 				currentState=WAYPOINTING;
 				cantFindPlayerTimer = cantFindPlayerTimerMax;
+				lightFOV.setColor(cantFindPlayerColor);
+				
+				
+				//Get the path figured out
+				if(waypoints.length!=1)
+				{
+					//Only have one waypoints
+				}
+				else
+				{
+					
+					var currDist:Number = Math.sqrt(Math.pow(waypoints[currWaypoint].x-this.x,2)
+					+Math.pow(waypoints[currWaypoint].y-this.y,2));
+					var j:int = 0;
+						
+					for(j=0; j<waypoints.length; j++)
+					{
+						if(j!=currWaypoint)
+						{
+							var dist:Number = Math.sqrt(Math.pow(waypoints[j].x-this.x,2)
+							+Math.pow(waypoints[j].y-this.y,2));
+								
+							if(currDist>dist)
+							{
+								currWaypoint = j;
+							}
+								
+						}
+						
+					}
+					
+					
+					
+				}
+					
+					//aStar2(waypoints[currWaypoint],currLevel);
+				
 			}
 		}
 		
@@ -228,6 +340,11 @@ package
 			
 			return keys[((int)(Math.random()*25 ))];
 		
+		}
+		
+		public function getCaughtPlayerStatement(): DialogNode
+		{
+			return new DialogNode(null, DialogHandler.CAT_HEAD, "Who are mew-? Oh! You're Dame Celeste! Back to your cell!", Assets.CAT_GUARD_JABBER, DialogNode.RESET_GAME);
 		}
 		
 		public function getQuestion(): DialogNode
@@ -319,21 +436,21 @@ package
 			}
 			else if(facing==DOWN)
 			{
-				lightSourceGoal.x = this.x+this.width/2//-lightFOV.width/2;
+				lightSourceGoal.x = this.x+this.width/2;//-lightFOV.width/2
 				lightSourceGoal.y = this.y+this.height;//+this.height;
 			}
 			else if(facing==LEFT)
 			{
 				lightSourceGoal.x = this.x-this.width;//-lightFOV.width;
-				lightSourceGoal.y = this.y-this.height/2//-lightFOV.height/2;
+				lightSourceGoal.y = this.y-this.height/2;//-lightFOV.height/2
 			}
 			else if(facing==RIGHT)
 			{
-				lightSourceGoal.x = this.x+this.width*2;//+lightFOV.width;
-				lightSourceGoal.y = this.y-this.height/2;//-lightFOV.height/2;
+				lightSourceGoal.x = this.x+this.width*2;
+				lightSourceGoal.y = this.y-this.height/2;
 			}
 			
-			var minimumDist: Number = 5;
+			var minimumDist: Number = 5;//was 5
 			
 			if(manhattanDistance(lightSourceGoal,new FlxPoint(lightFOV.x,lightFOV.y))<minimumDist)
 			{
@@ -351,11 +468,59 @@ package
 		//To be overriden for different lights
 		protected function withinView(point: FlxPoint): Boolean
 		{
+		
 			var within: Boolean= false;
-			
+                        
 			var distanceFromCenter:Number = manhattanDistance(point, new FlxPoint(lightFOV.x, lightFOV.y));
 			
 			var radiusOfLight: Number = (lightFOV.scale.x*lightFOV.width)/4;
+			
+			//TEST
+			if(distanceFromCenter<radiusOfLight*3)
+			{
+				//TopDownLevel.printText2.text ="Dist, Rad: "+int(distanceFromCenter)+", "+int(radiusOfLight);
+			}
+						
+			if(distanceFromCenter<radiusOfLight)
+			{
+				
+					within=true;
+			}
+			
+			return within;
+		
+		/**
+			var within: Boolean= false;
+			
+			var lightSourceGoal: FlxPoint = new FlxPoint();
+			
+			
+			if(facing==UP)
+			{
+				lightSourceGoal.x = this.x+this.width/2;
+				lightSourceGoal.y = this.y-this.height*2;
+			}
+			else if(facing==DOWN)
+			{
+				lightSourceGoal.x = this.x+this.width/2;
+				lightSourceGoal.y = this.y+this.height;
+			}
+			else if(facing==LEFT)
+			{
+				lightSourceGoal.x = this.x-this.width;
+				lightSourceGoal.y = this.y-this.height/2;
+			}
+			else if(facing==RIGHT)
+			{
+				lightSourceGoal.x = this.x+this.width*2;
+				lightSourceGoal.y = this.y-this.height/2;
+			}
+			
+			
+			var distanceFromCenter:Number = manhattanDistance(point, new FlxPoint(lightSourceGoal.x+this.width, lightSourceGoal.y+this.width));
+			
+			//Changing this
+			var radiusOfLight: Number = this.width*4;//(lightFOV.scale.x*lightFOV.width)/3;//Making this a bit larger
 			
 			if(distanceFromCenter<radiusOfLight)
 			{
@@ -363,6 +528,8 @@ package
 			}
 			
 			return within;
+			
+		*/
 		
 		}	
 		
@@ -385,6 +552,7 @@ package
 		}
 		
 		
+		
 		protected function resetLight(): void
 		{
 			lightFOV.color = 0xFFFFFFFF;	
@@ -393,6 +561,12 @@ package
 		protected function suspiciousEnough(): Boolean
 		{
 			return lightFOV.lerpColor(0xFFFF0000,60);
+		}
+		
+		public function setPreferredFacing(_facing:uint):void
+		{
+			hasPreferredFacing=true;
+			preferredFacing= _facing;
 		}
 		
 		private function regularGameplay(currLevel: TopDownLevel):int
@@ -413,41 +587,99 @@ package
 
 				if(expressionTimer<=0)
 				{
-					expressionSprite.makeGraphic(4, 8, 0xFFFF0000);
+					//expressionSprite.makeGraphic(4, 8, 0xFFFF0000);
 					expressionSprite.alpha = 0;
 				}
 			}
 			
 		
-			var goalPoint: FlxPoint = new FlxPoint(this.x,this.y);
-			var minimumDist:Number = 15;
+			goalPoint = new FlxPoint(this.x,this.y);
+			var minimumDist:Number = 20;//TRY: CHANGING FROM 15
 			if(currentState==WAYPOINTING)
 			{	
-			
-				//lightFOV.lerpColor(0xFFFFFFFF,80);	
-				resetLight();
-		
-				goalPoint =waypoints[currWaypoint];
-				//goalPoint = new FlxPoint(player.x,player.y);
-		
-		
+				//Reset light used to go here
 				
-		
-				if(manhattanDistance(goalPoint,new FlxPoint(this.x,this.y))<minimumDist)
+				//Even older than reset light
+				//lightFOV.lerpColor(0xFFFFFFFF,80);	
+				
+				//MOVING THE ENEMY
+				if(momentaryWaypoints!=null)
 				{
-					super.hardStop();
-		
-					if(currWaypoint<waypoints.length-1)
+					if(manhattanDistance(momentaryWaypoints[currMomentary],new FlxPoint(this.x,this.y))<minimumDist)
 					{
-						currWaypoint++;
-					}
-					else
-					{
-						currWaypoint=0;
-					}
+						if(currMomentary>1)
+						{
+							//hardStop();
+						}
+					
+						if(currMomentary>0)
+						{
+							currMomentary--;
+							goalPoint = momentaryWaypoints[currMomentary];
+						}
+						else
+						{
+							momentaryWaypoints=null;	
+						}
 			
+					}
+					goalPoint = momentaryWaypoints[currMomentary];
 				}
-		
+				else
+				{
+					
+					
+					if(manhattanDistance(waypoints[currWaypoint],new FlxPoint(this.x,this.y))<minimumDist)
+					{
+						//Tested added this, NO GOOD CAN'T LAND
+						//super.hardStop();
+						if(waypointWaitTime>=waypointWaitTimeMax)
+						{
+							waypointWaitTime=0;
+							if(currWaypoint<waypoints.length-1)
+							{
+								currWaypoint++;
+							}
+							else
+							{
+								currWaypoint=0;
+							}
+					
+							if(waypoints.length==1)
+							{
+								facing = DOWN;
+								mySprite.facing = DOWN;
+							
+							
+							}
+						}
+						else
+						{
+							hardStop();
+							waypointWaitTime+=FlxG.elapsed;
+							
+						}
+			
+					}
+					
+					//Attempt to add 
+					if(waypoints.length==1)
+					{	
+						if(waypoints[currWaypoint].x==this.x)
+						{
+							hardStop();
+						}	
+						
+						if(waypoints[currWaypoint].y==this.y)
+						{
+							hardStop();
+						}
+						
+					}
+					
+					goalPoint = waypoints[currWaypoint];
+				
+				}
 		
 				//Check how to transfer into seeking player state
 				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && cantFindPlayerTimer<=0)
@@ -460,46 +692,114 @@ package
 						expressionTimer=expressionTimerMax;
 						currentState=SEEKINGPLAYER;
 						FlxG.play(sightedSound);
-					
+						momentaryWaypoints = new Vector.<FlxPoint>();
 					
 						giveUpTimer = giveUpTimerMax;
 						playerPoint = new FlxPoint(player.x,player.y);
 					
 						seesPlayer=true;
+						
+						//Change: Saw player set light to yellow
+						lightFOV.setColor(suspiciousColor);
 					}
 				}
 				
 				if(cantFindPlayerTimer>0)
 				{
+				
+					if(cantFindPlayerTimer>cantFindPlayerTimerMax/2)
+					{
+						lightFOV.setColor(cantFindPlayerColor);
+					}
+					else
+					{
+						lightFOV.lerpBetween(cantFindPlayerColor,undetectedColor,(1-(cantFindPlayerTimerMax/2-cantFindPlayerTimer)/(cantFindPlayerTimerMax/2)));
+					}
+					
 					cantFindPlayerTimer-=FlxG.elapsed;
+					
+					if(cantFindPlayerTimer<=0)
+					{
+						resetLight();
+					}
+					
 				}
+				
+				
 				
 		
 			}
 			else if(currentState==SEEKINGPLAYER)
 			{
-			
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && suspiciousEnough()
+				var distToPlayer:Number = manhattanDistance(new FlxPoint(player.x,player.y), new FlxPoint(this.x,this.y));
+				
+				
+				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
 					&& closeEnoughToPlayer(new FlxPoint(player.x,player.y))
-					&& playerSeeable(currLevel))
-				
+					)				
 				{
-				
-					expressionSprite.alpha = 0;		
-					seesPlayer=true;		
-					return QUESTION_TIME;
+					
+					//Added the if you get too close thing
+					//suspiciousEnough() || 
+					if(distToPlayer<autoCatchDist)
+					{
+						lightFOV.setColor(detectedColor);
+					
+						expressionSprite.alpha = 0;		
+						seesPlayer=true;		
+						return FOUND_PLAYER;
+					}
+					
 					
 				}
-			
 				
-				//THIS IS THE PLACE WHERE YOU FIND WHERE YOU SHOULD SEEK
-				goalPoint = getNextPnt(currLevel);//new FlxPoint(playerPoint.x,playerPoint.y);
+				goalPoint = playerPoint;
 				
-				
+				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
 				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
-				&& playerSeeable(currLevel))
+				)//&& playerSeeable(currLevel))
 				{	
 				
+					//moving it here
+					var maxDist:Number = 90;
+					
+					if(distToPlayer<maxDist && distToPlayer>=minimumDist)
+					{
+						lightFOV.lerpBetween(suspiciousColor,detectedColor, (1-distToPlayer/(maxDist-minimumDist)));
+					}
+					else if(distToPlayer<minimumDist)
+					{
+						lightFOV.setColor(detectedColor);
+					}
+					else
+					{
+						lightFOV.setColor(suspiciousColor);
+					}
+					
+					//Certainty improves with time
+					if(certaintyTimer<certaintyTimerMax)
+					{
+						certaintyTimer+=FlxG.elapsed;
+					}
+					else
+					{
+						//If certainty is at maximum
+						lightFOV.setColor(detectedColor);
+						
+						expressionSprite.alpha = 0;		
+						seesPlayer=true;		
+						return QUESTION_TIME;
+					}
+					
+				
+				
+				
+				
+				
+				
+				
+					goalPoint = new FlxPoint(playerPoint.x,playerPoint.y);
 					if(player.x!=playerPoint.x || player.y!=playerPoint.y)
 					{
 						playerPoint = new FlxPoint(player.x,player.y);
@@ -513,6 +813,14 @@ package
 						FlxG.play(sightedSound);
 					}					
 					seesPlayer=true;
+					
+					
+					//Update Momentary Waypoints (Breadcrumbs back)
+					if(prevFacing!=this.facing)
+					{
+						momentaryWaypoints.push(new FlxPoint(this.x,this.y));
+						prevFacing = this.facing;
+					}
 					
 				}
 				else if(giveUpTimer<=0 )
@@ -533,19 +841,65 @@ package
 					expressionSprite.alpha = 1;
 					expressionTimer=expressionTimerMax;
 					currentState=WAYPOINTING;
+					resetLight();
+					currMomentary = momentaryWaypoints.length-1;
+					
+					//figure out waypoint to go to
+					
+					if(waypoints.length==1)
+					{
+						//Only have one waypoint
+					}
+					else
+					{
+					
+						var currDist:Number = Math.sqrt(Math.pow(waypoints[currWaypoint].x-this.x,2)
+						+Math.pow(waypoints[currWaypoint].y-this.y,2));
+						var j:int = 0;
+						
+						for(j=0; j<waypoints.length; j++)
+						{
+							if(j!=currWaypoint)
+							{
+								var dist:Number = Math.sqrt(Math.pow(waypoints[j].x-this.x,2)
+								+Math.pow(waypoints[j].y-this.y,2));
+								
+								if(currDist>dist)
+								{
+									currWaypoint = j;
+								}
+								
+							}
+						
+						}
+					}
+					
 				}
 				else
 				{
-				
 					var currentTime:Date = new Date();
 					
-					if((currentTime.milliseconds/4)%2==0)
+					if((currentTime.milliseconds/16)%2==0)
 					{
 					
-						goalPoint.x=playerPoint.x+ Math.random()*32-16;
-						goalPoint.y=playerPoint.y+Math.random()*32-16;
-					}
+						if(playerPntDiff==null)
+						{
+							playerPntDiff = new FlxPoint(0,0);
+						}
+						
+						var magnitude:Number = manhattanDistance(new FlxPoint(player.x,player.y),
+						new FlxPoint(this.x,this.y));
+						
+						//Wanders aboot
+						playerPntDiff.x=  Math.random()*64-32;
+						playerPntDiff.y=  Math.random()*64-32;
 				
+						
+						goalPoint.x=playerPoint.x+playerPntDiff.x;
+						goalPoint.y=playerPoint.y+playerPntDiff.y;
+						
+					}
+					
 					if(seesPlayer)
 					{
 						FlxG.play(lostSound);
@@ -559,6 +913,8 @@ package
 					expressionTimer=expressionTimerMax;
 				}
 				
+				
+				
 				if(giveUpTimer>0)
 				{
 					giveUpTimer-=FlxG.elapsed;
@@ -571,56 +927,115 @@ package
 			
 			var distanceToGoal: Number = manhattanDistance(goalPoint,new FlxPoint(this.x,this.y));
 		
-				speedModifier=1;
-		
-				if(distanceToGoal>(minimumDist+1) && distanceToGoal<minimumDist*2)
-				{
-					speedModifier = (distanceToGoal-(minimumDist+1))/(minimumDist+1);
-				}
-		
-		
-		
-				movement = new FlxPoint();
-		
-				var bufferZone: int = 3;	
+			speedModifier=1;
+	
+			if(currentState==WAYPOINTING)
+			{
 			
-				if(this.x<goalPoint.x-bufferZone)
+				var origDist: Number = manhattanDistance(originalPosition,new FlxPoint(this.x,this.y));
+				if(distanceToGoal<minimumDist*2)
 				{
-				//Move right
-					movement.x += 1;
+					//hardStop();
+					speedModifier = 0.2;//(minimumDist*2-distanceToGoal)/(minimumDist*2);//0.03;
+				
+					var div:Number = 1.1;
+					if(momentaryWaypoints!=null)
+					{
+						//velocity.x/=div;
+						//velocity.y/=div;
+						//acceleration.x/=div+0.1;
+						//acceleration.y/=div+0.1;
+					}
+				
+					//speedModifier*=0.3;
+					
+					if(speedModifier<0.05)
+					{
+						speedModifier = 0.05;
+					}
+					
 				}
-				if(this.x>goalPoint.x+bufferZone)
+				
+				
+				if(distanceToGoal<1.2)
 				{
-					//On left
-					movement.x -= 1;
+					this.x=goalPoint.x;
+					this.y=goalPoint.y;
 				}
+			}
+			else if(currentState==SEEKINGPLAYER)
+			{
+				
+				if(giveUpTimer<giveUpTimerMax/2)
+				{
+					speedModifier = (giveUpTimerMax/2-giveUpTimer)/(giveUpTimerMax/2)+0.05;
+				}
+				
+				
+				
+				
+			}
+			
+			
+			
+			if(distanceToGoal<3)
+			{
+				this.x = goalPoint.x;
+				this.y = goalPoint.y;
+			}
+	
+	
+			
+	
+	
+			movement = new FlxPoint();
+	
+			var bufferZone: int = 0;	
 		
-				if(this.y<goalPoint.y-bufferZone)
-				{
-					//Move down
-					movement.y += 1;
-				}
-				if(this.y>goalPoint.y+bufferZone)
-				{
-					//Move up
-					movement.y -= 1;
-				}
+			if(this.x<goalPoint.x-bufferZone)
+			{
+			//Move right
+				movement.x += 1;
+			}
+			if(this.x>goalPoint.x+bufferZone)
+			{
+				//On left
+				movement.x -= 1;
+			}
+	
+			if(this.y<goalPoint.y-bufferZone)
+			{
+				//Move down
+				movement.y += 1;
+			}
+			if(this.y>goalPoint.y+bufferZone)
+			{
+				//Move up
+				movement.y -= 1;
+			}
+			
 			return 0;
 		}
 		
 		//CALLED FROM ENEMYCONTROLLER, MAKES ALL THE THINGS HAPPEN
-		public function command(currLevel: TopDownLevel, commandMessage: int=0):int {
-		
-			
-		
+		public function command(currLevel: TopDownLevel, commandMessage: int=0):int 
+		{
 			if(commandMessage==NOT_ANY)
 			{
 			
 				if(pausedPosition.x!=0)
 				{
 					pausedPosition = new FlxPoint(0,0);
-				}			
-				return regularGameplay(currLevel);
+				}	
+				
+				if(enemyType==NORMAL_BEHAVIOR)
+				{		
+					return regularGameplay(currLevel);
+				}
+				else if(enemyType==TURNING)
+				{
+					return regularGameplayTurning(currLevel);
+				}
 			}		
 			else if(commandMessage==PAUSE)
 			{
@@ -628,6 +1043,9 @@ package
 				{
 					pausedPosition = new FlxPoint(x,y);
 				}
+				
+				//Try adding this to see what happens
+				moveLightSource();
 			
 				super.hardStop();
 				super.setPaused(true);
@@ -636,18 +1054,463 @@ package
 			else if(commandMessage==CHECK_COSTUME)
 			{
 				checkPlayerOutfit();
-			
 			}
 					
 			return 0;
 		
 		}
 		
+		private function regularGameplayTurning(currLevel: TopDownLevel):int
+		{
+			//MOVE THE LIGHT SOURCE
+			moveLightSource();
+			
+			//Move to above player
+			expressionSprite.x = mySprite.x+mySprite.width/2-expressionSprite.width/2;
+			expressionSprite.y = this.y-this.height*4-expressionSprite.height;
+				
+				
+			
+			//Handle the expressionSprite; 
+			if(expressionTimer>0)
+			{
+				expressionTimer-=FlxG.elapsed; 
+
+				if(expressionTimer<=0)
+				{
+					//expressionSprite.makeGraphic(4, 8, 0xFFFF0000);
+					expressionSprite.alpha = 0;
+				}
+			}
+			
+		
+			goalPoint= new FlxPoint(this.x,this.y);
+			var minimumDist:Number = 15;
+			if(currentState==WAYPOINTING)
+			{	
+				//Reset light used to go here
+					
+				
+				//MOVING THE ENEMY
+				if(momentaryWaypoints!=null)
+				{
+					if(manhattanDistance(momentaryWaypoints[currMomentary],new FlxPoint(this.x,this.y))<minimumDist)
+					{
+						if(currMomentary>1)
+						{
+							//hardStop();
+						}
+					
+						if(currMomentary>0)
+						{
+							currMomentary--;
+							goalPoint = momentaryWaypoints[currMomentary];
+						}
+						else
+						{
+							momentaryWaypoints=null;	
+						}
+			
+					}
+					goalPoint = momentaryWaypoints[currMomentary];
+				}
+				else
+				{
+					if(waypoints[currWaypoint].y<turningTime)
+					{
+					
+					
+						if(currWaypoint<waypoints.length-1)
+						{
+							currWaypoint++;
+						}
+						else
+						{
+							currWaypoint=0;
+						}
+						turningTime=0;
+						
+						
+						
+						facing = uint(waypoints[currWaypoint].x);
+						//mySprite.facing = uint(waypoints[currWaypoint].x);
+					}
+					else
+					{
+						turningTime+=(FlxG.elapsed*(0.5+(FlxG.random()*0.6)));
+					}
+					
+					//TopDownLevel.printText2.text = "sprite: "+facing;
+						
+					
+					goalPoint = new FlxPoint(this.x,this.y);
+				}
+		
+				//Check how to transfer into seeking player state
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && cantFindPlayerTimer<=0)
+				{
+					
+					if(playerSeeable(currLevel))
+					{
+						expressionSprite.loadGraphic(Assets.EXCLAMATION); 
+						expressionSprite.alpha = 1;
+						expressionTimer=expressionTimerMax;
+						currentState=SEEKINGPLAYER;
+						FlxG.play(sightedSound);
+						momentaryWaypoints = new Vector.<FlxPoint>();
+					
+						giveUpTimer = giveUpTimerMax;
+						playerPoint = new FlxPoint(player.x,player.y);
+					
+						seesPlayer=true;
+						
+						//Change: Saw player set light to yellow
+						lightFOV.setColor(suspiciousColor);
+					}
+				}
+				
+				if(cantFindPlayerTimer>0)
+				{
+				
+					if(cantFindPlayerTimer>cantFindPlayerTimerMax/2)
+					{
+						lightFOV.setColor(cantFindPlayerColor);
+					}
+					else
+					{
+						lightFOV.lerpBetween(cantFindPlayerColor,undetectedColor,(1-(cantFindPlayerTimerMax/2-cantFindPlayerTimer)/(cantFindPlayerTimerMax/2)));
+					}
+					
+					cantFindPlayerTimer-=FlxG.elapsed;
+					
+					if(cantFindPlayerTimer<=0)
+					{
+						resetLight();
+					}
+					
+				}
+				
+				
+				
+		
+			}
+			else if(currentState==SEEKINGPLAYER)
+			{
+				var distToPlayer:Number = manhattanDistance(new FlxPoint(player.x,player.y), new FlxPoint(this.x,this.y));
+					
+				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+					&& closeEnoughToPlayer(new FlxPoint(player.x,player.y))
+					)				
+				{
+					
+					//Added the if you get too close thing
+					//suspiciousEnough() || 
+					if(distToPlayer<minimumDist)
+					{
+						lightFOV.setColor(detectedColor);
+					
+						expressionSprite.alpha = 0;		
+						seesPlayer=true;		
+						return FOUND_PLAYER;
+					}
+					
+					
+				}
+				
+				goalPoint = playerPoint;
+				
+				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
+				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				)//&& playerSeeable(currLevel))
+				{	
+				
+					//moving it here
+					var maxDist:Number = 90;
+					
+					if(distToPlayer<maxDist && distToPlayer>=minimumDist)
+					{
+						lightFOV.lerpBetween(suspiciousColor,detectedColor, (1-distToPlayer/(maxDist-minimumDist)));
+					}
+					else if(distToPlayer<minimumDist)
+					{
+						lightFOV.setColor(detectedColor);
+					}
+					else
+					{
+						lightFOV.setColor(suspiciousColor);
+					}
+					
+					//Certainty improves with time
+					if(certaintyTimer<certaintyTimerMax)
+					{
+						certaintyTimer+=FlxG.elapsed;
+					}
+					else
+					{
+						//If certainty is at maximum
+						lightFOV.setColor(detectedColor);
+						
+						expressionSprite.alpha = 0;		
+						seesPlayer=true;		
+						return QUESTION_TIME;
+					}
+					
+				
+				
+				
+				
+				
+				
+				
+					goalPoint = new FlxPoint(playerPoint.x,playerPoint.y);
+					if(player.x!=playerPoint.x || player.y!=playerPoint.y)
+					{
+						playerPoint = new FlxPoint(player.x,player.y);
+					}
+					giveUpTimer = giveUpTimerMax;
+					
+					if(!seesPlayer)
+					{
+						expressionSprite.loadGraphic(Assets.EXCLAMATION); 
+						expressionSprite.alpha = 1;
+						FlxG.play(sightedSound);
+					}					
+					seesPlayer=true;
+					
+					
+					//Update Momentary Waypoints (Breadcrumbs back)
+					if(prevFacing!=this.facing)
+					{
+						momentaryWaypoints.push(new FlxPoint(this.x,this.y));
+						prevFacing = this.facing;
+					}
+					
+				}
+				else if(giveUpTimer<=0 )
+				{
+					if(seesPlayer)
+					{
+						FlxG.play(lostSound);
+					}
+					
+					if(player.x!=playerPoint.x || player.y!=playerPoint.y)
+					{
+						playerPoint = new FlxPoint(player.x,player.y);
+					}
+
+					seesPlayer=false;
+					expressionSprite.loadGraphic(Assets.QUESTION_MARK); 
+					
+					expressionSprite.alpha = 1;
+					expressionTimer=expressionTimerMax;
+					currentState=WAYPOINTING;
+					resetLight();
+					currMomentary = momentaryWaypoints.length-1;
+					
+					//figure out waypoint to go to
+					
+					if(waypoints.length==1)
+					{
+						//Only have one waypoint
+					}
+					else
+					{
+					
+						var currDist:Number = Math.sqrt(Math.pow(waypoints[currWaypoint].x-this.x,2)
+						+Math.pow(waypoints[currWaypoint].y-this.y,2));
+						var j:int = 0;
+						
+						for(j=0; j<waypoints.length; j++)
+						{
+							if(j!=currWaypoint)
+							{
+								var dist:Number = Math.sqrt(Math.pow(waypoints[j].x-this.x,2)
+								+Math.pow(waypoints[j].y-this.y,2));
+								
+								if(currDist>dist)
+								{
+									currWaypoint = j;
+								}
+								
+							}
+						
+						}
+					}
+					
+				}
+				else
+				{
+					var currentTime:Date = new Date();
+					
+					if((currentTime.milliseconds/16)%2==0)
+					{
+					
+						if(playerPntDiff==null)
+						{
+							playerPntDiff = new FlxPoint(0,0);
+						}
+						
+						var magnitude:Number = manhattanDistance(new FlxPoint(player.x,player.y),
+						new FlxPoint(this.x,this.y));
+						
+						//Wanders aboot
+						playerPntDiff.x=  Math.random()*64-32;
+						playerPntDiff.y=  Math.random()*64-32;
+				
+						
+						goalPoint.x=playerPoint.x+playerPntDiff.x;
+						goalPoint.y=playerPoint.y+playerPntDiff.y;
+						
+					}
+					
+					if(seesPlayer)
+					{
+						FlxG.play(lostSound);
+					}
+				
+				
+					seesPlayer=false;
+					expressionSprite.loadGraphic(Assets.QUESTION_MARK);
+					
+					expressionSprite.alpha = 1;
+					expressionTimer=expressionTimerMax;
+				}
+				
+				
+				
+				if(giveUpTimer>0)
+				{
+					giveUpTimer-=FlxG.elapsed;
+				}
+				
+				
+				
+			}
+			
+			
+			var distanceToGoal: Number = manhattanDistance(goalPoint,new FlxPoint(this.x,this.y));
+		
+			speedModifier=1;
+	
+			if(currentState==WAYPOINTING)
+			{
+			
+				var origDist: Number = manhattanDistance(originalPosition,new FlxPoint(this.x,this.y));
+				if(distanceToGoal<minimumDist*2)
+				{
+					//hardStop();
+					speedModifier = 0.2;//(minimumDist*2-distanceToGoal)/(minimumDist*2);//0.03;
+				
+					var div:Number = 1.1;
+					if(momentaryWaypoints!=null)
+					{
+						//velocity.x/=div;
+						//velocity.y/=div;
+						//acceleration.x/=div+0.1;
+						//acceleration.y/=div+0.1;
+					}
+				
+					//speedModifier*=0.3;
+					
+					if(speedModifier<0.05)
+					{
+						speedModifier = 0.05;
+					}
+					
+				}
+				
+				
+				if(distanceToGoal<1.2)
+				{
+					this.x=goalPoint.x;
+					this.y=goalPoint.y;
+				}
+			}
+			else if(currentState==SEEKINGPLAYER)
+			{
+				
+				if(giveUpTimer<giveUpTimerMax/2)
+				{
+					speedModifier = (giveUpTimerMax/2-giveUpTimer)/(giveUpTimerMax/2)+0.05;
+				}
+				
+				
+				
+				
+			}
+			
+			
+			
+			if(distanceToGoal<3)
+			{
+				this.x = goalPoint.x;
+				this.y = goalPoint.y;
+			}
+	
+	
+			
+	
+	
+			movement = new FlxPoint();
+	
+			var bufferZone: int = 16;	
+			
+			
+			
+			
+			/**
+			if(magni<32)
+			{
+				speedModifier = 0.1;
+			}
+			
+			
+			if(this.x<goalPoint.x-bufferZone)
+			{
+				//Move right
+				moveRight(speedModifier*difference.x*difference.x);
+				
+			}
+			if(this.x>goalPoint.x+bufferZone)
+			{
+				//On left
+				moveLeft(speedModifier*difference.x*difference.x);
+			}
+	
+			if(this.y<goalPoint.y-bufferZone)
+			{
+				//Move down
+				moveDown(speedModifier*difference.y*difference.y);
+				
+			}
+			if(this.y>goalPoint.y+bufferZone)
+			{
+				//Move up
+				movement.y -= 1;
+				moveUp(speedModifier*difference.y*difference.y);
+			}
+			
+			
+			if(difference.x<1)
+			{
+				acceleration.x =0;
+				velocity.x = 0;
+			}
+			if(difference.y<1)
+			{
+				acceleration.y =0;
+				velocity.y = 0;
+			}
+			*/
+			
+			
+			return 0;
+		}
+		
 		protected function closeEnoughToPlayer(pnt: FlxPoint): Boolean
 		{
 			return (manhattanDistance(new FlxPoint(this.x,this.y), pnt)<16);
-			
-			
 			
 		}
 		
@@ -657,7 +1520,51 @@ package
 		override protected function updateControls():void {
 			super.updateControls();
 			
+			if(goalPoint!=null)
+			{
+				var difference:FlxPoint = new FlxPoint(goalPoint.x-this.x, goalPoint.y-this.y);
+				var magni:Number = Math.sqrt(difference.x*difference.x+difference.y*difference.y);
 			
+				difference.x/= magni;
+				difference.y/=magni;
+			
+			
+				//this.x+=difference.x;
+				//this.y+=difference.y;
+				
+				var bufferZone: int = 5;
+				//TRY PUTTING THIS HERE
+				if(this.x<goalPoint.x-bufferZone)
+				{
+					//Move right
+					moveRight(speedModifier);
+				
+				}
+				if(this.x>goalPoint.x+bufferZone)
+				{
+					//On left
+					moveLeft(speedModifier);
+				}
+	
+				if(this.y<goalPoint.y-bufferZone)
+				{
+					//Move down
+					moveDown(speedModifier);
+				
+				}
+				if(this.y>goalPoint.y+bufferZone)
+				{
+					//Move up
+					moveUp(speedModifier);
+				}
+			
+			}
+			
+			
+			
+			
+			
+			/**
 			if (movement.x < 0)
 				moveLeft(speedModifier);
 			else if (movement.x > 0)
@@ -667,6 +1574,9 @@ package
 				//Easy way to keep it from meandering forever in the x direction
 				hardStopX();
 			}
+			
+			
+			
 			if (movement.y < 0)
 				moveUp(speedModifier);
 			else if (movement.y > 0)
@@ -676,6 +1586,7 @@ package
 				//Easy way to keep it from meandering forever in the y direction
 				hardStopY();
 			}
+			*/
 			
 		}
 		
@@ -766,7 +1677,7 @@ package
 		
 		
 		//Returns the next spot this enemy should go to (PATHING)
-		public function getNextPnt(currLevel: TopDownLevel): FlxPoint
+		public function getNextPnt(currLevel: TopDownLevel, pnt: FlxPoint): FlxPoint
 		{
 			var leftVec:FlxPoint = new FlxPoint(-1,0);
 			var upVec:FlxPoint = new FlxPoint(0,1);
@@ -774,7 +1685,7 @@ package
 			var downVec: FlxPoint = new FlxPoint(0,-1);
 			var vectors:Array = [leftVec, upVec, rightVec, downVec];
 					
-			var diffVec: FlxPoint = new FlxPoint(playerPoint.x-this.x,playerPoint.y-this.y);
+			var diffVec: FlxPoint = new FlxPoint(pnt.x-this.x,pnt.y-this.y);
 			
 			
 			var mag: Number =  Math.sqrt(diffVec.x*diffVec.x+diffVec.y*diffVec.y);
@@ -807,8 +1718,8 @@ package
 					{
 						doesItWork[i] = true;
 						var diff: FlxPoint = new FlxPoint(0,0);
-						diff.x = playerPoint.x-currLoc.x;
-						diff.y = playerPoint.y-currLoc.y;
+						diff.x = pnt.x-currLoc.x;
+						diff.y = pnt.y-currLoc.y;
 						distances[i] = Math.sqrt(diff.x*diff.x+diff.y*diff.y);
 					}
 					else
@@ -840,7 +1751,7 @@ package
 				}
 				else
 				{
-					return playerPoint;
+					return pnt;
 				}
 				
 			}
@@ -850,42 +1761,99 @@ package
 		//Returns true if the enemy can see the player through not a wall, false otherwise
 		protected function playerSeeable(currLevel: TopDownLevel): Boolean
 		{
-			var diff: FlxPoint = new FlxPoint(player.x-this.x,player.y-this.y);
+			
+			var diff: FlxPoint = new FlxPoint(player.x+2-this.x,(player.y)-(this.y-2));
 			
 			var magnitude: Number = Math.sqrt(diff.x*diff.x+diff.y*diff.y);
 			
-			if(magnitude<16)
+			
+			
+			if(magnitude<20)
 			{
 				return true;
 			}
 			else
 			{
-				var numPntsToCheck :int = magnitude/16;
-				numPntsToCheck*=2;
-				var magOfDiff:Number = 8.0;
+				var magOfDiff:Number = 4.0;
+				var numPntsToCheck :int = magnitude/magOfDiff;
+				//numPntsToCheck*=2;
+				//TopDownLevel.printText2.text ="My Pos: "+this.x+", "+this.y+"     Diff: "+diff.x+", "+diff.y+"    NumPnts: "+numPntsToCheck;
 			
 				var stillViewable: Boolean = true;
 				
-				var ind : int = 0;
+				var ind : int = 2;
 				
 				diff.x/=magnitude;
 				diff.y/=magnitude;
 				
-				while(stillViewable && 	ind<numPntsToCheck)
+				while(stillViewable && 	ind<numPntsToCheck-1)
 				{
 					var currPnt:FlxPoint = new FlxPoint(0,0);
 					
 					currPnt.x = this.x+ind*magOfDiff*diff.x;
-					currPnt.y = this.y +ind*magOfDiff*diff.y;
+					//Seems to work!
+					currPnt.y = (this.y-2) +(ind*magOfDiff*diff.y);
 					
-					stillViewable = currLevel.canHavePlayerAt(currPnt.x,currPnt.y);
+					stillViewable = currLevel.canSeePlayerThrough(int(currPnt.x),int(currPnt.y));
+					ind++;		
 					
-					ind++;					
-				}			
+					
+					//TopDownLevel.printText2.text += "     Ind: "+ind+" of "+(numPntsToCheck-1)+": "+currPnt.x+", "+currPnt.y;
+					
+				}	
+				
 				
 				return stillViewable;
 			
 			}
+		}
+		
+		override public function updateAnimations():void {
+			super.updateAnimations();
+			
+			mySprite.x = x;
+			mySprite.y = y-(18-height);
+		}
+		
+		protected function checkIfIn(node: EnemyNode, visitedList: Vector.<EnemyNode>): Boolean
+		{
+			var i:int = 0;
+			
+			if(node==null || visitedList==null || visitedList.length==0)
+			{
+				return false;			
+			}
+			else
+			{
+				for(i=0; i<visitedList.length; i++)
+				{
+					//
+				
+					if(visitedList[i]!=null && visitedList[i].nodeEquals(node.getX(),node.getY())
+					&& 
+					(visitedList[i].getParent()!=null && node.getParent()!=null
+					&& visitedList[i].getParent().nodeEquals(node.getParent().getX(),node.getParent().getY()))
+					||
+					(visitedList[i].getParent()==null && node.getParent()==null)
+					
+					)
+					{
+					
+					
+						//FIX THIS
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			
+		}
+		
+		protected function toNodeSpace(num:Number):Number
+		{
+			//For tileSize 8
+			return (( (num/16)*16+8 ));
 		}
 		
 	

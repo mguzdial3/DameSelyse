@@ -272,7 +272,6 @@ package
 		); 
 
 		protected var decalGroup:FlxGroup;
-		protected var objectGroup:FlxGroup;
 
 		public function celeste1a(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			super(levelSize, blockSize, new FlxPoint(1464.0,616.0));

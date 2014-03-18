@@ -27,6 +27,7 @@ package
 		
 		
 		protected var currQuestion: DialogNode;
+		protected var caughtPlayerStatement: DialogNode;
 		protected var currResponses: Vector.<DialogNode>;
 		protected var currAnswers: Vector.<EnemyAnswer>;
 		
@@ -49,6 +50,7 @@ package
 			for(i=0; i<enemies.length; i++)
 			{
 				enemies[i].addExpressionSprite(group);	
+				
 			}
 		}
 		
@@ -61,17 +63,24 @@ package
 			currResponses = enemy.getResponses(currAnswers);
 		}
 		
+		private function enterFinalStatement(enemy: Enemy):void
+		{
+			currState = QUESTION_TIME;
+			
+			caughtPlayerStatement = enemy.getCaughtPlayerStatement();
+		}
+		
 		
 		
 		//After player answers questions correctly, reset enemies to original position
-		public function resetEnemies(): void
+		public function resetEnemies(currLevel:TopDownLevel): void
 		{
 			var i:int;
 			
 			for(i=0; i<enemies.length; i++)
 			{
 				enemies[i].setPaused(false);
-				enemies[i].resetToOriginalPositions();
+				enemies[i].resetToOriginalPositions(currLevel);
 				enemies[i].setNoLongerSuspicious();
 			}
 			
@@ -83,7 +92,10 @@ package
 			currState = NORMAL_GAMEPLAY;
 		}
 		
-		
+		public function getCaughtPlayerStatement(): DialogNode
+		{
+			return caughtPlayerStatement;
+		}
 		
 		public function getQuestion(): DialogNode
 		{
@@ -144,6 +156,7 @@ package
 					
 					for(i=0; i<enemies.length; i++)
 					{	
+					//improving run speed test
 					/**
 						if(enemies[i].x>FlxG.camera.scroll.x-100 &&
 						enemies[i].x<FlxG.camera.scroll.x+100 +320
@@ -151,40 +164,32 @@ package
 						&& enemies[i].y<FlxG.camera.scroll.y+240+100)
 						{ 
 					*/
+						myMessage= enemies[i].command(currLevel);
 					
-							myMessage= enemies[i].command(currLevel);
-					
-							//Enter Question Time
-							if(myMessage==enemies[i].QUESTION_TIME)
-							{
-							
-									enterQuestionMode(enemies[i]);
+						//Enter Question Time
+						if(myMessage==enemies[i].QUESTION_TIME)
+						{
+							enterQuestionMode(enemies[i]);
+							messageToReturn =ENEMY_SPOTTED_PLAYER;
 								
-									/**
-									if(enemies[i].getHasSeenPlayer())
-									{
-										messageToReturn = RELOAD_LEVEL;
-									}
-							
-									else
-									{
-									*/
-									//	enemies[i].youSawThePlayer();
-									
-									messageToReturn =ENEMY_SPOTTED_PLAYER;
-								
-									//}
-								
-							}
-						//}
+						}
+						else if(myMessage==enemies[i].FOUND_PLAYER)
+						{
+							//Send the reload thing
+							enterFinalStatement(enemies[i]);
+							messageToReturn =RELOAD_LEVEL;
+						}
 					}
 				}
 				else if(currState==QUESTION_TIME)
 				{
+				
+					//TopDownLevel.printText2.text = "Got to here";
 					for(i=0; i<enemies.length; i++)
 					{
-						//myMessage = enemies[i].command(1);
-						enemies[i].hardStop();
+						//Testing this
+						myMessage = enemies[i].command(currLevel, Enemy.PAUSE);
+						
 						
 					}
 				}

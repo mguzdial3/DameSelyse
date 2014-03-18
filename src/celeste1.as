@@ -272,7 +272,6 @@ package
 		); 
 
 		protected var decalGroup:FlxGroup;
-		protected var objectGroup:FlxGroup;
 
 		public function celeste1(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			super(levelSize, blockSize, new FlxPoint(1480.0,792.0));
@@ -1409,6 +1408,7 @@ package
 				}
 			}
 			add(objectGroup);
+			
 			add(decalGroup);
 			if(waterDrops!=null)			{
 				for(i = 0; i<waterDrops.length; i++)
@@ -1435,9 +1435,12 @@ package
 			add(darkness);
 			add(guiGroup);
 			//absolutely necessary for some reason
-			debugText = new FlxText(FlxG.camera.scroll.x,FlxG.camera.scroll.y,100);
-			debugText.text = "Debug: ";
+			//debugText = new FlxText(FlxG.camera.scroll.x,FlxG.camera.scroll.y,100);
+			//debugText.text = "Debug: ";
 		}
+		
+		
+		
 
 		override public function draw():void {
 			darkness.fill(0xff888888);
@@ -1700,6 +1703,7 @@ package
 			super.normalGameplay();
 			FlxG.collide(objectGroup, player);
 			
+			
 			//Extra level stuff
 			if(key2!=null && FlxG.collide(key2,player))
 			{
@@ -1711,8 +1715,10 @@ package
 					key2.velocity.x=key2.velocity.y=0;
 					key2.acceleration.x=key2.acceleration.y=0;
 					
-					key2.x=-10;
-					key2.y=-10;
+					key2.x=-50;
+					key2.y=-50;
+					key.x=-50;
+					key.y=-50;
 					
 					//Add new node
 					key2=null;
@@ -1721,6 +1727,8 @@ package
 					
 				}
 			}
+			
+			FlxG.collide(lockedDoor, player);
 			
 			if(lockedDoor2!=null && FlxG.collide(lockedDoor2,player))
 			{

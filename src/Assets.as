@@ -13,12 +13,38 @@ package
 		//[Embed(source = "/assets/sprites/ranger (opengameart - Antifarea - ccby30).png")] public static var RANGER_SPRITE:Class;
 		[Embed(source = "/assets/sprites/catGuardSpritesheet.png")] public static var GUARD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/ratCookSpritesheet.png")] public static var COOK_SPRITE:Class;
+		[Embed(source = "/assets/sprites/ratHeadCookSpritesheet.png")] public static var HEAD_COOK_SPRITE:Class;
+		[Embed(source = "/assets/sprites/hatlessRatCookSpritesheet.png")] public static var HATLESS_COOK_SPRITE:Class;
 		[Embed(source = "/assets/sprites/prisonerSpritesheet.png")] public static var PRISONER_SPRITE:Class;
 		[Embed(source = "/assets/sprites/hammerheadSpritesheet.png")] public static var SHARK_SPRITE:Class;
+		[Embed(source = "/assets/sprites/nelsonSpritesheet.png")] public static var NELSON_SPRITE:Class;
+		[Embed(source = "/assets/sprites/eyepatchSpritesheet.png")] public static var EYEPATCH_SPRITE:Class;
+		[Embed(source = "/assets/sprites/PituSpritesheet.png")] public static var PITU_SPRITE:Class;
+		[Embed(source = "/assets/sprites/HachiSpritesheet.png")] public static var HACHI_SPRITE:Class;
+		[Embed(source = "/assets/sprites/SivaSpritesheet.png")] public static var SIVA_SPRITE:Class;
+		[Embed(source = "/assets/sprites/TalSpritesheet.png")] public static var TAL_SPRITE:Class;
+		[Embed(source = "/assets/sprites/FemSpritesheet.png")] public static var FEM_SPRITE:Class;
+		[Embed(source = "/assets/sprites/SepacSpritesheet.png")] public static var SEPAC_SPRITE:Class;
+		[Embed(source = "/assets/sprites/NimaSpritesheet.png")] public static var NIMA_SPRITE:Class;
+		[Embed(source = "/assets/sprites/NiSpritesheet.png")] public static var NI_SPRITE:Class;
+		[Embed(source = "/assets/sprites/fishSpritesheet.png")] public static var FISH_SPRITE:Class;
+		[Embed(source = "/assets/sprites/rabbitSpritesheet.png")] public static var RABBIT_SPRITE:Class;
+		[Embed(source = "/assets/sprites/goatSpritesheet.png")] public static var GOAT_SPRITE:Class;
+		[Embed(source = "/assets/sprites/turtleSpritesheet.png")] public static var TURTLE_SPRITE:Class;
+		
 		//Split up player sprite
 		[Embed(source = "/assets/sprites/princessHeadSpritesheet.png")] public static var RANGERHEAD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/princessBodySpritesheet.png")] public static var RANGERBODY_SPRITE:Class;
 		[Embed(source = "/assets/sprites/princessLegsSpritesheet.png")] public static var RANGERLEGS_SPRITE:Class;
+		
+		[Embed(source = "/assets/sprites/dressHeadSpritesheet.png")] public static var DRESS_HEAD:Class;
+		[Embed(source = "/assets/sprites/dressBodySpritesheet.png")] public static var DRESS_BODY:Class;
+		[Embed(source = "/assets/sprites/dressLegsSpritesheet.png")] public static var DRESS_LEGS:Class;
+		
+		[Embed(source = "/assets/sprites/dressHat.png")] public static var DRESS_HAT:Class;
+		[Embed(source = "/assets/sprites/dressShirt.png")] public static var DRESS_SHIRT:Class;
+		[Embed(source = "/assets/sprites/dressPants.png")] public static var DRESS_PANTS:Class;
+		
 		
 		//Outfit
 		[Embed(source = "/assets/sprites/princessHat.png")] public static var RANGER_HAT:Class;
@@ -59,6 +85,11 @@ package
 		[Embed(source = "/assets/sprites/oven.png")] public static var oven:Class;
 		[Embed(source = "/assets/sprites/crate2.png")] public static var crate2:Class;
 		[Embed(source = "/assets/sprites/Door2.png")] public static var Door:Class;
+		[Embed(source = "/assets/sprites/GoldDoor.png")] public static var GoldDoor:Class;
+		[Embed(source = "/assets/sprites/bookshelf.png")] public static var bookshelf:Class;
+		[Embed(source = "/assets/sprites/BedFrame.png")] public static var BedFrame:Class;
+		[Embed(source = "/assets/sprites/MatthewRug.png")] public static var MatthewRug:Class;
+		[Embed(source = "/assets/sprites/MatthewRug2.png")] public static var MatthewRug2:Class;
 		[Embed(source = "/assets/sprites/DoorRight.png")] public static var DoorRight:Class;
 		[Embed(source = "/assets/sprites/DoorLeft.png")] public static var DoorLeft:Class;
 		[Embed(source = "/assets/sprites/MilkBottle.png")] public static var MilkBottle:Class;
@@ -83,21 +114,44 @@ package
 		
 		[Embed(source = "/assets/sprites/WalrusWallStandard.png")] public static var WalrusWallStandard:Class;
 		[Embed(source = "/assets/sprites/WalrusArmor.png")] public static var WalrusArmor:Class;
-		[Embed(source = "/assets/sprites/rug1 (opengameart - Redshrike - ccby30).png")] public static var RUG1_SPRITE:Class;
-		[Embed(source = "/assets/sprites/rug2 (opengameart - Redshrike - ccby30).png")] public static var RUG2_SPRITE:Class;
-		[Embed(source = "/assets/sprites/bookcase (opengameart - Redshrike - ccby30).png")] public static var BOOKCASE_SPRITE:Class;
-		[Embed(source = "/assets/sprites/chair_down (opengameart - Redshrike - ccby30).png")] public static var CHAIRDOWN_SPRITE:Class;
-		[Embed(source = "/assets/sprites/chair_left (opengameart - Redshrike - ccby30).png")] public static var CHAIRLEFT_SPRITE:Class;
-		[Embed(source = "/assets/sprites/chair_right (opengameart - Redshrike - ccby30).png")] public static var CHAIRRIGHT_SPRITE:Class;
-		[Embed(source = "/assets/sprites/chair_up (opengameart - Redshrike - ccby30).png")] public static var CHAIRUP_SPRITE:Class;
-		[Embed(source = "/assets/sprites/table_round (opengameart - Redshrike - ccby30).png")] public static var TABLEROUND_SPRITE:Class;
-		[Embed(source = "/assets/sprites/armor (opengameart - Redshrike - ccby30).png")] public static var ARMOR_SPRITE:Class;
-		[Embed(source = "/assets/sprites/bed (opengameart - Redshrike - ccby30).png")] public static var BED_SPRITE:Class;
-
+		[Embed(source = "/assets/sprites/chairDown.png")] public static var CHAIRDOWN_SPRITE:Class;
+		[Embed(source = "/assets/sprites/chairLeft.png")] public static var CHAIRLEFT_SPRITE:Class;
+		[Embed(source = "/assets/sprites/chair.png")] public static var CHAIRRIGHT_SPRITE:Class;
+		[Embed(source = "/assets/sprites/chairDown2.png")] public static var CHAIRUP_SPRITE:Class;
+		
+		//Extra Kitchen Sprites
+		
+		[Embed(source = "/assets/sprites/Pumpkin.png")] public static var Pumpkin:Class;
+		[Embed(source = "/assets/sprites/potatoBag.png")] public static var potatoBag:Class;
+		[Embed(source = "/assets/sprites/sleepyRatUnHat.png")] public static var sleepyRatUnHat:Class;
+		[Embed(source = "/assets/sprites/sleepyRat.png")] public static var sleepyRat:Class;
+		[Embed(source = "/assets/sprites/sink.png")] public static var sink:Class;
+		[Embed(source = "/assets/sprites/kitchenTable.png")] public static var kitchenTable:Class;
+		[Embed(source = "/assets/sprites/Barrel.png")] public static var Barrel:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf1.png")] public static var kitchenLongShelf1:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf2.png")] public static var kitchenLongShelf2:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf3.png")] public static var kitchenLongShelf3:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf4.png")] public static var kitchenLongShelf4:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf5.png")] public static var kitchenLongShelf5:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf6.png")] public static var kitchenLongShelf6:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf7.png")] public static var kitchenLongShelf7:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelf8.png")] public static var kitchenLongShelf8:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelfWine.png")] public static var kitchenLongShelfWine:Class;
+		[Embed(source = "/assets/sprites/kitchenLongShelfEmpty.png")] public static var kitchenLongShelfEmpty:Class;
+		[Embed(source = "/assets/sprites/GreenCan.png")] public static var GreenCan:Class;
+		[Embed(source = "/assets/sprites/RedCan.png")] public static var RedCan:Class;
+		[Embed(source = "/assets/sprites/BlueCan.png")] public static var BlueCan:Class;
+		[Embed(source = "/assets/sprites/Peppers.png")] public static var Peppers:Class;
+		[Embed(source = "/assets/sprites/Fruit.png")] public static var Fruit:Class;
+		[Embed(source = "/assets/sprites/Pot.png")] public static var Pot:Class;
+		[Embed(source = "/assets/sprites/WallShelf.png")] public static var WallShelf:Class;
+		[Embed(source = "/assets/sprites/DishCover.png")] public static var DishCover:Class;
+		
+		
 		// tiles
 		[Embed(source = "/assets/tiles/celesteTileset.png")] public static var celesteTileset:Class;
 		[Embed(source = "/assets/tiles/celesteFloorTilesheetFin.png")] public static var celesteFloorTilesheetFin:Class;
-		[Embed(source = "/assets/tiles/kitchenFloor.png")] public static var KITCHEN_FLOORS_TILE:Class;
+		[Embed(source = "/assets/tiles/WaterDropletTiles.png")] public static var WATER_TILES:Class;
 		
 		//lights
 		[Embed(source="/assets/light.png")] public static var LightImageClass:Class;
@@ -113,8 +167,21 @@ package
 		//Display Heads
 		[Embed(source="/assets/CharacterHead.png")] public static var CHARACTER_HEAD:Class;
 		[Embed(source="/assets/CatPortrait.png")] public static var CAT_HEAD:Class;
+		[Embed(source="/assets/CamelPortrait.png")] public static var NELSON_HEAD:Class;
+		[Embed(source="/assets/foxPortraitEyepatch.png")] public static var EYEPATCH_HEAD:Class;
+		[Embed(source="/assets/NiPortrait.png")] public static var NI_HEAD:Class;
+		[Embed(source="/assets/NimaPortrait.png")] public static var NIMA_HEAD:Class;
+		[Embed(source="/assets/SepacPortrait.png")] public static var SEPAC_HEAD:Class;
+		[Embed(source="/assets/FemPortrait.png")] public static var FEM_HEAD:Class;
+		[Embed(source="/assets/TalPortrait.png")] public static var TAL_HEAD:Class;
+		[Embed(source="/assets/SivaPortrait.png")] public static var SIVA_HEAD:Class;
+		[Embed(source="/assets/HachiPortrait.png")] public static var HACHI_HEAD:Class;
+		[Embed(source="/assets/PituPortrait.png")] public static var PITU_HEAD:Class;
+		[Embed(source="/assets/FishPortrait.png")] public static var FISH_HEAD:Class;
 		[Embed(source="/assets/CatPortraitFlip.png")] public static var CAT_HEAD_FLIP:Class;
 		[Embed(source="/assets/RatPortrait.png")] public static var RAT_HEAD:Class;
+		[Embed(source="/assets/HeadCookPortrait.png")] public static var HEAD_COOK_HEAD:Class;
+		[Embed(source="/assets/HatlessRatPortrait.png")] public static var HATLESS_COOK_HEAD:Class;
 		[Embed(source="/assets/PrisonerFace.png")] public static var PRISONER_HEAD:Class;
 		
 		//Drunk Cat BITS
@@ -128,20 +195,35 @@ package
 		[Embed(source="/assets/WaterDrop.png")] public static var WATER_DROP:Class;
 		
 		//SAVING POINTS
-		[Embed(source = "/assets/sprites/openPipe.png")] public static var OPEN_PIPE:Class;
+		[Embed(source = "/assets/sprites/openPipe90.png")] public static var OPEN_PIPE:Class;
 		[Embed(source = "/assets/sprites/openPipeFlip.png")] public static var OPEN_PIPE_FLIP:Class;
-		[Embed(source = "/assets/sprites/openingPipe.png")] public static var CLOSED_PIPE:Class;
+		[Embed(source = "/assets/sprites/openingPipe90.png")] public static var CLOSED_PIPE:Class;
+		[Embed(source = "/assets/sprites/pipeExitAnimation.png")] public static var PIPE_EXIT:Class;
 		[Embed(source = "/assets/sprites/openingPipeFlip.png")] public static var CLOSED_PIPE_FLIP:Class;
 		
 		//Menu Stuff
 		[Embed(source = "/assets/menuBackground.png")] public static var MENU_BACKGROUND:Class;
+		[Embed(source = "/assets/pauseMenuBackground.png")] public static var MENU_BACKGROUND2:Class;
+		[Embed(source = "/assets/pauseMenuBackgroundCovering.png")] public static var MENU_BACKGROUND2_COVER:Class;
+		[Embed(source = "/assets/highlightedSelector.png")] public static var HIGHLIGHT:Class;
 		[Embed(source = "/assets/FaceBox.png")] public static var FACE_BOX:Class;
 		[Embed(source = "/assets/DialogBox.png")] public static var DIALOG_BOX:Class;
-
-		[Embed(source = "/assets/menuHeads.png")] public static var MENU_HEADS:Class;
-		[Embed(source = "/assets/menuBodies.png")] public static var MENU_BODIES:Class;
-		[Embed(source = "/assets/menuLegs.png")] public static var MENU_LEGS:Class;
+		[Embed(source = "/assets/Mute.png")] public static var MUTE_BUTTON:Class;
 		
+		[Embed(source = "/assets/WaterDroplet.png")] public static var WATER_DROPLET:Class;
+
+		[Embed(source = "/assets/menuHeadsBigger.png")] public static var MENU_HEADS:Class;
+		[Embed(source = "/assets/menuBodiesBigger.png")] public static var MENU_BODIES:Class;
+		[Embed(source = "/assets/menuLegsBigger.png")] public static var MENU_LEGS:Class;
+		
+		//Menu in Between Stuff
+		[Embed(source = "/assets/levelBetween/ContinueButton.png")] public static var CONTINUE_BUTTON:Class;
+		[Embed(source = "/assets/levelBetween/StartButton.png")] public static var START_BUTTON:Class;
+		[Embed(source = "/assets/levelBetween/ContinueButtonHighlight.png")] public static var CONTINUE_BUTTON_HIGHLIGHT:Class;
+		[Embed(source = "/assets/levelBetween/SaveQuitButton.png")] public static var SAVE_BUTTON:Class;
+		[Embed(source = "/assets/levelBetween/SaveQuitButtonHighlight.png")] public static var SAVE_BUTTON_HIGHLIGHT:Class;
+		[Embed(source = "/assets/levelBetween/LevelBetweenScreenAbove.png")] public static var SCREEN_ABOVE:Class;
+		[Embed(source = "/assets/levelBetween/LevelBetweenScreenBelow.png")] public static var SCREEN_BELOW:Class;
 		
 		//Music
 		[Embed(source = "/assets/mp3/dungeon1_loop.mp3")] public static var DUNGEON_SONG:Class;
@@ -189,10 +271,19 @@ package
 		[Embed(source = "/assets/compressed_sfx/VO/catGuard/cat_guard_sayso.mp3")] public static var CAT_GUARD_SAYSO:Class;
 		
 		
+		//Prisoner Sounds
+		[Embed(source = "/assets/compressed_sfx/VO/prisoners/fish.mp3")] public static var FISH_SOUND:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/prisoners/kitsune.mp3")] public static var KITSUNE_SOUND:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/prisoners/kitsune2.mp3")] public static var KITSUNE_SOUND2:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/prisoners/nelson.mp3")] public static var NELSON_SOUND:Class;
+		
 		//Kitchen stuff
 		[Embed(source = "/assets/sprites/Fish.png")] public static var FISH:Class;
 		[Embed(source = "/assets/sprites/WaiterPortrait.png")] public static var WAITER_PORTRAIT:Class;
 		[Embed(source = "/assets/sprites/SharkWaiter.png")] public static var WAITER_SPRITE:Class;
 		
+		
+		//FONT
+		[Embed(source="/assets/FontsToCheck/nokiafc22.ttf", fontFamily="TEST", embedAsCFF="false")] 	public	var	FontTEST:String;
 	}
 }

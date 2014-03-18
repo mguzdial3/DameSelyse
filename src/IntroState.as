@@ -58,6 +58,7 @@ package  {
 		
 		private var clicked:Boolean = false;
 		override public function update():void {
+		
 			if (FlxG.mouse.justPressed() && !clicked) {
 				clicked=true;
 				FlxG.stage.removeChildAt(1);

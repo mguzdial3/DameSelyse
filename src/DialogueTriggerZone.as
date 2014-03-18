@@ -11,7 +11,9 @@ package
 		private var repeatable:Boolean;
 		private var pausesPlayer:Boolean;
 		
-		public function DialogueTriggerZone(_x:Number, _y:Number, _width:Number, _height:Number, _myDialogNode:DialogNode, _repeatable:Boolean=false, _pausesPlayer:Boolean=false)
+		public var activated:Boolean;
+		
+		public function DialogueTriggerZone(_x:Number, _y:Number, _width:Number, _height:Number, _myDialogNode:DialogNode, _repeatable:Boolean=false, _pausesPlayer:Boolean=false, _activated:Boolean=false)
 		{
 			super(_x, _y, _width, _height);
 			
@@ -19,6 +21,8 @@ package
 			
 			repeatable=_repeatable;
 			pausesPlayer= _pausesPlayer;
+			
+			activated = _activated;
 		} 
 		
 		
@@ -27,6 +31,7 @@ package
 		{
 			if(myDialogNode.canTransfer(inventory))
 			{
+				activated = true;
 				return myDialogNode;
 			}
 		

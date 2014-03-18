@@ -18,7 +18,7 @@ package
 		
 		//CONSTRUCTOR
 		
-		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=1, _timeToExit :Number=1
+		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=0.75, _timeToExit :Number=0.75
 		, _inUseImage: Class=null)
 		{
 			super(X,Y, imageOfObject);
@@ -30,12 +30,21 @@ package
 			
 			forcesOut = _forcesOut;
 			
+			
 			//HideableObjects cannot be moved
 			super.immovable = true;
 			timeToEnter = _timeToEntry;
 			
 			timeToExit = _timeToExit;
 			
+			
+			if(forcesOut)
+			{
+				if(timeToExit<1)
+				{
+					timeToExit = 2.5;
+				}
+			}
 			
 		}
 		
