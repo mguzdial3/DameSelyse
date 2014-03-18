@@ -24,7 +24,6 @@ package
 		private var draggingBar: Boolean;
 		private var origPos: FlxPoint; //Original position fo dragged object
 		
-		private var inventoryItem: InventoryItem; //The current item stored in inventory
 		
 		private var displaying: Boolean;
 		
@@ -74,6 +73,9 @@ package
 		private var textOnColor:uint = 0xFF303338;
 		private var textOffColor:uint = 0xFF4F5257;
 		
+		private var inventoryItem: InventoryItem; //The current item stored in inventory
+
+		
 		public function Inventory(_outfitHandler: OutfitHandler)
 		{
 			super();
@@ -85,7 +87,6 @@ package
 			//Overall Background
 			menuBackground = new FlxSprite(10,10, Assets.MENU_BACKGROUND2);
 			
-			inventoryItem=null;
 			
 			
 			
@@ -321,11 +322,6 @@ package
 			map.y += cameraOffset.y;
 			
 			
-			if(inventoryItem!=null)
-			{
-				inventoryItem.x=cameraOffset.x+240-inventoryItem.width/2;
-				inventoryItem.y=cameraOffset.y+170-inventoryItem.height/2;
-			}
 			
 			
 			var outfits: Vector.<PlayerOutfit> = outfitHandler.getAllOutfits();
@@ -484,8 +480,6 @@ package
 			waterDroplet.x=42+cameraOffset.x;
 			waterDroplet.y=121+cameraOffset.y;
 			
-			//TESTING
-			levelAt=1;
 			
 			//DUNGEON ONLY
 			if(levelAt>=0) 
@@ -653,11 +647,7 @@ package
 			mute.x = -10;
 			mute.y = -10;
 			
-			if(inventoryItem!=null)
-			{
-				inventoryItem.x-=cameraOffset.x;
-				inventoryItem.y-=cameraOffset.y;
-			}
+			
 			
 			//Clothing Outfits
 			var outfits: Vector.<PlayerOutfit> = outfitHandler.getAllOutfits();
@@ -996,6 +986,7 @@ package
 			&& (point.y+extraBit>boxY && point.y-extraBit<boxY+boxHeight));
 		}
 		
+		
 		//Returns true if managed to set inventoryItem, false otherwise
 		public function setInventoryItem(_inventoryItem: InventoryItem):Boolean
 		{
@@ -1014,7 +1005,6 @@ package
 				inventoryItem.x = 0;
 				inventoryItem.y = 0;
 				
-				add(inventoryItem);
 				
 				return true;
 			}
@@ -1035,10 +1025,10 @@ package
 		public function retrieveInventoryItem(): InventoryItem
 		{
 			var tempReference: InventoryItem = inventoryItem;
-			remove(inventoryItem);
 			inventoryItem=null;
 			return tempReference;
 		}
+		
 		
 		public function getItemName(): String
 		{

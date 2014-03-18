@@ -137,6 +137,8 @@ package
 		//Max Drops
 		private var maxDrops:int;
 		
+		
+		
 		/**
 		 * Constructor
 		 * @param	state		State displaying the level
@@ -224,15 +226,15 @@ package
 			questionTimerDisplay.scrollFactor.x = questionTimerDisplay.scrollFactor.y = 0;
 			
 			//Sets up and adds the menu text
-			menuText = new FlxText(240,0,80, "Menu(M)");
+			menuText = new FlxText(242,-2,80, "Menu(M)");
 			menuText.setFormat("TEST", 8, 0xffffffff, "right");
 			menuText.scrollFactor.x = menuText.scrollFactor.y = 0;
-			//add(menuText);
+			add(menuText);
 			
-			dropletText =new FlxText(260, 20, 60, "0/"+player.getMaxDrops());
+			dropletText =new FlxText(262, 8, 60, "0/"+player.getMaxDrops());
 			dropletText.setFormat("TEST", 8, 0xff4f7fcf, "right");
 			dropletText.scrollFactor = new FlxPoint(0, 0);
-			//guiGroup.add(dropletText);
+			guiGroup.add(dropletText);
 			
 			printText =new FlxText(280, 60, 40, "");
 			printText.alignment = "right";
@@ -241,7 +243,16 @@ package
 			guiGroup.add(printText);
 			debugString = "Debug";
 			
+			//ITEM BOX
 			
+			var textBox:FlxSprite = new FlxSprite(296,21,Assets.ITEM_BOX);
+			textBox.scrollFactor = new FlxPoint(0,0);
+			guiGroup.add(textBox);
+			
+			//WATER DROPLET -WATER_DROPLET
+			var waterDrop:FlxSprite = new FlxSprite(290,10,Assets.WATER_DROPLET);
+			waterDrop.scrollFactor = new FlxPoint(0,0);
+			guiGroup.add(waterDrop);
 			
 			//debugText = new FlxText(FlxG.camera.scroll.x,FlxG.camera.scroll.y,100);
 			//debugText.alignment = "right";

@@ -2164,7 +2164,7 @@ package
 			lockedDoor = new FlxSprite(54*16+2,72*16+12,Assets.GoldDoor);
 			lockedDoor.immovable=true;
 			add(lockedDoor);
-			key = new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
+			key = new InventoryItem(Assets.KEY, playerStart.x+16,playerStart.y,"Key", new FlxPoint(1,1));//new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
 			add(key);
 			add(bodyLight);
 			add(legsLight);
@@ -2407,7 +2407,6 @@ package
 					
 					//Add new node
 					key=null;
-					
 					
 					
 				}

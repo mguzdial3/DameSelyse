@@ -212,6 +212,9 @@ package
 		
 		[Embed(source = "/assets/WaterDroplet.png")] public static var WATER_DROPLET:Class;
 
+		[Embed(source = "/assets/itemBox.png")] public static var ITEM_BOX:Class;
+
+
 		[Embed(source = "/assets/menuHeadsBigger.png")] public static var MENU_HEADS:Class;
 		[Embed(source = "/assets/menuBodiesBigger.png")] public static var MENU_BODIES:Class;
 		[Embed(source = "/assets/menuLegsBigger.png")] public static var MENU_LEGS:Class;
