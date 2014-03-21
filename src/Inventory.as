@@ -988,23 +988,40 @@ package
 		
 		
 		//Returns true if managed to set inventoryItem, false otherwise
-		public function setInventoryItem(_inventoryItem: InventoryItem):Boolean
+		public function setInventoryItem(_inventoryItem: InventoryItem, group:FlxGroup = null):Boolean
 		{
 			//Can only have one inventory item at a time
 			if(inventoryItem==null)
 			{
 				//Bring up to the size of the inventoryItem Box
-				_inventoryItem.scale = new FlxPoint(80.0*0.75/_inventoryItem.width,
-				80.0*0.75/_inventoryItem.height);
+				//_inventoryItem.scale = new FlxPoint(80.0*0.75/_inventoryItem.width,
+				//80.0*0.75/_inventoryItem.height);
 				
 				inventoryItem = _inventoryItem;
 				
 				
 			
 				//Put it in middle of the box
-				inventoryItem.x = 0;
-				inventoryItem.y = 0;
+				//inventoryItem.x = 0;
+				//inventoryItem.y = 0;
 				
+				inventoryItem.velocity.x=inventoryItem.velocity.y=0;
+				inventoryItem.acceleration.x=inventoryItem.acceleration.y=0;
+					
+				inventoryItem.immovable = false;
+				
+				
+					
+					
+				inventoryItem.x = 320-inventoryItem.width;
+				inventoryItem.y = 30-inventoryItem.height/2;	
+					
+				inventoryItem.scrollFactor = new FlxPoint(0,0);	
+					
+				if(group!=null)
+				{
+					group.add(inventoryItem);
+				}
 				
 				return true;
 			}
@@ -1025,7 +1042,14 @@ package
 		public function retrieveInventoryItem(): InventoryItem
 		{
 			var tempReference: InventoryItem = inventoryItem;
+			inventoryItem.scrollFactor = new FlxPoint(1,1);	
+			inventoryItem.x=-50;
+			inventoryItem.y=-50;
+			
 			inventoryItem=null;
+			
+			
+			
 			return tempReference;
 		}
 		

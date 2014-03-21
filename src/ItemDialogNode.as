@@ -19,6 +19,7 @@ package
 		override public function canTransfer(inventory:Inventory):Boolean
 		{
 			
+			
 			inventory.retrieveInventoryItem();
 			
 			

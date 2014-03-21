@@ -113,7 +113,8 @@ package
 		[Embed(source = "/assets/sprites/MatRight.png")] public static var MatRight:Class;
 		
 		[Embed(source = "/assets/sprites/WalrusWallStandard.png")] public static var WalrusWallStandard:Class;
-		[Embed(source = "/assets/sprites/WalrusArmor.png")] public static var WalrusArmor:Class;
+		[Embed(source = "/assets/sprites/walrusArmor.png")] public static var WalrusArmor:Class;
+		[Embed(source = "/assets/sprites/WalrusArmorBigHidingAnimation.png")] public static var WalrusArmorInside:Class;
 		[Embed(source = "/assets/sprites/chairDown.png")] public static var CHAIRDOWN_SPRITE:Class;
 		[Embed(source = "/assets/sprites/chairLeft.png")] public static var CHAIRLEFT_SPRITE:Class;
 		[Embed(source = "/assets/sprites/chair.png")] public static var CHAIRRIGHT_SPRITE:Class;
@@ -195,11 +196,11 @@ package
 		[Embed(source="/assets/WaterDrop.png")] public static var WATER_DROP:Class;
 		
 		//SAVING POINTS
-		[Embed(source = "/assets/sprites/openPipe90.png")] public static var OPEN_PIPE:Class;
-		[Embed(source = "/assets/sprites/openPipeFlip.png")] public static var OPEN_PIPE_FLIP:Class;
-		[Embed(source = "/assets/sprites/openingPipe90.png")] public static var CLOSED_PIPE:Class;
+		[Embed(source = "/assets/sprites/openPipe2.png")] public static var OPEN_PIPE:Class;
+		[Embed(source = "/assets/sprites/openPipe2.png")] public static var OPEN_PIPE_FLIP:Class;
+		[Embed(source = "/assets/sprites/openingPipe2.png")] public static var CLOSED_PIPE:Class;
 		[Embed(source = "/assets/sprites/pipeExitAnimation.png")] public static var PIPE_EXIT:Class;
-		[Embed(source = "/assets/sprites/openingPipeFlip.png")] public static var CLOSED_PIPE_FLIP:Class;
+		[Embed(source = "/assets/sprites/openingPipe2.png")] public static var CLOSED_PIPE_FLIP:Class;
 		
 		//Menu Stuff
 		[Embed(source = "/assets/menuBackground.png")] public static var MENU_BACKGROUND:Class;
@@ -213,7 +214,7 @@ package
 		[Embed(source = "/assets/WaterDroplet.png")] public static var WATER_DROPLET:Class;
 
 		[Embed(source = "/assets/itemBox.png")] public static var ITEM_BOX:Class;
-
+		[Embed(source = "/assets/SpaceToContinue.png")] public static var CONTINUE_TEXT:Class;
 
 		[Embed(source = "/assets/menuHeadsBigger.png")] public static var MENU_HEADS:Class;
 		[Embed(source = "/assets/menuBodiesBigger.png")] public static var MENU_BODIES:Class;

@@ -10,6 +10,8 @@ package
 		private var headBackground:FlxSprite;
 		private var textBackground:FlxSprite;
 		private var dialogText:FlxText;
+		private var continueText:FlxSprite;
+		private var alphaCounter:Number;
 		
 		//The index we're at presently in copying the string over to our dialogText
 		private var stringIndex:int;
@@ -62,11 +64,16 @@ package
 			dialogText = new FlxText(-500,-170,220);
 			dialogText.setFormat("TEST", 8, 0xffffffff, "left");		
 			
+			continueText = new FlxSprite(-240,214,Assets.CONTINUE_TEXT);
+			continueText.alpha = 0;
+			
+			
 			add(headBackground);
 			
 			add(textBackground);
 			add(dialogText);
 			add(head);
+			add(continueText);
 			
 		}
 		
@@ -74,6 +81,9 @@ package
 		//Sets up display
 		public function setCurrNode(_currNode: DialogNode):void
 		{
+			alphaCounter=0;
+			continueText.alpha = 0;
+		
 			currNode = _currNode;
 			
 			//Clear previous text
@@ -221,7 +231,26 @@ package
 		
 		public function showDialogHandler(currLevel: FlxGroup):void
 		{
+			var cameraScroll:FlxPoint = FlxG.camera.scroll;
+		
+			continueText.alpha = 0;
 			currLevel.add(this);
+			
+			head.x = 10+cameraScroll.x;
+			head.y= 170+cameraScroll.y;
+			
+			headBackground.x = cameraScroll.x;
+			headBackground.y = cameraScroll.y+160;
+			
+			textBackground.x = cameraScroll.x+80;
+			textBackground.y= cameraScroll.y+160;
+			
+			
+			//continueText = new FlxSprite(-240,214,Assets.CONTINUE_TEXT);
+			continueText.x = cameraScroll.x+140;
+			continueText.y = cameraScroll.y+225;
+			continueText.alpha = 0;
+			alphaCounter = 0;
 		}
 		
 		public function hideDialogHandler(currLevel: FlxGroup):void
@@ -237,17 +266,7 @@ package
 		{
 		
 			var toReturn:int = KEEP_GOING;
-			
-			head.x = 10+cameraScroll.x;
-			head.y= 170+cameraScroll.y;
-			
-			headBackground.x = cameraScroll.x;
-			headBackground.y = cameraScroll.y+160;
-			
-			textBackground.x = cameraScroll.x+80;
-			textBackground.y= cameraScroll.y+160;
-			
-			
+
 			//Copy over the string char by char
 			if(stringIndex<currNode.getTextToDisplay().length)
 			{
@@ -262,6 +281,13 @@ package
 			dialogText.x = cameraScroll.x+90;
 			dialogText.y = cameraScroll.y+170;
 			
+			
+			alphaCounter+=FlxG.elapsed;
+			
+			if(alphaCounter>2)
+			{
+				continueText.alpha = Math.cos(alphaCounter*2);
+			}
 			
 			if(FlxG.keys.justReleased("SPACE")) //This way you can't just constantly hold Space to move through dialogue faster
 			{
@@ -303,6 +329,16 @@ package
 		public function getAfterEnd(): uint
 		{
 			return currNode.getAfterEnd();
+		}
+		
+		public function getConversationEnd():Boolean
+		{
+			return currNode.getEndOfConversation();
+		}
+		
+		public function getConversation(): uint
+		{
+			return currNode.getConversation();
 		}
 
 		//Sets question up in one go without the letter by letter display		

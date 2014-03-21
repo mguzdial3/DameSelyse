@@ -77,13 +77,25 @@ package
 		{
 			if(inUseImage!=null)
 			{
-				loadGraphic(inUseImage);
+				loadGraphic(
+							inUseImage, // image to use
+							true, // animated
+							false, // don't generate "flipped" images since they're already in the image
+							20, // width of each frame (in pixels)
+							27 // height of each frame (in pixels)
+					);
+					//Set up animations
+					addAnimation("hiding", [0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,3,3,3,3,3,3,3,3,4,3,3,3,3,2,1,0,0,0,0,0,5,6,7,7,7,7,7,7,7,7,7,8,7,7,7,6,5,0],12);
+					play("hiding");
 			}
+			
+			//y-=6;
 		}
 		
 		public function transferToNormalImage():void
 		{
 			loadGraphic(origImage);
+			//y+=6;
 		}
 		
 		

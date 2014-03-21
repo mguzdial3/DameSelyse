@@ -32,6 +32,10 @@ package
 		protected var timeToAnswer: int = 10;
 		protected var soundToPlay: Class;
 		
+		protected var endOfConversation: Boolean=false;
+		protected var conversationToSave:uint;
+		
+		
 		
 		
 		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, _soundToPlay: Class=null, _afterEnd: uint= 0,
@@ -134,11 +138,25 @@ package
 			return responses;
 		}
 		
-		
-		
 		public function getTextToDisplay():String
 		{
 			return displayText;
+		}
+		
+		public function getEndOfConversation():Boolean
+		{
+			return endOfConversation;
+		}
+		
+		public function getConversation(): uint
+		{
+			return conversationToSave;
+		}
+		
+		public function setEndOfConversation(_conversationToSave:uint):void
+		{
+			endOfConversation=true;
+			conversationToSave= _conversationToSave;
 		}
 	}
 }

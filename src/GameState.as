@@ -131,6 +131,10 @@ package
 	
 		private var count:int;
 		private var MAX_COUNT:int=1200;
+		private var currCount:int = 0;
+		
+		private var minRatio:Number=0.1; //Less than 10%
+		
 		/**
 		 * Create state
 		 */
@@ -174,7 +178,10 @@ package
 		 
 		override public function create():void 
 		{
+			
 			super.create();
+			
+			
 			
 			saveStuff = new FlxSave();
 		
@@ -211,6 +218,13 @@ package
 			//LEVEL = new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
 			this.add(LEVEL);
 			
+			//THIS WORKED!
+			//this.clear();
+			
+			////TESTING
+			//setUpLevelEnd();
+			
+			
 			
 		}
 		
@@ -219,6 +233,7 @@ package
 			count = 0;
 		
 			var menuBackground:FlxSprite = new FlxSprite(0,0, Assets.SCREEN_BELOW);
+			menuBackground.scrollFactor = new FlxPoint(0, 0);
 			add(menuBackground);
 			FlxG.flashFramerate = 60; //60 before
 			
@@ -232,14 +247,32 @@ package
 			
 			baseWater.x=224;
 			baseWater.y = 36;
-			
+			baseWater.scrollFactor = new FlxPoint(0, 0);
 			add(baseWater);
 			
 			var menuBackground2:FlxSprite = new FlxSprite(0,0, Assets.SCREEN_ABOVE);
+			menuBackground2.scrollFactor = new FlxPoint(0, 0);
 			add(menuBackground2);
 			
 			
 			audience = new Vector.<FlxSprite>();
+			
+			
+			var currentLevel:String = LEVEL.getLevelName();
+			
+			var levelNamesArray:Array = new Array("Dungeon", "Kitchen", "Ballroom", "Sanctum");
+			
+			var i:int=0;
+			var levelAt:int = 0;
+			for(i=0; i<levelNamesArray.length; i++)
+			{
+				if(currentLevel==levelNamesArray[i])
+				{
+					levelAt=i;
+				}
+			}
+			
+			
 			//GOAT
 			var audienceSprite:FlxSprite = new FlxSprite(280,49-18);
 				audienceSprite.loadGraphic(
@@ -252,7 +285,9 @@ package
 			
 			audienceSprite.addAnimation("idle", [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6],30, true);
 			audienceSprite.addAnimation("celebrate", [0,1,2,3,4,3,2,1],10, true);
+			audienceSprite.addAnimation("sadness", [7,7,7,8,8,8,9,9,9,10,10],10, true);
 			audienceSprite.play("idle");
+			audienceSprite.scrollFactor = new FlxPoint(0, 0);
 			add(audienceSprite);
 			audience.push(audienceSprite);
 			
@@ -268,7 +303,9 @@ package
 			
 			audienceSprite2.addAnimation("idle", [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4],10, true);
 			audienceSprite2.addAnimation("celebrate", [0,0,0,0,0,1,1,1,1,0,0,0,0,2,2,2,2],10, true);
+			audienceSprite2.addAnimation("sadness", [5,5,5,6,6,6,7,7,7,8,8,8],10, true);
 			audienceSprite2.play("idle");
+			audienceSprite2.scrollFactor = new FlxPoint(0, 0);
 			add(audienceSprite2);
 			audience.push(audienceSprite2);
 			
@@ -284,9 +321,73 @@ package
 			
 			audienceSprite3.addAnimation("idle", [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6],10, true);
 			audienceSprite3.addAnimation("celebrate", [0,0,0,1,1,2,2,3,4,3,2,2,1,2,0,0,0,0,0],10, true);
+			audienceSprite3.addAnimation("sadness", [7],10, false);
 			audienceSprite3.play("idle");
+			audienceSprite3.scrollFactor = new FlxPoint(0, 0);
 			add(audienceSprite3);
 			audience.push(audienceSprite3);
+			
+			//colors
+			var colorsArray:Array = new Array(0xFFFFFAFA, 0xFFFAFFFF, 0xFFF9F9F9, 0xFFFCFCFC);
+			
+			//TESTING
+			//levelAt = 4;
+			
+			if(levelAt>0)
+			{
+				for(i=0; i<levelAt; i++)
+				{
+					var currType:int = int(Math.random()*2);
+					
+					var currX:Number = 288+i*8+6*Math.random();
+					
+					if(currType==0)
+					{
+						//RABBIT
+						audienceSprite2 = new FlxSprite(currX,49-18);
+							audienceSprite2.loadGraphic(
+							Assets.RABBIT_SPRITE, // image to use
+							true, // animated
+							false, // do generate "flipped" images since they're not already in the image
+							16, // width of each frame (in pixels)
+							18 // height of each frame (in pixels)
+							);
+			
+						audienceSprite2.addAnimation("idle", [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4],10, true);
+						audienceSprite2.addAnimation("celebrate", [0,0,0,0,0,1,1,1,1,0,0,0,0,2,2,2,2],10, true);
+						audienceSprite2.addAnimation("sadness", [5,5,5,6,6,6,7,7,7,8,8,8],10, true);
+						audienceSprite2.play("idle");
+						audienceSprite2.scrollFactor = new FlxPoint(0, 0);
+						audienceSprite2.color = colorsArray[int(Math.random()*4)];
+						add(audienceSprite2);
+						audience.push(audienceSprite2);
+					
+					}
+					else if(currType==1)
+					{
+						//TURTLE
+						audienceSprite3 = new FlxSprite(currX,49-16);
+							audienceSprite3.loadGraphic(
+							Assets.TURTLE_SPRITE, // image to use
+							true, // animated
+							false, // do generate "flipped" images since they're not already in the image
+							13, // width of each frame (in pixels)
+							16 // height of each frame (in pixels)
+							);
+			
+						audienceSprite3.addAnimation("idle", [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6],10, true);
+						audienceSprite3.addAnimation("celebrate", [0,0,0,1,1,2,2,3,4,3,2,2,1,2,0,0,0,0,0],10, true);
+						audienceSprite3.addAnimation("sadness", [7],10, false);
+						audienceSprite3.play("idle");
+						audienceSprite3.scrollFactor = new FlxPoint(0, 0);
+						audienceSprite3.color = colorsArray[int(Math.random()*4)];
+						add(audienceSprite3);
+						audience.push(audienceSprite3);
+					
+					}
+				}
+			}
+			
 			
 			//TEXT STUFF
 			
@@ -297,6 +398,7 @@ package
 			levelComplete.size= 16;
 			levelComplete.color = waterTextColor;
 			
+			levelComplete.scrollFactor = new FlxPoint(0, 0);
 			add(levelComplete);
 			
 			var totalDropletsMax:int = LEVEL.getMaxDropletsCollected();
@@ -304,25 +406,32 @@ package
 			stringDroplets = "Water Droplets Collected: "+totalDropletsCollected+"/"+totalDropletsMax;
 			dropletsText =new FlxText(9, 61, 132, "");
 			dropletsText.color = waterTextColor;
+			dropletsText.scrollFactor = new FlxPoint(0, 0);
 			add(dropletsText);
 			
 			var timesCaught:int = LEVEL.timesCaught();
 			stringCaught = "Times Caught: "+timesCaught;
 			caughtText =new FlxText(9, 91, 79, "");
 			caughtText.color = waterTextColor;
+			caughtText.scrollFactor = new FlxPoint(0, 0);
 			add(caughtText);
 			
 			var conversationsHad:int = LEVEL.conversationsHad();
 			stringConversations = "Conversations Had: "+conversationsHad;
 			conversationsText =new FlxText(9, 121, 102, "");
 			conversationsText.color = waterTextColor;
+			conversationsText.scrollFactor = new FlxPoint(0, 0);
 			add(conversationsText);
 			
 			var timeItTook:int = LEVEL.levelCompleteTime();
 			stringLevelTime = "Level Completion Time: "+timeItTook+" mins";
 			levelTimeText =new FlxText(9, 151, 124, "");
 			levelTimeText.color = waterTextColor;
+			levelTimeText.scrollFactor = new FlxPoint(0, 0);
 			add(levelTimeText);
+			
+			//Set up the current count
+			currCount = int((Number(totalDropletsCollected)/Number(totalDropletsMax))*Number(MAX_COUNT));
 		}
 		
 		public function displayLevelEnd(): void
@@ -398,8 +507,10 @@ package
 						{
 							//The end
 							var continueButton:FlxButton = new FlxButton(40,192,Assets.CONTINUE_BUTTON, startNextLevel, Assets.CONTINUE_BUTTON_HIGHLIGHT);
+							continueButton.scrollFactor = new FlxPoint(0, 0);
 							add(continueButton);
 							var saveButton:FlxButton = new FlxButton(148,192,Assets.SAVE_BUTTON, returnToMainMenu, Assets.SAVE_BUTTON_HIGHLIGHT);
+							saveButton.scrollFactor = new FlxPoint(0, 0);
 							add(saveButton);
 							
 							FlxG.mouse.show();
@@ -415,7 +526,7 @@ package
 			
 			}
 			
-			if(count<MAX_COUNT)
+			if(count<currCount)
 			{
 				var x:int;
 				var y:int;
@@ -432,11 +543,20 @@ package
 				count++;
 				
 				var u:int = 0;
-				if(count>=MAX_COUNT)
+				if(count>=currCount)
 				{
-					for(u=0; u<3; u++)
+					for(u=0; u<audience.length; u++)
 					{ 
-						audience[u].play("celebrate");
+						var currRatio:Number = Number(currCount)/Number(MAX_COUNT);
+					
+						if(currRatio>minRatio)
+						{
+							audience[u].play("celebrate");
+						}
+						else
+						{
+							audience[u].play("sadness");
+						}
 					}
 				}
 				
@@ -451,11 +571,14 @@ package
 		}
 		
 		
+		
 		//This is called once per frame. Like Update in Unity3D.
 		
 		override public function update(): void {
 			super.update();
 
+			
+			
 			
 			if(gameplay)
 			{
@@ -473,25 +596,37 @@ package
 				// If we've got a new level to transfer to, let's get rid of the old one and 
 				// add the new one
 				
-				if(NEXT_LEVEL!=null)
+				if(NEXT_LEVEL!=null && NEXT_LEVEL.getLevelName()!=LEVEL.getLevelName())
 				{
 					saveStuff.data.levelName = NEXT_LEVEL.getLevelName();
 					
 					LEVEL.gameStateSave(); //Game State Save real fast
 					
-					this.remove(LEVEL);
+					this.clear();
+										
+					gameplay= false;
 					
 					setUpLevelEnd();
 					
-					LEVEL=null;
 					
-					gameplay= false;
 					
+					
+					
+				}
+				else if(NEXT_LEVEL!=null)
+				{
+					startNextLevel();
 				}
 				
 			}
 			else
 			{
+			
+				if(countLiving()==0)
+				{
+					setUpLevelEnd();
+				}
+			
 				displayLevelEnd();
 			}
 			

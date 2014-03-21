@@ -363,9 +363,21 @@ package
 		convoOne: Boolean = false, convoTwo: Boolean = false, convoThree: Boolean = false, convoFour: Boolean = false, 
 		convoFive: Boolean = false, convoSix: Boolean = false, convoSeven: Boolean = false, convoEight: Boolean = false, 
 		convoNine: Boolean = false, 
-		convoFish: Boolean = false;
+		convoFish: Boolean = false,
+		convoCat:Boolean = false;
 		
-		
+		private const CONVO_CAMEL:int=0;
+		private const CONVO_ONE:int=1;
+		private const CONVO_TWO:int=2;
+		private const CONVO_THREE:int=3;
+		private const CONVO_FOUR:int=4;
+		private const CONVO_FIVE:int=5;
+		private const CONVO_SIX:int=6;
+		private const CONVO_SEVEN:int=7;
+		private const CONVO_EIGHT:int=8;
+		private const CONVO_NINE:int=9;
+		private const CONVO_FISH:int=10;
+		private const CONVO_CAT:int=11;
 		
 		public function celeste1Fin1(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			super(levelSize, blockSize, new FlxPoint(1480.0,792.0), "Dungeon");
@@ -377,7 +389,7 @@ package
 			var dungeonMusic: FlxSound = new FlxSound;
 			dungeonMusic.loadEmbedded(Assets.DUNGEON_SONG,true);
 			FlxG.music = (dungeonMusic);
-			FlxG.music.volume = 0.0; //Was 0.6 at first
+			FlxG.music.volume = 0.6; //Was 0.6 at first
 			FlxG.music.play();
 			
 			savePoints[0].openSavePoint();
@@ -387,33 +399,35 @@ package
 
 		//SAFEZONE2
 		//SAFEZONE2
+		
+		
 
 		override protected function addHideableObjects():void {
 			super.addHideableObjects();
-			hideableObjects.push(new HideableObject(1029.0,1087.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1031.0,1167.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1239.0,1090.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(341.0,416.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(730.0,292.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1745.0,961.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1200.0,1330.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1165.0,1330.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(2002.0,706.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(771.0,931.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(458.0,818.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(999.0,962.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(231.0,1298.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(169.0,209.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(294.0,96.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(216.0,97.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(379.0,97.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1274.0,146.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1261.0,674.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1601.0,209.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1554.0,211.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1794.0,322.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(1903.0,321.0,Assets.WalrusArmor));
-			hideableObjects.push(new HideableObject(48.0*16,16*51.0,Assets.WalrusArmor));
+			hideableObjects.push(new HideableObject(1029.0,1087.0,Assets.WalrusArmor,false, 0.75,0.75, Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1031.0,1167.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1239.0,1090.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(341.0,416.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(730.0,292.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1745.0,961.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1200.0,1330.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1165.0,1330.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(2002.0,706.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(771.0,931.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(458.0,818.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(999.0,962.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(231.0,1298.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(169.0,209.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(294.0,96.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(216.0,97.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(379.0,97.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1274.0,146.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1261.0,674.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1601.0,209.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1554.0,211.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1794.0,322.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(1903.0,321.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
+			hideableObjects.push(new HideableObject(48.0*16,16*51.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
 		}
 
 		override protected function savePointCreation():void{
@@ -2164,7 +2178,8 @@ package
 			lockedDoor = new FlxSprite(54*16+2,72*16+12,Assets.GoldDoor);
 			lockedDoor.immovable=true;
 			add(lockedDoor);
-			key = new InventoryItem(Assets.KEY, playerStart.x+16,playerStart.y,"Key", new FlxPoint(1,1));//new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
+			//19*16,52*16+8
+			key = new InventoryItem(Assets.KEY, 19*16,52*16+8,"Key", new FlxPoint(1,1));//new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
 			add(key);
 			add(bodyLight);
 			add(legsLight);
@@ -2352,15 +2367,7 @@ package
 
 		override public function transferLevel(): TopDownLevel{
 			//FREAKING DANGEROUS FOR SOME REASON
-			/**
-			if (FlxG.keys.pressed("0"))
-			{
-				//return new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
-			}
-			*/
 			
-		
-		
 			if(super.reloadThisLevel)
 			{
 				return new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
@@ -2370,14 +2377,35 @@ package
 				return new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
 			
 			}
+			else if(testLoad)
+			{
+				return new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
+	
+			}
 			else
 			{
 				return null;
 			}
+			
+			
+			
 		}
+		
+		//Texting
+		private var testLoad:Boolean = false;
 
 		override public function update():void {
 			super.update();
+			
+			if (FlxG.keys.pressed("L"))
+			{
+				testLoad=true;
+				
+				//This works!
+				//var menuBackground:FlxSprite = new FlxSprite(0,0, Assets.SCREEN_BELOW);
+				//	menuBackground.scrollFactor = new FlxPoint(0,0);
+				//	add(menuBackground);
+			}
 		}
 
 		override public function normalGameplay():void {
@@ -2392,20 +2420,11 @@ package
 			
 			if(key!=null && FlxG.collide(key,player))
 			{
-				if(inventory.setInventoryItem(key))
+			
+				if(inventory.setInventoryItem(key, guiGroup))
 				{
 				
 					FlxG.play(Assets.KEY_PICKUP);
-				
-					key.velocity.x=key.velocity.y=0;
-					key.acceleration.x=key.acceleration.y=0;
-					
-					key.x=-50;
-					key.y=-50;
-					key.x=-50;
-					key.y=-50;
-					
-					//Add new node
 					key=null;
 					
 					
@@ -2429,7 +2448,8 @@ package
 			|| saver.data.convoSeven==null
 			|| saver.data.convoEight==null
 			|| saver.data.convoNine==null
-			|| saver.data.convoFish==null;
+			|| saver.data.convoFish==null
+			|| saver.data.convoCat==null;
 		}
 		
 		//Overrideable method for setting up save information (all save things are overrideable such that we can change
@@ -2450,7 +2470,7 @@ package
 			saver.data.convoEight = false;
 			saver.data.convoNine = false;
 			saver.data.convoFish = false;
-			
+			saver.data.convoCat = false;
 			
 			
 			
@@ -2459,23 +2479,62 @@ package
 		//Overrideable save function 
 		override protected function saveInformation(): void
 		{
-			super.saveInformation();
-			
-			saver.data.convoCamel = convoCamel;
-			saver.data.convoOne= convoOne;
-			saver.data.convoTwo = convoTwo;
-			saver.data.convoThree = convoThree;
-			saver.data.convoFour = convoFour;
-			saver.data.convoFive = convoFive;
-			saver.data.convoSix = convoSix;
-			saver.data.convoSeven = convoSeven;
-			saver.data.convoEight = convoEight;
-			saver.data.convoNine = convoNine;
-			saver.data.convoFish = convoFish;
-			
-			
-			saver.flush();
-			
+			super.saveInformation();			
+		}
+		
+		//HANDLE CONVERSATION SAVING BITS
+		override protected function handleConversationSaving(conversation:uint):void
+		{
+			super.handleConversationSaving(conversation);
+		
+			if(conversation==CONVO_CAMEL)
+			{
+				saver.data.convoCamel = true;
+			}
+			else if(conversation==CONVO_ONE)
+			{
+				saver.data.convoOne = true;
+			}
+			else if(conversation==CONVO_TWO)
+			{
+				saver.data.convoTwo = true;
+			}
+			else if(conversation==CONVO_THREE)
+			{
+				saver.data.convoThree = true;
+			}
+			else if(conversation==CONVO_FOUR)
+			{
+				saver.data.convoFour = true;
+			}
+			else if(conversation==CONVO_FIVE)
+			{
+				saver.data.convoFive = true;
+			}
+			else if(conversation==CONVO_SIX)
+			{
+				saver.data.convoSix = true;
+			}
+			else if(conversation==CONVO_SEVEN)
+			{
+				saver.data.convoSeven = true;
+			}
+			else if(conversation==CONVO_EIGHT)
+			{
+				saver.data.convoEight = true;
+			}
+			else if(conversation==CONVO_NINE)
+			{
+				saver.data.convoNine = true;
+			}
+			else if(conversation==CONVO_FISH)
+			{
+				saver.data.convoFish = true;
+			}
+			else if(conversation==CONVO_CAT)
+			{
+				saver.data.convoCat = true;
+			}
 		}
 		
 		override protected function loadInformation(): void
@@ -2493,6 +2552,7 @@ package
 			convoEight = saver.data.convoEight;
 			convoNine = saver.data.convoNine;
 			convoFish = saver.data.convoFish;
+			convoCat = saver.data.convoCat;
 			
 			
 			
@@ -2548,31 +2608,46 @@ package
 				//Index 0
 				dialogueTriggers.push(new  DialogueTriggerZone(75*16, 73*16, 5*16, 2*16, dialogNodeHat1, false, true));
 				
+			
 				
 				
-				//Nelson's speech
-				var dialogNode17:DialogNode = new DialogNode(null, DialogHandler.NELSON_HEAD, "Oh BLESS YOU Celeste! Also, as it would happen, the thieving Kitsune sisters are locked up down here as well. They might be able to give you some tips for sneaking out of here! Bye!", Assets.NELSON_SOUND);
-				var dialogNode16:DialogNode = new DialogNode(dialogNode17, DialogHandler.PLAYER_HEAD, "Yeah, I think so! The system runs all the way outside, and even if I can't get out, water can.", Assets.CELESTE_DETERMINED);
-				var dialogNode15:DialogNode = new DialogNode(dialogNode16, DialogHandler.NELSON_HEAD, "No, I'm more useful as a martyr. But could you use the pipes to transfer water outside? The guards leave it all over the floor.", Assets.NELSON_SOUND);
-				var dialogNode14:DialogNode = new DialogNode(dialogNode15, DialogHandler.PLAYER_HEAD, "Yeah, I used the pipes, want me to get you out?", Assets.CELESTE_TOUGH_UPSET);
-				var dialogNode13:DialogNode = new DialogNode(dialogNode14, DialogHandler.NELSON_HEAD, "Oh yes! I'm a camel after all. I'm so glad to see you escaped!", Assets.NELSON_SOUND);
-				var dialogNode12:DialogNode = new DialogNode(dialogNode13, DialogHandler.PLAYER_HEAD, "Mo the Camel? You're still alive?",Assets.CELESTE_QUESTION);
-				var dialogNode11:DialogNode = new DialogNode(dialogNode12, DialogHandler.NELSON_HEAD, "You there guard! For the last time, I DEMAND you bring water to those on the outside! You- You're Dame Celeste!?", Assets.NELSON_SOUND);
+				if(!convoCamel)
+				{
+					//Mo's speech
+					var dialogNode18:DialogNode = new DialogNode(null, DialogHandler.NELSON_HEAD, "The eldest sister is just down the hall. Good luck!", null);
+					var dialogNode17:DialogNode = new DialogNode(dialogNode18, DialogHandler.NELSON_HEAD, "Oh BLESS YOU Celeste! Also, as it would happen, the thieving Kitsune sisters are locked up down here. They might be able to give you some help with sneaking out of here.", Assets.NELSON_SOUND);
+					var dialogNode16:DialogNode = new DialogNode(dialogNode17, DialogHandler.PLAYER_HEAD, "Definitely! I'll pick up any spare water I can. Even if I can't get out through the pipes, it can.", Assets.CELESTE_DETERMINED);
+					var dialogNode15d:DialogNode = new DialogNode(dialogNode16, DialogHandler.NELSON_HEAD, "Do you think you could use them to send water outside once again?", null);
+
+					var dialogNode15c:DialogNode = new DialogNode(dialogNode15d, DialogHandler.NELSON_HEAD, "Yes, those pipes were meant to let the people of the Walrus fortress pass excess water to those outside.", Assets.NELSON_SOUND);
+					var dialogNode15b:DialogNode = new DialogNode(dialogNode15c, DialogHandler.PLAYER_HEAD, "Oh?",Assets.CELESTE_QUESTION);
+					var dialogNode15:DialogNode = new DialogNode(dialogNode15b, DialogHandler.NELSON_HEAD, "No, I'm more useful as a martyr. But speaking of the pipes, there is something you can do!", Assets.NELSON_SOUND);
+					var dialogNode14:DialogNode = new DialogNode(dialogNode15, DialogHandler.PLAYER_HEAD, "Yeah, I used the pipes, want me to get you out?", Assets.CELESTE_TOUGH_UPSET);
+					var dialogNode13:DialogNode = new DialogNode(dialogNode14, DialogHandler.NELSON_HEAD, "Oh yes! I'm a camel after all. I'm so glad to see you escaped!", Assets.NELSON_SOUND);
+					var dialogNode12:DialogNode = new DialogNode(dialogNode13, DialogHandler.PLAYER_HEAD, "Mo the Camel? You're still alive?",Assets.CELESTE_QUESTION);
+					var dialogNode11:DialogNode = new DialogNode(dialogNode12, DialogHandler.NELSON_HEAD, "You there guard! For the last time, I DEMAND you send water outs-! You- You're Dame Celeste!?", Assets.NELSON_SOUND);
+					
+					dialogNode18.setEndOfConversation(CONVO_CAMEL);
+					
+					dialogueTriggers.push(new  DialogueTriggerZone(99*16, 89*16, 3*16, 4*16, dialogNode11, false, true));
+				}
 			
-				dialogueTriggers.push(new  DialogueTriggerZone(99*16, 89*16, 3*16, 4*16, dialogNode11, false, true));
 			
-			
-				//Uno's Speech
-				var dialogNodeEyepatch7:DialogNode = new DialogNode(null, DialogHandler.EYEPATCH_HEAD, "You can't move in them though. Too big. Oh, and seek out my other eight sisters, let them know I sent you.", Assets.KITSUNE_SOUND);
-				var dialogNodeEyepatch6:DialogNode = new DialogNode(dialogNodeEyepatch7, DialogHandler.EYEPATCH_HEAD, "Hmm. I can dig it. See those suits of armor? You can hide inside. The dumb guards won't have any idea where you went.", Assets.KITSUNE_SOUND);
-				var dialogNodeEyepatch5:DialogNode = new DialogNode(dialogNodeEyepatch6, DialogHandler.PLAYER_HEAD, "I'm a Dame. Dame Celeste. Mo said you might have a uh- sneaking tip for me?",Assets.CELESTE_PLEASED_SAD);
-				var dialogNodeEyepatch4:DialogNode = new DialogNode(dialogNodeEyepatch5, DialogHandler.EYEPATCH_HEAD, "All cool leader-types have scars and eyepatches. And from your outfit, you must be the princess.", Assets.KITSUNE_SOUND);
-				var dialogNodeEyepatch3:DialogNode = new DialogNode(dialogNodeEyepatch4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
-				var dialogNodeEyepatch2:DialogNode = new DialogNode(dialogNodeEyepatch3, DialogHandler.EYEPATCH_HEAD, "Of course. I am Uno, leader of the clan. Can't you tell by my eyepatch?", Assets.KITSUNE_SOUND);
-				var dialogNodeEyepatch1 :DialogNode = new DialogNode(dialogNodeEyepatch2, DialogHandler.PLAYER_HEAD, "Hey, are you a Kitsune sister?",Assets.CELESTE_QUESTION);
-			
-				dialogueTriggers.push(new  DialogueTriggerZone(74*16, 86*16, 3*16, 4*16, dialogNodeEyepatch1, false, true));
-			
+				if(!convoOne)
+				{
+					//Uno's Speech
+					var dialogNodeEyepatch7:DialogNode = new DialogNode(null, DialogHandler.EYEPATCH_HEAD, "You can't move in them though. Too big. Oh, and seek out my other eight sisters, let them know I sent you.", Assets.KITSUNE_SOUND);
+					var dialogNodeEyepatch6:DialogNode = new DialogNode(dialogNodeEyepatch7, DialogHandler.EYEPATCH_HEAD, "Hmm. I can dig it. See those suits of armor? You can hide inside. The dumb guards won't have any idea where you went.", Assets.KITSUNE_SOUND);
+					var dialogNodeEyepatch5:DialogNode = new DialogNode(dialogNodeEyepatch6, DialogHandler.PLAYER_HEAD, "I'm a Dame. Dame Celeste. Mo said you might have a uh- sneaking tip for me?",Assets.CELESTE_PLEASED_SAD);
+					var dialogNodeEyepatch4:DialogNode = new DialogNode(dialogNodeEyepatch5, DialogHandler.EYEPATCH_HEAD, "All cool leader-types have scars and eyepatches. And from your outfit, you must be the princess.", Assets.KITSUNE_SOUND);
+					var dialogNodeEyepatch3:DialogNode = new DialogNode(dialogNodeEyepatch4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
+					var dialogNodeEyepatch2:DialogNode = new DialogNode(dialogNodeEyepatch3, DialogHandler.EYEPATCH_HEAD, "Of course. I am Uno, leader of the clan. Can't you tell by my eyepatch?", Assets.KITSUNE_SOUND);
+					var dialogNodeEyepatch1 :DialogNode = new DialogNode(dialogNodeEyepatch2, DialogHandler.PLAYER_HEAD, "Hey, are you a Kitsune sister?",Assets.CELESTE_QUESTION);
+				
+					dialogNodeEyepatch7.setEndOfConversation(CONVO_ONE);
+					
+					dialogueTriggers.push(new  DialogueTriggerZone(74*16, 86*16, 3*16, 4*16, dialogNodeEyepatch1, false, true));
+				}
 				
 			}
 			
@@ -2594,24 +2669,27 @@ package
 			
 			
 
-			
-				var dialogNodeCat7:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Ohh...",Assets.CELESTE_PLEASED_SAD);
-				var dialogNodeCat6:DialogNode = new DialogNode(dialogNodeCat7, DialogHandler.CAT_HEAD, "If I keep talking to myself, I'll never be lonely!", Assets.CAT_GUARD_AGREE );
+				if(!convoCat)
+				{
+					var dialogNodeCat7:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Ohh...",Assets.CELESTE_PLEASED_SAD);
+					var dialogNodeCat6:DialogNode = new DialogNode(dialogNodeCat7, DialogHandler.CAT_HEAD, "If I keep talking to myself, I'll never be lonely!", Assets.CAT_GUARD_AGREE );
 
-				var dialogNodeCat5:DialogNode = new DialogNode(dialogNodeCat6, DialogHandler.PLAYER_HEAD, "Oh Crap! He Heard me?", Assets.CELESTE_QUESTION);
+					var dialogNodeCat5:DialogNode = new DialogNode(dialogNodeCat6, DialogHandler.PLAYER_HEAD, "Oh Crap! He Heard me?", Assets.CELESTE_QUESTION);
 			
-				var dialogNodeCat4:DialogNode = new DialogNode(dialogNodeCat5, DialogHandler.CAT_HEAD, "Yup, that sounds about right!", Assets.CAT_GUARD_AGREE);
+					var dialogNodeCat4:DialogNode = new DialogNode(dialogNodeCat5, DialogHandler.CAT_HEAD, "Yup, that sounds about right!", Assets.CAT_GUARD_AGREE);
 
-				//If we don't have the body outfit yet, spawn 
-				var dialogNodeCat3:DialogNode = new DialogNode(dialogNodeCat4, DialogHandler.PLAYER_HEAD, "But... entirely avoiding him seeing me would be best. If he does, I can claim I'm a guard doing... Guard Stuff?", Assets.CELESTE_HUH);
+					//If we don't have the body outfit yet, spawn 
+					var dialogNodeCat3:DialogNode = new DialogNode(dialogNodeCat4, DialogHandler.PLAYER_HEAD, "But... entirely avoiding him seeing me would be best. If he does, I can claim I'm a guard doing... Guard Stuff?", Assets.CELESTE_HUH);
 
-				var dialogNodeCat2:DialogNode = new DialogNode(dialogNodeCat3, DialogHandler.PLAYER_HEAD, "Okay, despite appearances to the contrary, cat's aren't known for their uh- smarts, if he sees me at a distance I can probably pass myself off as a guard.", Assets.CELESTE_DETERMINED);
-				var dialogNodeCat1:DialogNode = new DialogNode(dialogNodeCat2, DialogHandler.PLAYER_HEAD, "Alright. There's a guard there. We can do this Celeste.", Assets.CELESTE_TOUGH_UPSET);
+					var dialogNodeCat2:DialogNode = new DialogNode(dialogNodeCat3, DialogHandler.PLAYER_HEAD, "Okay, despite appearances to the contrary, cat's aren't known for their uh- smarts, if he sees me at a distance I can probably pass myself off as a guard.", Assets.CELESTE_DETERMINED);
+					var dialogNodeCat1:DialogNode = new DialogNode(dialogNodeCat2, DialogHandler.PLAYER_HEAD, "Alright. There's a guard there. We can do this Celeste.", Assets.CELESTE_TOUGH_UPSET);
 			
 			
-				//Index 0
-				dialogueTriggers.push(new  DialogueTriggerZone(97*16, 63*16, 1*16, 2*16, dialogNodeCat1, false, true));
-
+					dialogNodeCat7.setEndOfConversation(CONVO_CAT);
+			
+					//Index 0
+					dialogueTriggers.push(new  DialogueTriggerZone(97*16, 63*16, 1*16, 2*16, dialogNodeCat1, false, true));
+				}
 			
 				add(bodyOutfit);
 				
@@ -2634,20 +2712,15 @@ package
 				lockedDoor.x = -50;
 				lockedDoor.y = -50;
 				prisonerSprite.color = 0xF00000000;
+				key.x=-50;
+				key.y = -50;
+				
 				key = null;
 				//Door 2	
 				lockedDoor = null;	
 			}
 			else
 			{
-				
-				//key is no longer in world, but is given to the player
-				//Key2 is within the world
-				
-				
-				
-				
-				
 				
 				var doorRemoving:Vector.<FlxSprite> = new Vector.<FlxSprite>();
 					doorRemoving.push(lockedDoor);
@@ -2659,7 +2732,7 @@ package
 				//Prisoner dialog
 				var dialogNode2i:DialogNode = new SpriteHideDialogNode(null, DialogHandler.PRISONER_HEAD, "Catch you around, princess.",prisonerRemoving);
 				var dialogNode2g:DialogNode = new SpriteHideDialogNode(dialogNode2i, DialogHandler.PLAYER_HEAD, "*unlocks door*", doorRemoving,Assets.UNLOCK_NOISE);
-				var dialogNode2f:DialogNode = new DialogNode(dialogNode2g, DialogHandler.PLAYER_HEAD, "...Deal.",Assets.CELESTE_PLEASED_SAD);
+				var dialogNode2f:DialogNode = new ItemDialogNode(dialogNode2g, DialogHandler.PLAYER_HEAD, "...Deal.",null, key, Assets.CELESTE_PLEASED_SAD);
 				var dialogNode2e:DialogNode = new DialogNode(dialogNode2f, DialogHandler.PRISONER_HEAD, "If you do, just unlock my door. I promise I won't take them with me.");
 				var dialogNode2d:DialogNode = new DialogNode(dialogNode2e, DialogHandler.PLAYER_HEAD, "Maybe.",Assets.CELESTE_HUH);
 				var dialogNode2c:DialogNode = new DialogNode(dialogNode2d, DialogHandler.PRISONER_HEAD, "Whatever. Look, you want these guard uniform pants, right?");
@@ -2683,7 +2756,6 @@ package
 				add(legOutfit);
 				legsLight.x=legOutfit.x+legOutfit.width/2;
 				legsLight.y = legOutfit.y+legOutfit.height/2;
-				//add(legsLight);
 				
 			}
 			
@@ -2701,100 +2773,140 @@ package
 				var dialogNodeNi2:DialogNode = new DialogNode(dialogNodeNi3, DialogHandler.NI_HEAD, "Yeah, I'm Ni, second sib- sister.", Assets.KITSUNE_SOUND2);
 				var dialogNodeNi1 :DialogNode = new DialogNode(dialogNodeNi2, DialogHandler.PLAYER_HEAD, "Hey. Are you a Kitsune sister?",Assets.CELESTE_QUESTION);
 		
+				dialogNodeNi6.setEndOfConversation(CONVO_TWO);
+		
 				dialogueTriggers.push(new  DialogueTriggerZone(37*16, 70*16, 2*16, 4*16, dialogNodeNi1, false, true, convoTwo));
 			}
-		
-			//TAL
-			var dialogNodeT5:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Ah, Okay I'll try.",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeT4:DialogNode = new DialogNode(dialogNodeT5, DialogHandler.TAL_HEAD, "Try to see patterns in all things. Or make patterns if you can't see them.", Assets.KITSUNE_SOUND);
-			var dialogNodeT3:DialogNode = new DialogNode(dialogNodeT4, DialogHandler.PLAYER_HEAD, "Got any tips?",Assets.CELESTE_QUESTION);
-			var dialogNodeT2:DialogNode = new DialogNode(dialogNodeT3, DialogHandler.TAL_HEAD, "Did she now? I'm Tal, third sister.", Assets.KITSUNE_SOUND);
-			var dialogNodeT1 :DialogNode = new DialogNode(dialogNodeT2, DialogHandler.PLAYER_HEAD, "Hey. Your sister sent me?",Assets.CELESTE_QUESTION);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(32*16, 70*16, 2*16, 4*16, dialogNodeT1, false, true));
-		
-			//SEPAC
-			var dialogNodeS6:DialogNode = new DialogNode(null, DialogHandler.SEPAC_HEAD, "Of course only be seen when you must, but when you are, make sure you look Good. That's the Sepac way.", Assets.KITSUNE_SOUND);
-			var dialogNodeS5:DialogNode = new DialogNode(dialogNodeS6, DialogHandler.PLAYER_HEAD, "Yeah, that makes sense.",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeS4:DialogNode = new DialogNode(dialogNodeS5, DialogHandler.SEPAC_HEAD, "Sorry, I can be so distractable. Speaking of, you should try pulling guards from their posts by letting them catch sight of you.", Assets.KITSUNE_SOUND);
-			var dialogNodeS3:DialogNode = new DialogNode(dialogNodeS4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
-			var dialogNodeS2:DialogNode = new DialogNode(dialogNodeS3, DialogHandler.SEPAC_HEAD, "Do you think this crown goes with my coloring?", Assets.KITSUNE_SOUND);
-			var dialogNodeS1 :DialogNode = new DialogNode(dialogNodeS2, DialogHandler.PLAYER_HEAD, "Hey. Your sister sent me.",Assets.CELESTE_TOUGH_UPSET2);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(20*16, 93*16, 2*16, 2*16, dialogNodeS1, false, true));
-		
-			//NIMA
-			var dialogNodeN8:DialogNode = new DialogNode(null, DialogHandler.NIMA_HEAD, "WOOHOOOO.", Assets.KITSUNE_SOUND);
-			var dialogNodeN7:DialogNode = new DialogNode(dialogNodeN8, DialogHandler.PLAYER_HEAD, "Whoa, where did that come from?",Assets.CELESTE_QUESTION);
-			var dialogNodeN6:DialogNode = new DialogNode(dialogNodeN7, DialogHandler.NIMA_HEAD, "Don't get too crazy tho- If things get intense, hide somewhere and wait it out.", Assets.KITSUNE_SOUND);
-			var dialogNodeN5:DialogNode = new DialogNode(dialogNodeN6, DialogHandler.PLAYER_HEAD, "Where did she even get all that?",Assets.CELESTE_QUESTION);
-			var dialogNodeN4:DialogNode = new DialogNode(dialogNodeN5, DialogHandler.NIMA_HEAD, "HAVE YOU HAD THIS MILK? IT'S INCREDIBLE!", Assets.KITSUNE_SOUND);
-			var dialogNodeN3:DialogNode = new DialogNode(dialogNodeN4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
-			var dialogNodeN2:DialogNode = new DialogNode(dialogNodeN3, DialogHandler.NIMA_HEAD, "YO! MY DOGE! NIMA IN THE HOOOOUUUUSSSE!", Assets.KITSUNE_SOUND);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(26*16, 93*16, 2*16, 2*16, dialogNodeN2, false, true));
-		
-			//FEM
-			var dialogNodeF6:DialogNode = new DialogNode(null, DialogHandler.FEM_HEAD, "Best don't let them see you then!", Assets.KITSUNE_SOUND);
-			var dialogNodeF5:DialogNode = new DialogNode(dialogNodeF6, DialogHandler.PLAYER_HEAD, "I don't think I can do that.",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeF4:DialogNode = new DialogNode(dialogNodeF5, DialogHandler.FEM_HEAD, "Names Fem. Sneaking isn't my style. Guard sees me? BAM-POW! He doesn't see anything else.", Assets.KITSUNE_SOUND);
-			var dialogNodeF3:DialogNode = new DialogNode(dialogNodeF4, DialogHandler.PLAYER_HEAD, "Oh, okay! Uh- Your sister sent me, do you have any sneaking tips?",Assets.CELESTE_QUESTION);
-			var dialogNodeF2:DialogNode = new DialogNode(dialogNodeF3, DialogHandler.FEM_HEAD, "Yeah, yeah. Got to be tough. Pow-pow!", Assets.KITSUNE_SOUND);
-			var dialogNodeF1 :DialogNode = new DialogNode(dialogNodeF2, DialogHandler.PLAYER_HEAD, "You okay? (Whoa, she's buff!)",Assets.CELESTE_TOUGH_UPSET2);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(31*16, 22*16, 2*16, 2*16, dialogNodeF1, false, true));
-		
-			//PITU
-			var dialogNodeP5:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Sure?",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeP4:DialogNode = new DialogNode(dialogNodeP5, DialogHandler.PITU_HEAD, "It's always, \"Come on Pitu, there's no way a little paint can disguise someone!\" Ha! As if that were all it was.", Assets.KITSUNE_SOUND);
-			var dialogNodeP3:DialogNode = new DialogNode(dialogNodeP4, DialogHandler.PLAYER_HEAD, "Um? No?",Assets.CELESTE_QUESTION);
-			var dialogNodeP2:DialogNode = new DialogNode(dialogNodeP3, DialogHandler.PITU_HEAD, "Can you Believe her? Saying masks are better for disguise than makeup!", Assets.KITSUNE_SOUND);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(72*16, 34*16, 2*16, 2*16, dialogNodeP2, false, true));
-		
-			//HACHI
-			var dialogNodeH6:DialogNode = new DialogNode(null, DialogHandler.HACHI_HEAD, "Ha! As if you'd understand. You're just some guard.", Assets.KITSUNE_SOUND);
-			var dialogNodeH5:DialogNode = new DialogNode(dialogNodeH6, DialogHandler.PLAYER_HEAD, "Maybe you're both just different",Assets.CELESTE_QUESTION);
-			var dialogNodeH4:DialogNode = new DialogNode(dialogNodeH5, DialogHandler.HACHI_HEAD, "Pitu! She's always like, \"Hachi! I won't put on a mask! It's stifling!\ Ugh!", Assets.KITSUNE_SOUND);
-			var dialogNodeH3:DialogNode = new DialogNode(dialogNodeH4, DialogHandler.PLAYER_HEAD, "Who?",Assets.CELESTE_QUESTION);
-			var dialogNodeH2:DialogNode = new DialogNode(dialogNodeH3, DialogHandler.HACHI_HEAD, "She just can't accept the power of masks!", Assets.KITSUNE_SOUND);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(79*16, 34*16, 2*16, 2*16, dialogNodeH2, false, true));
-		
-		
-			//SIVA
-			var dialogNodeSi11:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "If I can, I will.",Assets.CELESTE_TOUGH_UPSET2);
-			var dialogNodeSi10:DialogNode = new DialogNode(dialogNodeSi11, DialogHandler.SIVA_HEAD, "Yes, we're really not that bright, you know. Good luck Celeste. If everything goes well, perhaps you'll come back for us foolish foxes?", Assets.KITSUNE_SOUND);
-			var dialogNodeSi9:DialogNode = new DialogNode(dialogNodeSi10, DialogHandler.PLAYER_HEAD, "But then none of you will ever leave!",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeSi8:DialogNode = new DialogNode(dialogNodeSi9, DialogHandler.SIVA_HEAD, "Yup.", Assets.KITSUNE_SOUND);
-			var dialogNodeSi7:DialogNode = new DialogNode(dialogNodeSi8, DialogHandler.PLAYER_HEAD, "So wait, none of you are leaving, because you refuse to go without each other?",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeSi6:DialogNode = new DialogNode(dialogNodeSi7, DialogHandler.SIVA_HEAD, "Hiding, obviously. I can't go anywhere without my sisters.", Assets.KITSUNE_SOUND);
-			var dialogNodeSi5:DialogNode = new DialogNode(dialogNodeSi6, DialogHandler.PLAYER_HEAD, "Oh, I see. So, what are you doing here?",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeSi4:DialogNode = new DialogNode(dialogNodeSi5, DialogHandler.SIVA_HEAD, "Blind yes. But on my way out of my cell I heard guards mentioning you, and it's not like you Smell like a cat, it's just logic.", Assets.KITSUNE_SOUND);
-			var dialogNodeSi3:DialogNode = new DialogNode(dialogNodeSi4, DialogHandler.PLAYER_HEAD, "What! But how could, how did? Aren't you-?",Assets.CELESTE_QUESTION);
-			var dialogNodeSi2:DialogNode = new DialogNode(dialogNodeSi3, DialogHandler.SIVA_HEAD, "Hello Dame Celeste.", Assets.KITSUNE_SOUND);
 			
+			if(!convoThree)
+			{
+				//TAL
+				var dialogNodeT5:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Ah, Okay I'll try.",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeT4:DialogNode = new DialogNode(dialogNodeT5, DialogHandler.TAL_HEAD, "Try to see patterns in all things. Or make patterns if you can't see them.", Assets.KITSUNE_SOUND);
+				var dialogNodeT3:DialogNode = new DialogNode(dialogNodeT4, DialogHandler.PLAYER_HEAD, "Got any tips?",Assets.CELESTE_QUESTION);
+				var dialogNodeT2:DialogNode = new DialogNode(dialogNodeT3, DialogHandler.TAL_HEAD, "Did she now? I'm Tal, third sister.", Assets.KITSUNE_SOUND);
+				var dialogNodeT1 :DialogNode = new DialogNode(dialogNodeT2, DialogHandler.PLAYER_HEAD, "Hey. Your sister sent me?",Assets.CELESTE_QUESTION);
 		
-			dialogueTriggers.push(new  DialogueTriggerZone(89*16, 12*16, 4*16, 2*16, dialogNodeSi2, false, true));
+				dialogNodeT5.setEndOfConversation(CONVO_THREE);
 		
-			//FISH
-			var dialogNodeFi6:DialogNode = new DialogNode(null, DialogHandler.FISH_HEAD, "Well there you are then!", Assets.FISH_SOUND);
-			var dialogNodeFi5:DialogNode = new DialogNode(dialogNodeFi6, DialogHandler.PLAYER_HEAD, "I guess I didn't think of it like that.",Assets.CELESTE_TOUGH_UPSET);
-			var dialogNodeFi4:DialogNode = new DialogNode(dialogNodeFi5, DialogHandler.FISH_HEAD, "Preposterous! Your kind doesn't need to live in trees anymore, do they?", Assets.FISH_SOUND);
-			var dialogNodeFi3:DialogNode = new DialogNode(dialogNodeFi4, DialogHandler.PLAYER_HEAD, "While you're here, I was trying to figure out, why is it that all the aristocracy can survive above water? Aren't you all water breathers?",Assets.CELESTE_QUESTION);
-			var dialogNodeFi2:DialogNode = new DialogNode(dialogNodeFi3, DialogHandler.FISH_HEAD, "My, my, Dame Celeste! What a surprise. Yes all political fishidents end up in the dungeon, I'm afraid.", Assets.FISH_SOUND);
-			var dialogNodeFi1 :DialogNode = new DialogNode(dialogNodeFi2, DialogHandler.PLAYER_HEAD, "Oh hey, Lord Fishington! I didn't realize you were down here.",Assets.CELESTE_HUH);
-		
-			dialogueTriggers.push(new  DialogueTriggerZone(133*16, 45*16, 2*16, 2*16, dialogNodeFi1, false, true));
-		
+				dialogueTriggers.push(new  DialogueTriggerZone(32*16, 70*16, 2*16, 4*16, dialogNodeT1, false, true));
+			}
 			
+			if(!convoFour)
+			{
+				//SEPAC
+				var dialogNodeS6:DialogNode = new DialogNode(null, DialogHandler.SEPAC_HEAD, "Of course only be seen when you must, and when you are, make sure you Look Good. That's the Sepac way.", Assets.KITSUNE_SOUND);
+				var dialogNodeS5:DialogNode = new DialogNode(dialogNodeS6, DialogHandler.PLAYER_HEAD, "Yeah, that makes sense.",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeS4:DialogNode = new DialogNode(dialogNodeS5, DialogHandler.SEPAC_HEAD, "Sorry, I can be so distractable. Speaking of, you should try pulling guards from their posts by letting them catch sight of you.", Assets.KITSUNE_SOUND);
+				var dialogNodeS3:DialogNode = new DialogNode(dialogNodeS4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
+				var dialogNodeS2:DialogNode = new DialogNode(dialogNodeS3, DialogHandler.SEPAC_HEAD, "Do you think this crown goes with my coloring?", Assets.KITSUNE_SOUND);
+				var dialogNodeS1 :DialogNode = new DialogNode(dialogNodeS2, DialogHandler.PLAYER_HEAD, "Hey. Your sister sent me.",Assets.CELESTE_TOUGH_UPSET2);
+		
+				dialogNodeS6.setEndOfConversation(CONVO_FOUR);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(20*16, 93*16, 2*16, 2*16, dialogNodeS1, false, true));
+		
+			}
 			
+			if(!convoFive)
+			{
+				//NIMA
+				var dialogNodeN8:DialogNode = new DialogNode(null, DialogHandler.NIMA_HEAD, "WOOHOOOO.", Assets.KITSUNE_SOUND);
+				var dialogNodeN7:DialogNode = new DialogNode(dialogNodeN8, DialogHandler.PLAYER_HEAD, "Whoa, where did that come from?",Assets.CELESTE_QUESTION);
+				var dialogNodeN6:DialogNode = new DialogNode(dialogNodeN7, DialogHandler.NIMA_HEAD, "Don't get too crazy tho- If things get intense, hide somewhere and wait it out.", Assets.KITSUNE_SOUND);
+				var dialogNodeN5:DialogNode = new DialogNode(dialogNodeN6, DialogHandler.PLAYER_HEAD, "Where did she even get all that?",Assets.CELESTE_QUESTION);
+				var dialogNodeN4:DialogNode = new DialogNode(dialogNodeN5, DialogHandler.NIMA_HEAD, "HAVE YOU HAD THIS MILK? IT'S INCREDIBLE!", Assets.KITSUNE_SOUND);
+				var dialogNodeN3:DialogNode = new DialogNode(dialogNodeN4, DialogHandler.PLAYER_HEAD, "Huh?",Assets.CELESTE_QUESTION);
+				var dialogNodeN2:DialogNode = new DialogNode(dialogNodeN3, DialogHandler.NIMA_HEAD, "YO! MY DOGE! NIMA IN THE HOOOOUUUUSSSE!", Assets.KITSUNE_SOUND);
+		
+				dialogNodeN8.setEndOfConversation(CONVO_FIVE);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(26*16, 93*16, 2*16, 2*16, dialogNodeN2, false, true));
+			}
+			
+			if(!convoSix)
+			{
+				//FEM
+				var dialogNodeF6:DialogNode = new DialogNode(null, DialogHandler.FEM_HEAD, "Best don't let them see you then!", Assets.KITSUNE_SOUND);
+				var dialogNodeF5:DialogNode = new DialogNode(dialogNodeF6, DialogHandler.PLAYER_HEAD, "I don't think I can do that.",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeF4:DialogNode = new DialogNode(dialogNodeF5, DialogHandler.FEM_HEAD, "Names Fem. Sneaking isn't my style. Guard sees me? BAM-POW! He doesn't see anything else.", Assets.KITSUNE_SOUND);
+				var dialogNodeF3:DialogNode = new DialogNode(dialogNodeF4, DialogHandler.PLAYER_HEAD, "Oh, okay! Uh- Your sister sent me, do you have any sneaking tips?",Assets.CELESTE_QUESTION);
+				var dialogNodeF2:DialogNode = new DialogNode(dialogNodeF3, DialogHandler.FEM_HEAD, "Yeah, yeah. Got to be tough. Pow-pow!", Assets.KITSUNE_SOUND);
+				var dialogNodeF1 :DialogNode = new DialogNode(dialogNodeF2, DialogHandler.PLAYER_HEAD, "You okay? (Whoa, she's buff!)",Assets.CELESTE_TOUGH_UPSET2);
+			
+				dialogNodeF6.setEndOfConversation(CONVO_SIX);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(31*16, 22*16, 2*16, 2*16, dialogNodeF1, false, true));
+			}
+			
+			if(!convoSeven)
+			{
+				//PITU
+				var dialogNodeP5:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "Sure?",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeP4:DialogNode = new DialogNode(dialogNodeP5, DialogHandler.PITU_HEAD, "It's always, \"Come on Pitu, there's no way a little paint can disguise someone!\" Ha! As if that were all it was.", Assets.KITSUNE_SOUND);
+				var dialogNodeP3:DialogNode = new DialogNode(dialogNodeP4, DialogHandler.PLAYER_HEAD, "Um? No?",Assets.CELESTE_QUESTION);
+				var dialogNodeP2:DialogNode = new DialogNode(dialogNodeP3, DialogHandler.PITU_HEAD, "Can you Believe her? Saying masks are better for disguise than makeup!", Assets.KITSUNE_SOUND);
+		
+				dialogNodeP5.setEndOfConversation(CONVO_SEVEN);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(72*16, 34*16, 2*16, 2*16, dialogNodeP2, false, true));
+			}
+			
+			if(!convoEight)
+			{
+				//HACHI
+				var dialogNodeH6:DialogNode = new DialogNode(null, DialogHandler.HACHI_HEAD, "Ha! As if you'd understand. You're just some guard.", Assets.KITSUNE_SOUND);
+				var dialogNodeH5:DialogNode = new DialogNode(dialogNodeH6, DialogHandler.PLAYER_HEAD, "Maybe you're both just different",Assets.CELESTE_QUESTION);
+				var dialogNodeH4:DialogNode = new DialogNode(dialogNodeH5, DialogHandler.HACHI_HEAD, "Pitu! She's always like, \"Hachi! I won't put on a mask! It's stifling!\ Ugh!", Assets.KITSUNE_SOUND);
+				var dialogNodeH3:DialogNode = new DialogNode(dialogNodeH4, DialogHandler.PLAYER_HEAD, "Who?",Assets.CELESTE_QUESTION);
+				var dialogNodeH2:DialogNode = new DialogNode(dialogNodeH3, DialogHandler.HACHI_HEAD, "She just can't accept the power of masks!", Assets.KITSUNE_SOUND);
+		
+				dialogNodeH6.setEndOfConversation(CONVO_EIGHT);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(79*16, 34*16, 2*16, 2*16, dialogNodeH2, false, true));
+			}
+		
+			if(!convoNine)
+			{
+				//SIVA
+				var dialogNodeSi11:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "If I can, I will.",Assets.CELESTE_TOUGH_UPSET2);
+				var dialogNodeSi10:DialogNode = new DialogNode(dialogNodeSi11, DialogHandler.SIVA_HEAD, "Yes, we're really not that bright, you know. Good luck Celeste. If everything goes well, perhaps you'll come back for us foolish foxes?", Assets.KITSUNE_SOUND);
+				var dialogNodeSi9:DialogNode = new DialogNode(dialogNodeSi10, DialogHandler.PLAYER_HEAD, "But then none of you will ever leave!",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeSi8:DialogNode = new DialogNode(dialogNodeSi9, DialogHandler.SIVA_HEAD, "Yup.", Assets.KITSUNE_SOUND);
+				var dialogNodeSi7:DialogNode = new DialogNode(dialogNodeSi8, DialogHandler.PLAYER_HEAD, "So wait, none of you are leaving, because you refuse to go without each other?",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeSi6:DialogNode = new DialogNode(dialogNodeSi7, DialogHandler.SIVA_HEAD, "Hiding, obviously. I can't go anywhere without my sisters.", Assets.KITSUNE_SOUND);
+				var dialogNodeSi5:DialogNode = new DialogNode(dialogNodeSi6, DialogHandler.PLAYER_HEAD, "Oh, I see. So, what are you doing here?",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeSi4:DialogNode = new DialogNode(dialogNodeSi5, DialogHandler.SIVA_HEAD, "Blind yes. But on my way out of my cell I heard guards mentioning you, and it's not like you Smell like a cat, it's just logic.", Assets.KITSUNE_SOUND);
+				var dialogNodeSi3:DialogNode = new DialogNode(dialogNodeSi4, DialogHandler.PLAYER_HEAD, "What! But how could, how did? Aren't you-?",Assets.CELESTE_QUESTION);
+				var dialogNodeSi2:DialogNode = new DialogNode(dialogNodeSi3, DialogHandler.SIVA_HEAD, "Hello Dame Celeste.", Assets.KITSUNE_SOUND);
+			
+				dialogNodeSi11.setEndOfConversation(CONVO_NINE);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(89*16, 12*16, 4*16, 2*16, dialogNodeSi2, false, true));
+			}
+		
+			if(!convoFish)
+			{
+				//FISH
+				var dialogNodeFi6:DialogNode = new DialogNode(null, DialogHandler.FISH_HEAD, "Well there you are then!", Assets.FISH_SOUND);
+				var dialogNodeFi5:DialogNode = new DialogNode(dialogNodeFi6, DialogHandler.PLAYER_HEAD, "I guess I didn't think of it like that.",Assets.CELESTE_TOUGH_UPSET);
+				var dialogNodeFi4:DialogNode = new DialogNode(dialogNodeFi5, DialogHandler.FISH_HEAD, "Preposterous! Your kind doesn't need to live in trees anymore, do they?", Assets.FISH_SOUND);
+				var dialogNodeFi3:DialogNode = new DialogNode(dialogNodeFi4, DialogHandler.PLAYER_HEAD, "While you're here, I was trying to figure out, why is it that all the aristocracy can survive above water? Aren't you all water breathers?",Assets.CELESTE_QUESTION);
+				var dialogNodeFi2:DialogNode = new DialogNode(dialogNodeFi3, DialogHandler.FISH_HEAD, "My, my, Dame Celeste! What a surprise. Yes all political fishidents end up in the dungeon, I'm afraid.", Assets.FISH_SOUND);
+				var dialogNodeFi1 :DialogNode = new DialogNode(dialogNodeFi2, DialogHandler.PLAYER_HEAD, "Oh hey, Lord Fishington! I didn't realize you were down here.",Assets.CELESTE_HUH);
+		
+				dialogNodeFi6.setEndOfConversation(CONVO_FISH);
+		
+				dialogueTriggers.push(new  DialogueTriggerZone(133*16, 45*16, 2*16, 2*16, dialogNodeFi1, false, true));
+			}
+			
+			/**
 			var dialogEnd2:DialogNode = new DialogNode(null, DialogHandler.PLAYER_HEAD, "To clear the game and play again, press X and refresh and browser.");
 			var dialogEnd :DialogNode = new DialogNode(dialogEnd2, DialogHandler.PLAYER_HEAD, "You have reached the end of the Dame Celeste Preview.");
 			dialogEnd2.setNext(dialogEnd);
 				
 			dialogueTriggers.push(new DialogueTriggerZone(130*16, 5*16, 3*16, 2*16,dialogEnd,false,true));	
-				
+			*/
 			
 			enemyController.checkCorrectOutfit();
 		}

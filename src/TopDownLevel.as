@@ -85,6 +85,7 @@ package
 		//Text for score
 		protected var dropletText: FlxText;
 		 
+		protected var allKeysUp: Boolean = false;
 		 
 		 /**
 		 * Outfit stuff
@@ -137,7 +138,8 @@ package
 		//Max Drops
 		private var maxDrops:int;
 		
-		
+		//Seconds
+		protected var currSeconds:Number;
 		
 		/**
 		 * Constructor
@@ -170,6 +172,7 @@ package
 			
 			enemyTimer= 10;
 			
+			currSeconds=0;
 			
 			FlxG.camera.setBounds(0, 0, levelSize.x, levelSize.y); 
 			
@@ -244,11 +247,11 @@ package
 			debugString = "Debug";
 			
 			//ITEM BOX
-			
+			/**
 			var textBox:FlxSprite = new FlxSprite(296,21,Assets.ITEM_BOX);
 			textBox.scrollFactor = new FlxPoint(0,0);
 			guiGroup.add(textBox);
-			
+			*/
 			//WATER DROPLET -WATER_DROPLET
 			var waterDrop:FlxSprite = new FlxSprite(290,10,Assets.WATER_DROPLET);
 			waterDrop.scrollFactor = new FlxPoint(0,0);
@@ -458,7 +461,8 @@ package
 			|| saver.data.dropsGrabbed ==null)
 			||saver.data.timesCaught==null 
 			|| saver.data.conversationsHad==null
-			|| saver.data.levelCompleteTime==null)
+			|| saver.data.levelTimeSeconds==null
+			|| saver.data.levelMinutes==null)
 			|| resetSave);
 		}
 		
@@ -477,7 +481,9 @@ package
 			saver.data.numDrops=0; //Represents number of drops collected over all
 			saver.data.timesCaught=0;
 			saver.data.conversationsHad=0;
-			saver.data.levelCompleteTime=0;
+			saver.data.levelTimeSeconds=0.0;
+			saver.data.levelMinutes=0;
+			
 			
 			saver.data.currSavePointIndex = -1; //Represents the current open save point index
 			saver.data.dropsGrabbed = new Array();
@@ -518,6 +524,21 @@ package
 			saver.data.headOutfitGot=headOutfit.getGrabbed();
 			saver.data.bodyOutfitGot=bodyOutfit.getGrabbed();
 			saver.data.legsOutfitGot=legOutfit.getGrabbed();
+			
+			saver.data.levelTimeSeconds+=currSeconds;
+			currSeconds=0.0;
+			
+			if(saver.data.levelTimeSeconds>60)
+			{
+				var theseSeconds:Number = saver.data.levelTimeSeconds;
+				
+				var numMins:int = int(theseSeconds/60);
+				
+				saver.data.levelMinutes+=numMins;
+				saver.data.levelTimeSeconds-=Number(numMins*60.0);
+				
+			}
+			
 			
 			
 			saver.flush();
@@ -582,6 +603,13 @@ package
 		
 		override public function update():void {
 			super.update();
+			
+			//printText2.text = "Sec"+int(currSeconds).toString();
+			
+			//Increment currSeconds
+			currSeconds+=FlxG.elapsed;
+			
+			
 			//printText2.text = "PlayerStart: "+int(player.x)+", "+int(player.y);
 			if(cameraScrolling)
 			{
@@ -740,6 +768,19 @@ package
 
 			player.x=hidingLocation.x;
 			player.y = hidingLocation.y;
+			
+			if(!allKeysUp)
+			{
+				if (!FlxG.keys["LEFT"] && !FlxG.keys["RIGHT"]
+					&& !FlxG.keys["UP"] && !FlxG.keys["DOWN"])
+				{
+					allKeysUp = true;
+				}
+				
+				
+			}
+			else
+			{
 
 			if(hideableObjects[hideableObjectIndex].getForcesOut())
 			{
@@ -1033,7 +1074,7 @@ package
 				}
 				
 				
-				
+			}	
 				
 		}
 		
@@ -1117,15 +1158,6 @@ package
 				canBeThere=false;
 			}
 			
-			
-			
-			/**
-			printText2.text = "Can't be there count: "+cantBeThereCount;//+xPos+", "+yPos;
-			printText2.text += "    Wall: "+(FlxTilemap(wallGroup.getFirstAlive()).getTile((xPos)/16,(yPos)/16) != 0);
-			
-			printText2.text += "    Fore: "+(FlxTilemap(foreGroundGroup.getFirstAlive()).getTile((xPos)/16,(yPos)/16) != 0);
-			*/
-			
 			if(canBeThere)
 			{
 			
@@ -1183,7 +1215,7 @@ package
 		
 		public function levelCompleteTime():int
 		{
-			return saver.data.levelCompleteTime;
+			return saver.data.levelMinutes;
 		}
 		
 		
@@ -1233,7 +1265,7 @@ package
 					if(currNode!=null)
 					{
 						//SAVE STUFF conversations update
-						saver.data.conversationsHad+=1;
+						
 						
 						setUpConversation(currNode);
 						
@@ -1290,6 +1322,8 @@ package
 						hideableObjects[hideableObjectIndex].transferToHidingImage();
 												
 						hidingTimer = hideableObjects[hideableObjectIndex].getTimeToExit();
+						allKeysUp = false;
+						
 						setGameState(HIDING_GAMEPLAY);
 						hidingLocation = new FlxPoint(player.x,player.y);
 						enemyController.clearAllSuspicions();
@@ -1445,6 +1479,11 @@ package
 			setGameState(DIALOG_GAMEPLAY);
 		}
 		
+		protected function handleConversationSaving(conversation:uint):void
+		{
+			saver.data.conversationsHad+=1;
+		}
+		
 		protected function handleConversationEnd(displayingDialog: int):void
 		{
 			if(displayingDialog== DialogHandler.END)
@@ -1482,6 +1521,11 @@ package
 					setGameState(NORMAL_GAMEPLAY);
 				}
 				
+				
+				if(dialogHandler.getConversationEnd())
+				{
+					handleConversationSaving(dialogHandler.getConversation());
+				}
 				
 			}
 			else if(displayingDialog==DialogHandler.QUESTION_NEXT)
