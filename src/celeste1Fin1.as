@@ -364,7 +364,7 @@ package
 		convoFive: Boolean = false, convoSix: Boolean = false, convoSeven: Boolean = false, convoEight: Boolean = false, 
 		convoNine: Boolean = false, 
 		convoFish: Boolean = false,
-		convoCat:Boolean = false;
+		convoCat:Boolean = false, convoPrisoner:Boolean = false;
 		
 		private const CONVO_CAMEL:int=0;
 		private const CONVO_ONE:int=1;
@@ -378,13 +378,17 @@ package
 		private const CONVO_NINE:int=9;
 		private const CONVO_FISH:int=10;
 		private const CONVO_CAT:int=11;
+		private const CONVO_PRISONER:int=12;
+		
 		
 		public function celeste1Fin1(levelSize:FlxPoint, blockSize:FlxPoint):void {
 			super(levelSize, blockSize, new FlxPoint(1480.0,792.0), "Dungeon");
 			
 			
-			
-			
+			if(FlxG.music!=null)
+			{
+				FlxG.music.stop();
+			}
 			setLevelName("Dungeon");
 			var dungeonMusic: FlxSound = new FlxSound;
 			dungeonMusic.loadEmbedded(Assets.DUNGEON_SONG,true);
@@ -393,17 +397,21 @@ package
 			FlxG.music.play();
 			
 			savePoints[0].openSavePoint();
+			
 			//SAFEZONE
 			//SAFEZONE
 		}
 
 		//SAFEZONE2
+		
 		//SAFEZONE2
 		
 		
 
 		override protected function addHideableObjects():void {
 			super.addHideableObjects();
+			
+			
 			hideableObjects.push(new HideableObject(1029.0,1087.0,Assets.WalrusArmor,false, 0.75,0.75, Assets.WalrusArmorInside));
 			hideableObjects.push(new HideableObject(1031.0,1167.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
 			hideableObjects.push(new HideableObject(1239.0,1090.0,Assets.WalrusArmor,false, 0.75,0.75,Assets.WalrusArmorInside));
@@ -2179,7 +2187,7 @@ package
 			lockedDoor.immovable=true;
 			add(lockedDoor);
 			//19*16,52*16+8
-			key = new InventoryItem(Assets.KEY, 19*16,52*16+8,"Key", new FlxPoint(1,1));//new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
+			key = new InventoryItem(Assets.KEY, 49*16,52*16+8,"Key", new FlxPoint(1,1));//new InventoryItem(Assets.KEY, 50*16 -8,53*16,"Key", new FlxPoint(1,1));
 			add(key);
 			add(bodyLight);
 			add(legsLight);
@@ -2370,15 +2378,31 @@ package
 			
 			if(super.reloadThisLevel)
 			{
+				if(FlxG.music!=null)
+				{
+					FlxG.music.stop();
+				}
+			
 				return new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
 			}
 			else if(player.y<(6*16))
 			{
+				if(FlxG.music!=null)
+				{
+					FlxG.music.stop();
+				}
+			
 				return new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
 			
 			}
 			else if(testLoad)
 			{
+				if(FlxG.music!=null)
+				{
+					FlxG.music.stop();
+				}
+			
+			
 				return new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
 	
 			}
@@ -2449,7 +2473,8 @@ package
 			|| saver.data.convoEight==null
 			|| saver.data.convoNine==null
 			|| saver.data.convoFish==null
-			|| saver.data.convoCat==null;
+			|| saver.data.convoCat==null
+			|| saver.data.convoPrisoner ==null;
 		}
 		
 		//Overrideable method for setting up save information (all save things are overrideable such that we can change
@@ -2471,7 +2496,7 @@ package
 			saver.data.convoNine = false;
 			saver.data.convoFish = false;
 			saver.data.convoCat = false;
-			
+			saver.data.convoPrisoner = false;
 			
 			
 		}
@@ -2535,6 +2560,10 @@ package
 			{
 				saver.data.convoCat = true;
 			}
+			else if(conversation==CONVO_PRISONER)
+			{
+				saver.data.convoPrisoner = true;
+			}
 		}
 		
 		override protected function loadInformation(): void
@@ -2553,7 +2582,7 @@ package
 			convoNine = saver.data.convoNine;
 			convoFish = saver.data.convoFish;
 			convoCat = saver.data.convoCat;
-			
+			convoPrisoner = saver.data.convoPrisoner;
 			
 			
 			headOutfit = new PlayerOutfit(72*16,55*16,Assets.RANGER2_HAT,PlayerOutfit.HEAD_OUTFIT,Assets.RANGER2HEAD_SPRITE, OutfitHandler.GUARD_OUTFIT);
@@ -2740,14 +2769,17 @@ package
 				var dialogNode2a :DialogNode = new RequiresItemDialogNode(dialogNode2b, DialogHandler.PRISONER_HEAD, "Hey! Princess.", "Key");
 				
 			
+				if(!convoPrisoner)
+				{
+					var dialogNodeGetKeye: DialogNode = new DialogNode(null, DialogHandler.PRISONER_HEAD, "Since you can do something for me. See that key in the far back corner of the room? Get that for me, I'll make it worth your while.");
+					var dialogNodeGetKeyd: DialogNode = new DialogNode(dialogNodeGetKeye, DialogHandler.PLAYER_HEAD, "-?");
+					var dialogNodeGetKeyc: DialogNode = new DialogNode(dialogNodeGetKeyd, DialogHandler.PRISONER_HEAD, "Don't get your knickers in a bunch. I'm not going to rat you out-");
+					var dialogNodeGetKeyb: DialogNode = new DialogNode(dialogNodeGetKeyc, DialogHandler.PLAYER_HEAD, "-!");
+					var dialogNodeGetKeya: DialogNode = new DialogNode(dialogNodeGetKeyb, DialogHandler.PRISONER_HEAD, "Hey you there! You're not a guard, are you?");
 			
-				var dialogNodeGetKeye: DialogNode = new DialogNode(null, DialogHandler.PRISONER_HEAD, "Since you can do something for me. See that key in the far back corner of the room? Get that for me, I'll make it worth your while.");
-				var dialogNodeGetKeyd: DialogNode = new DialogNode(dialogNodeGetKeye, DialogHandler.PLAYER_HEAD, "-?");
-				var dialogNodeGetKeyc: DialogNode = new DialogNode(dialogNodeGetKeyd, DialogHandler.PRISONER_HEAD, "Don't get your knickers in a bunch. I'm not going to rat you out-");
-				var dialogNodeGetKeyb: DialogNode = new DialogNode(dialogNodeGetKeyc, DialogHandler.PLAYER_HEAD, "-!");
-				var dialogNodeGetKeya: DialogNode = new DialogNode(dialogNodeGetKeyb, DialogHandler.PRISONER_HEAD, "Hey you there! You're not a guard, are you?");
-			
-			
+					dialogNodeGetKeye.setEndOfConversation(CONVO_PRISONER);
+				
+				}
 			
 				dialogueTriggers.push(new DialogueTriggerZone(53*16, 71*16, 5*16, 3*16,dialogNodeGetKeya,false,true));
 				dialogueTriggers.push(new DialogueTriggerZone(53*16, 71*16, 5*16, 3*16,dialogNode2a,false,true));
@@ -2766,7 +2798,7 @@ package
 			{
 			
 				//NI Dialog
-				var dialogNodeNi6:DialogNode = new DialogNode(null, DialogHandler.NI_HEAD, "Thanks.", Assets.KITSUNE_SOUND2);
+				var dialogNodeNi6:DialogNode = new DialogNode(null, DialogHandler.NI_HEAD, "Thanks. Oh and speaking of catching, don't try to carry too much at once, it'll slow you down.", Assets.KITSUNE_SOUND2);
 				var dialogNodeNi5:DialogNode = new DialogNode(dialogNodeNi6, DialogHandler.PLAYER_HEAD, "Oh, I'm sorry to hear that, and I won't. I'm sure you didn't do anything wrong! For a thief, anyway.",Assets.CELESTE_PLEASED_SAD);
 				var dialogNodeNi4:DialogNode = new DialogNode(dialogNodeNi5, DialogHandler.NI_HEAD, "Don't get caught by the Walrus King. That's what happened to us, and it's my fault.", Assets.KITSUNE_SOUND2);
 				var dialogNodeNi3:DialogNode = new DialogNode(dialogNodeNi4, DialogHandler.PLAYER_HEAD, "So, do you have any... \"sneaking\" tips?",Assets.CELESTE_QUESTION);
@@ -2856,7 +2888,7 @@ package
 			{
 				//HACHI
 				var dialogNodeH6:DialogNode = new DialogNode(null, DialogHandler.HACHI_HEAD, "Ha! As if you'd understand. You're just some guard.", Assets.KITSUNE_SOUND);
-				var dialogNodeH5:DialogNode = new DialogNode(dialogNodeH6, DialogHandler.PLAYER_HEAD, "Maybe you're both just different",Assets.CELESTE_QUESTION);
+				var dialogNodeH5:DialogNode = new DialogNode(dialogNodeH6, DialogHandler.PLAYER_HEAD, "Maybe you're both just different.",Assets.CELESTE_QUESTION);
 				var dialogNodeH4:DialogNode = new DialogNode(dialogNodeH5, DialogHandler.HACHI_HEAD, "Pitu! She's always like, \"Hachi! I won't put on a mask! It's stifling!\ Ugh!", Assets.KITSUNE_SOUND);
 				var dialogNodeH3:DialogNode = new DialogNode(dialogNodeH4, DialogHandler.PLAYER_HEAD, "Who?",Assets.CELESTE_QUESTION);
 				var dialogNodeH2:DialogNode = new DialogNode(dialogNodeH3, DialogHandler.HACHI_HEAD, "She just can't accept the power of masks!", Assets.KITSUNE_SOUND);

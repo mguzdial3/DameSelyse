@@ -119,7 +119,7 @@ package
 		
 		protected var goalPoint: FlxPoint;
 		
-		
+		private var pathing: Boolean; 
 		
 		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 40, xSize:int=15,ySize:int=18, _enemyType:uint=0, _waypointWaitTimeMax:Number=0):void {
 			super(imgToUse, new FlxPoint(10,4), new FlxPoint(xSize,ySize), X, Y,_runSpeed);
@@ -221,6 +221,7 @@ package
 				lightFOV.setColor(cantFindPlayerColor);
 				
 				
+				
 				//Get the path figured out
 				if(waypoints.length!=1)
 				{
@@ -252,7 +253,12 @@ package
 					
 					
 				}
-					
+				/**
+				goalPoint = waypoints[currWaypoint];
+				pathing = true;
+				var path: FlxPath = currLevel.getWalls().findPath(new FlxPoint(this.x,this.y),goalPoint);
+				this.followPath(path);
+				*/
 					//aStar2(waypoints[currWaypoint],currLevel);
 				
 			}
@@ -624,6 +630,7 @@ package
 			
 					}
 					goalPoint = momentaryWaypoints[currMomentary];
+					
 				}
 				else
 				{
@@ -692,7 +699,10 @@ package
 						expressionTimer=expressionTimerMax;
 						currentState=SEEKINGPLAYER;
 						FlxG.play(sightedSound);
-						momentaryWaypoints = new Vector.<FlxPoint>();
+						if(momentaryWaypoints==null)
+						{
+							momentaryWaypoints = new Vector.<FlxPoint>();
+						}
 					
 						giveUpTimer = giveUpTimerMax;
 						playerPoint = new FlxPoint(player.x,player.y);
@@ -941,6 +951,7 @@ package
 					var div:Number = 1.1;
 					if(momentaryWaypoints!=null)
 					{
+						
 						//velocity.x/=div;
 						//velocity.y/=div;
 						//acceleration.x/=div+0.1;
@@ -954,6 +965,10 @@ package
 						speedModifier = 0.05;
 					}
 					
+				}
+				if(momentaryWaypoints!=null)
+				{
+					speedModifier = 0.5;
 				}
 				
 				

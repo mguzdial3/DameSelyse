@@ -16,7 +16,7 @@ package
 	
 		//The number of drops the player is carrying
 		private var numDrops: int;
-		private var MAX_DROPS: int= 20;
+		private var MAX_DROPS: int= 25;
 		
 		//FOR DEBUGGING
 		private var num: Number;
@@ -293,7 +293,7 @@ package
 			var dropNum : Number = numDrops;
 				
 			num = (maxDropNum - (dropNum))/maxDropNum;
-			num+=0.1; //So you can always move at least a little
+			num+=0.2; //So you can always move at least a little
 			
 			maxVelocity = new FlxPoint(runSpeed*num, runSpeed*num);
 			

@@ -78,7 +78,8 @@ package
 		
 		
 		//Sprites
-		[Embed(source = "/assets/sprites/Cauldron.png")] public static var Cauldron:Class;
+		[Embed(source = "/assets/sprites/InPotBoilingAnimation.png")] public static var InCauldron:Class;
+		[Embed(source = "/assets/sprites/PotBoilingAnimation.png")] public static var Cauldron:Class;
 		[Embed(source = "/assets/sprites/KitchenBoxSide.png")] public static var KitchenBoxSide:Class;
 		[Embed(source = "/assets/sprites/kitchenShelves.png")] public static var kitchenShelves:Class;
 		[Embed(source = "/assets/sprites/Shelves2.png")] public static var Shelves2:Class;

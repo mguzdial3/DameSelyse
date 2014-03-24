@@ -141,6 +141,7 @@ package
 		//Seconds
 		protected var currSeconds:Number;
 		
+		
 		/**
 		 * Constructor
 		 * @param	state		State displaying the level
@@ -300,6 +301,11 @@ package
 				FlxG.music.stop();
 			}
 			reloadThisLevel=true;
+		}
+		
+		public function getWalls(): FlxTilemap
+		{
+			return wallGroup[0];
 		}
 		
 		/**
@@ -566,6 +572,8 @@ package
 			if(saver.data.currSavePointIndex!=-1)
 			{
 				savePoints[saver.data.currSavePointIndex].openSavePoint();
+				
+				FlxG.play(Assets.RESPAWN_NOISE);
 			}
 			
 			var i:int=0;
@@ -796,9 +804,9 @@ package
 				//Getting smaller as it forces out
 				
 				//Player sprite appearing
-				if(hidingTimer<hideableObjects[hideableObjectIndex].getTimeToEnter()/2)
+				if(hidingTimer<hideableObjects[hideableObjectIndex].getTimeToExit()/2)
 				{
-					player.setAlpha(0.5+0.5*((16*(hidingTimer)/hideableObjects[hideableObjectIndex].getTimeToEnter())/16.0));
+					player.setAlpha(0.5+0.5*((16*(hidingTimer)/hideableObjects[hideableObjectIndex].getTimeToExit())/16.0));
 				}		
 					
 				hidingBar.alpha=1;
@@ -823,7 +831,9 @@ package
 						else
 						{
 							//Check to make sure there isn't a wall there
-							potentialX= hideableObjects[hideableObjectIndex].x-player.width-1;
+							potentialX= hideableObjects[hideableObjectIndex].x-player.width-3;
+						
+							hidingLocation.y = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
 						
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
@@ -842,12 +852,14 @@ package
 						else
 						{
 							//Check to make sure there isn't a wall there
-							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+1;
-						
+							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+3;
+						//TESTING
+						hidingLocation.y = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
 							}
+							
 						}
 						
 						
@@ -1098,9 +1110,9 @@ package
 			
 			var i:int;
 			var j:int; 
-			for(i=0; i<16; i++)
+			for(i=-3; i<3; i++)
 			{
-				for(j=0; j<16; j++)
+				for(j=-3; j<3; j++)
 				{
 					if(FlxTilemap(wallGroup.getFirstAlive()).getTile((xPos+i)/16,(yPos+j)/16) != 0)
 					{

@@ -5,7 +5,7 @@ package
 	public class CookEnemy extends Enemy
 	{
 	
-		public function CookEnemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _enemyType:uint = 0, _waypointWaitTimeMax:Number=0, _runspeed:Number=65):void {
+		public function CookEnemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _enemyType:uint = 0, _waypointWaitTimeMax:Number=0, _runspeed:Number=63):void {
 			super(Assets.COOK_SPRITE, _waypoints, player,_lightFOV, X, Y,_dialogNode, _runspeed,15,18, _enemyType, _waypointWaitTimeMax);
 			
 			
@@ -40,22 +40,22 @@ package
 		
 		override protected function allMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.4,0.4);
+			lightFOV.scale= new FlxPoint(0.35,0.35);
 		}
 		
 		override protected function noMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.6,0.6);
+			lightFOV.scale= new FlxPoint(0.5,0.5);
 		}
 		
 		override protected function oneMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.55,0.55);
+			lightFOV.scale= new FlxPoint(0.45,0.45);
 		}
 		
 		override protected function twoMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.50,0.50);
+			lightFOV.scale= new FlxPoint(0.425,0.425);
 		}
 		
 		

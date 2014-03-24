@@ -213,7 +213,7 @@ package
 			}
 			
 			//Testing purposes 
-			LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
+			//LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
 
 			//LEVEL = new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
 			this.add(LEVEL);
