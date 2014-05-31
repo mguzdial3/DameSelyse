@@ -600,13 +600,14 @@ package
 				var sanctumSaver:FlxSave = new FlxSave();
 				sanctumSaver.bind("levelData"+"Sanctum");
 				
+				if(sanctumSaver.data.numDrops!=null){
+					sanctumDropletsText.text=""+sanctumSaver.data.numDrops.toString()+"/"+sanctumSaver.data.maxDrops.toString();
 				
-				sanctumDropletsText.text=""+sanctumSaver.data.numDrops.toString()+"/"+sanctumSaver.data.maxDrops.toString();
+					var waterRatioS:Number = Number(sanctumSaver.data.numDrops)/Number(sanctumSaver.data.maxDrops);
 				
-				var waterRatioS:Number = Number(sanctumSaver.data.numDrops)/Number(sanctumSaver.data.maxDrops);
-				
-				sanctumDropletsBar.scale.x = waterRatioS;
-				sanctumDropletsBar.x-= barMaxWidth/2 - (barMaxWidth*waterRatioS)/2;
+					sanctumDropletsBar.scale.x = waterRatioS;
+					sanctumDropletsBar.x-= barMaxWidth/2 - (barMaxWidth*waterRatioS)/2;
+				}
 			}
 			
 			

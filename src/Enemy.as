@@ -22,6 +22,7 @@ package
 		public var QUESTION_TIME:int = 1;
 		public var FOUND_PLAYER: int=2;
 		
+		
 		private var player:Player;
 		
 		//Messages that can be passed into this enemy
@@ -100,12 +101,12 @@ package
 		private var hasPrintedOut: Boolean;
 		
 		//Previous direction this char was facing
-		private var prevFacing: uint;
+		protected var prevFacing: uint;
 		
 		//Certainty that the person running aboot it is the player
 		private var certaintyTimer:Number;
 		private var certaintyTimerMax:Number = 3.0; //was 6
-		private var autoCatchDist:Number = 12;
+		private var autoCatchDist:Number = 16;
 		
 		//For facing when paused while waypointing
 		private var hasPreferredFacing:Boolean = false;
@@ -116,10 +117,13 @@ package
 		public var r: uint = 16;
 		public var u: uint = 256;
 		
-		
+		protected var minimumDist:Number = 32;//TRY: CHANGING FROM 20
 		protected var goalPoint: FlxPoint;
 		
-		private var pathing: Boolean; 
+		private var pathing: Boolean;
+		
+		private var pauseFrame:int;
+		private var pauseVelocity: FlxPoint; 
 		
 		public function Enemy(imgToUse: Class, _waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _runSpeed:int = 40, xSize:int=15,ySize:int=18, _enemyType:uint=0, _waypointWaitTimeMax:Number=0):void {
 			super(imgToUse, new FlxPoint(10,4), new FlxPoint(xSize,ySize), X, Y,_runSpeed);
@@ -194,6 +198,15 @@ package
 			//Set certainty timer to 0
 			certaintyTimer=0;
 			
+			mySprite.immovable = true;
+			
+			//Shrink the light
+			noMatchFOV();
+			
+			
+			//Move the light to the right location
+			moveLightSource();
+			
 		}
 		
 		public function resetToOriginalPositions(currLevel:TopDownLevel):void
@@ -218,7 +231,7 @@ package
 			
 				currentState=WAYPOINTING;
 				cantFindPlayerTimer = cantFindPlayerTimerMax;
-				lightFOV.setColor(cantFindPlayerColor);
+				setCantFindPlayerLight();
 				
 				
 				
@@ -416,11 +429,17 @@ package
 		}
 		
 		
-		public function addEnemy(groupToAddTo: FlxGroup): void
+		public function addEnemy(groupToAddTo: EnemyController): void
 		{
 			groupToAddTo.add(this);
 			groupToAddTo.add(mySprite);
 			
+		}
+		
+		public function setFacing(_facing:uint):void
+		{
+			facing = _facing;
+			setPreferredFacing(_facing);
 		}
 		
 		public function addExpressionSprite(groupToAddTo: FlxGroup): void
@@ -478,14 +497,9 @@ package
 			var within: Boolean= false;
                         
 			var distanceFromCenter:Number = manhattanDistance(point, new FlxPoint(lightFOV.x, lightFOV.y));
+			//lightFOV.s.x
+			var radiusOfLight: Number = (1.0*lightFOV.width)/4;
 			
-			var radiusOfLight: Number = (lightFOV.scale.x*lightFOV.width)/4;
-			
-			//TEST
-			if(distanceFromCenter<radiusOfLight*3)
-			{
-				//TopDownLevel.printText2.text ="Dist, Rad: "+int(distanceFromCenter)+", "+int(radiusOfLight);
-			}
 						
 			if(distanceFromCenter<radiusOfLight)
 			{
@@ -577,8 +591,6 @@ package
 		
 		private function regularGameplay(currLevel: TopDownLevel):int
 		{
-			//MOVE THE LIGHT SOURCE
-			moveLightSource();
 			
 			//Move to above player
 			expressionSprite.x = mySprite.x+mySprite.width/2-expressionSprite.width/2;
@@ -600,7 +612,7 @@ package
 			
 		
 			goalPoint = new FlxPoint(this.x,this.y);
-			var minimumDist:Number = 20;//TRY: CHANGING FROM 15
+			
 			if(currentState==WAYPOINTING)
 			{	
 				//Reset light used to go here
@@ -611,17 +623,20 @@ package
 				//MOVING THE ENEMY
 				if(momentaryWaypoints!=null)
 				{
-					if(manhattanDistance(momentaryWaypoints[currMomentary],new FlxPoint(this.x,this.y))<minimumDist)
+					if(currMomentary>=0 && manhattanDistance(momentaryWaypoints[currMomentary],new FlxPoint(this.x,this.y))<minimumDist)
 					{
-						if(currMomentary>1)
-						{
-							//hardStop();
-						}
+						
 					
-						if(currMomentary>0)
+						if(currMomentary>=0)
 						{
 							currMomentary--;
-							goalPoint = momentaryWaypoints[currMomentary];
+							
+							
+							if(currMomentary<0)
+							{
+								momentaryWaypoints = null;
+							}
+							//goalPoint = momentaryWaypoints[currMomentary];
 						}
 						else
 						{
@@ -629,7 +644,18 @@ package
 						}
 			
 					}
-					goalPoint = momentaryWaypoints[currMomentary];
+					
+					if(momentaryWaypoints!=null)
+					{
+						if(currMomentary>=0)
+						{
+							goalPoint = momentaryWaypoints[currMomentary];
+						}
+						else
+						{
+							momentaryWaypoints=null;
+						}
+					}
 					
 				}
 				else
@@ -654,8 +680,17 @@ package
 					
 							if(waypoints.length==1)
 							{
-								facing = DOWN;
-								mySprite.facing = DOWN;
+							
+								if(hasPreferredFacing)
+								{
+									facing = preferredFacing;
+									mySprite.facing = preferredFacing;
+								}
+								else
+								{
+									facing = DOWN;
+									mySprite.facing = DOWN;
+								}
 							
 							
 							}
@@ -689,7 +724,7 @@ package
 				}
 		
 				//Check how to transfer into seeking player state
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && cantFindPlayerTimer<=0)
+				if(withinView(new FlxPoint(player.x+(player.width/2),player.y-(player.bodySprite.height/3))) && !player.getHiding() && cantFindPlayerTimer<=0)
 				{
 					
 					if(playerSeeable(currLevel))
@@ -719,11 +754,11 @@ package
 				
 					if(cantFindPlayerTimer>cantFindPlayerTimerMax/2)
 					{
-						lightFOV.setColor(cantFindPlayerColor);
+						setCantFindPlayerLight();
 					}
 					else
 					{
-						lightFOV.lerpBetween(cantFindPlayerColor,undetectedColor,(1-(cantFindPlayerTimerMax/2-cantFindPlayerTimer)/(cantFindPlayerTimerMax/2)));
+						setCantFindPlayerLightTransit();
 					}
 					
 					cantFindPlayerTimer-=FlxG.elapsed;
@@ -741,17 +776,18 @@ package
 			}
 			else if(currentState==SEEKINGPLAYER)
 			{
-				var distToPlayer:Number = manhattanDistance(new FlxPoint(player.x,player.y), new FlxPoint(this.x,this.y));
+				var distToPlayer:Number = getDistanceToPlayer();
 				
 				
 				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				if(withinView(new FlxPoint(player.x+(player.width/2),player.y-(player.bodySprite.height/3))) && !player.getHiding() 
 					&& closeEnoughToPlayer(new FlxPoint(player.x,player.y))
 					)				
 				{
 					
 					//Added the if you get too close thing
 					//suspiciousEnough() || 
+					
 					if(distToPlayer<autoCatchDist)
 					{
 						lightFOV.setColor(detectedColor);
@@ -767,7 +803,7 @@ package
 				goalPoint = playerPoint;
 				
 				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				if(withinView(new FlxPoint(player.x+player.width/2,player.y-player.bodySprite.height/3)) && !player.getHiding() 
 				)//&& playerSeeable(currLevel))
 				{	
 				
@@ -776,15 +812,16 @@ package
 					
 					if(distToPlayer<maxDist && distToPlayer>=minimumDist)
 					{
-						lightFOV.lerpBetween(suspiciousColor,detectedColor, (1-distToPlayer/(maxDist-minimumDist)));
+						lerpLightBetween(distToPlayer, maxDist, minimumDist);
 					}
 					else if(distToPlayer<minimumDist)
 					{
-						lightFOV.setColor(detectedColor);
+						setDetectedLight();
+						
 					}
 					else
 					{
-						lightFOV.setColor(suspiciousColor);
+						setSuspiciousLight();
 					}
 					
 					//Certainty improves with time
@@ -802,9 +839,7 @@ package
 						return QUESTION_TIME;
 					}
 					
-				
-				
-				
+					
 				
 				
 				
@@ -1029,6 +1064,11 @@ package
 				movement.y -= 1;
 			}
 			
+			if(movement.x!=0 || movement.y!=0){
+				//MOVE THE LIGHT SOURCE
+				moveLightSource();
+			}
+			
 			return 0;
 		}
 		
@@ -1041,6 +1081,9 @@ package
 				if(pausedPosition.x!=0)
 				{
 					pausedPosition = new FlxPoint(0,0);
+					velocity.x = pauseVelocity.x;
+					velocity.y = pauseVelocity.y;
+					
 				}	
 				
 				if(enemyType==NORMAL_BEHAVIOR)
@@ -1054,16 +1097,29 @@ package
 			}		
 			else if(commandMessage==PAUSE)
 			{
+			
 				if(pausedPosition.x==0)
 				{
 					pausedPosition = new FlxPoint(x,y);
+					pauseFrame = mySprite.frame;
+					pauseVelocity = new FlxPoint(velocity.x, velocity.y);
+					
+					//Try adding this to see what happens
+					moveLightSource();
+					
+				}
+				else
+				{
+					this.x = pausedPosition.x;
+					this.y = pausedPosition.y;
+					mySprite.frame=pauseFrame;
 				}
 				
-				//Try adding this to see what happens
-				moveLightSource();
+				
+				
+				
 			
 				super.hardStop();
-				super.setPaused(true);
 				
 			}
 			else if(commandMessage==CHECK_COSTUME)
@@ -1075,10 +1131,37 @@ package
 		
 		}
 		
+		protected function lerpLightBetween(distToPlayer:Number, maxDist:Number, minimumDist:Number): void
+		{
+			lightFOV.lerpBetween(suspiciousColor,detectedColor, (1-distToPlayer/(maxDist-minimumDist)));
+
+		}
+	
+		protected function setDetectedLight():void
+		{
+			lightFOV.setColor(detectedColor);
+		}
+		
+		protected function setSuspiciousLight():void
+		{
+			lightFOV.setColor(suspiciousColor);
+		}
+		
+		protected function setCantFindPlayerLight(): void
+		{
+			lightFOV.setColor(cantFindPlayerColor);
+		}
+		
+		protected function setCantFindPlayerLightTransit(): void
+		{
+			lightFOV.lerpBetween(cantFindPlayerColor,undetectedColor,(1-(cantFindPlayerTimerMax/2-cantFindPlayerTimer)/(cantFindPlayerTimerMax/2)));
+		}
+		
 		private function regularGameplayTurning(currLevel: TopDownLevel):int
 		{
 			//MOVE THE LIGHT SOURCE
 			moveLightSource();
+			
 			
 			//Move to above player
 			expressionSprite.x = mySprite.x+mySprite.width/2-expressionSprite.width/2;
@@ -1103,8 +1186,6 @@ package
 			var minimumDist:Number = 15;
 			if(currentState==WAYPOINTING)
 			{	
-				//Reset light used to go here
-					
 				
 				//MOVING THE ENEMY
 				if(momentaryWaypoints!=null)
@@ -1119,7 +1200,15 @@ package
 						if(currMomentary>0)
 						{
 							currMomentary--;
-							goalPoint = momentaryWaypoints[currMomentary];
+							
+							if(currMomentary<0)
+							{
+								momentaryWaypoints = null;
+							}
+							else
+							{
+								goalPoint = momentaryWaypoints[currMomentary];
+							}
 						}
 						else
 						{
@@ -1127,7 +1216,10 @@ package
 						}
 			
 					}
-					goalPoint = momentaryWaypoints[currMomentary];
+					if(momentaryWaypoints!=null)
+					{
+						goalPoint = momentaryWaypoints[currMomentary];
+					}
 				}
 				else
 				{
@@ -1155,14 +1247,13 @@ package
 						turningTime+=(FlxG.elapsed*(0.5+(FlxG.random()*0.6)));
 					}
 					
-					//TopDownLevel.printText2.text = "sprite: "+facing;
 						
 					
 					goalPoint = new FlxPoint(this.x,this.y);
 				}
 		
 				//Check how to transfer into seeking player state
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() && cantFindPlayerTimer<=0)
+				if(withinView(new FlxPoint(player.x+(player.width/2),player.y-(player.bodySprite.height/3))) && !player.getHiding() && cantFindPlayerTimer<=0)
 				{
 					
 					if(playerSeeable(currLevel))
@@ -1189,11 +1280,11 @@ package
 				
 					if(cantFindPlayerTimer>cantFindPlayerTimerMax/2)
 					{
-						lightFOV.setColor(cantFindPlayerColor);
+						setCantFindPlayerLight();
 					}
 					else
 					{
-						lightFOV.lerpBetween(cantFindPlayerColor,undetectedColor,(1-(cantFindPlayerTimerMax/2-cantFindPlayerTimer)/(cantFindPlayerTimerMax/2)));
+						setCantFindPlayerLightTransit();
 					}
 					
 					cantFindPlayerTimer-=FlxG.elapsed;
@@ -1211,14 +1302,13 @@ package
 			}
 			else if(currentState==SEEKINGPLAYER)
 			{
-				var distToPlayer:Number = manhattanDistance(new FlxPoint(player.x,player.y), new FlxPoint(this.x,this.y));
+				var distToPlayer:Number = getDistanceToPlayer();
 					
 				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				if(withinView(new FlxPoint(player.x+(player.width/2),player.y-(player.bodySprite.height/3))) && !player.getHiding() 
 					&& closeEnoughToPlayer(new FlxPoint(player.x,player.y))
 					)				
 				{
-					
 					//Added the if you get too close thing
 					//suspiciousEnough() || 
 					if(distToPlayer<minimumDist)
@@ -1236,7 +1326,7 @@ package
 				goalPoint = playerPoint;
 				
 				//TRY: Try removing the need for the player to be seeable if it's withinView and we're already seeking her
-				if(withinView(new FlxPoint(player.x,player.y)) && !player.getHiding() 
+				if(withinView(new FlxPoint(player.x+(player.width/2),player.y-(player.bodySprite.height/3))) && !player.getHiding() 
 				)//&& playerSeeable(currLevel))
 				{	
 				
@@ -1399,6 +1489,11 @@ package
 					giveUpTimer-=FlxG.elapsed;
 				}
 				
+				if(movement.x!=0 || movement.y!=0){
+					//MOVE THE LIGHT SOURCE
+					moveLightSource();
+				}
+				
 				
 				
 			}
@@ -1525,7 +1620,7 @@ package
 		
 		protected function closeEnoughToPlayer(pnt: FlxPoint): Boolean
 		{
-			return (manhattanDistance(new FlxPoint(this.x,this.y), pnt)<16);
+			return (manhattanDistance(new FlxPoint(this.x,this.y), pnt)<minimumDist);
 			
 		}
 		
@@ -1625,23 +1720,29 @@ package
 				numCorrect++;
 			}
 			
-			suspicious = numCorrect;
 			
-			if(numCorrect==3)
+			
+			if(suspicious!=numCorrect)
 			{
-				allMatchFOV();
-			}
-			else if(numCorrect==2)
-			{
-				twoMatchFOV()
-			}
-			else if(numCorrect==1)
-			{
-				oneMatchFOV();
-			}
-			else
-			{
-				noMatchFOV();
+			
+				suspicious = numCorrect;
+			
+				if(numCorrect==3)
+				{
+					allMatchFOV();
+				}
+				else if(numCorrect==2)
+				{
+					twoMatchFOV()
+				}
+				else if(numCorrect==1)
+				{
+					oneMatchFOV();
+				}
+				else
+				{
+					noMatchFOV();
+				}
 			}
 			
 			
@@ -1650,22 +1751,22 @@ package
 		//To be overriden for how other lightFOV's shrink
 		protected function allMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.35,0.35);
+			lightFOV.setSprite(Assets.LightCatSmall);
 		}
 		
 		protected function noMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.6,0.6);
+			lightFOV.setSprite(Assets.LightCatNone);
 		}
 		
 		protected function oneMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.55,0.55);
+			lightFOV.setSprite(Assets.LightCatLarge);
 		}
 		
 		protected function twoMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.45,0.45);
+			lightFOV.setSprite(Assets.LightCatMed);
 		}
 		
 		
@@ -1792,7 +1893,6 @@ package
 				var magOfDiff:Number = 4.0;
 				var numPntsToCheck :int = magnitude/magOfDiff;
 				//numPntsToCheck*=2;
-				//TopDownLevel.printText2.text ="My Pos: "+this.x+", "+this.y+"     Diff: "+diff.x+", "+diff.y+"    NumPnts: "+numPntsToCheck;
 			
 				var stillViewable: Boolean = true;
 				
@@ -1813,7 +1913,6 @@ package
 					ind++;		
 					
 					
-					//TopDownLevel.printText2.text += "     Ind: "+ind+" of "+(numPntsToCheck-1)+": "+currPnt.x+", "+currPnt.y;
 					
 				}	
 				
@@ -1828,6 +1927,11 @@ package
 			
 			mySprite.x = x;
 			mySprite.y = y-(18-height);
+		}
+		
+		protected function getDistanceToPlayer(): Number{
+			
+			return manhattanDistance(new FlxPoint(player.x+player.width/2,player.y-player.mySprite.height/2.5), new FlxPoint(this.x+this.width/2,this.y-this.height/2));
 		}
 		
 		protected function checkIfIn(node: EnemyNode, visitedList: Vector.<EnemyNode>): Boolean

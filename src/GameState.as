@@ -174,19 +174,27 @@ package
 		private var stateTimer:Number = 0;
 		private var startText:Number = 1;
 		
-		private var gameplay:Boolean = true;
+		private var gameplay:Boolean = true; 
+		
+		public static var saveString:String = "LEVEL_ON_DATA";
+		 
+		private static var levelNames: Array = new Array("Dungeon", "Kitchen", "Ballroom", "Sanctum", "Brain");
 		 
 		override public function create():void 
 		{
 			
 			super.create();
 			
+			//LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
 			
 			
 			saveStuff = new FlxSave();
-		
-			var _loaded: Boolean = saveStuff.bind("levelNameData");
 			
+			var _loaded: Boolean = saveStuff.bind(saveString);
+			
+			
+			//saveStuff.erase();
+			/**
 			if(!_loaded)
 			{
 				LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
@@ -203,39 +211,83 @@ package
 					//Load level based on levelName
 					if(saveStuff.data.levelName=="Dungeon")
 					{
+						//trace("Hit dungeon");
 						LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
 					}
 					else if(saveStuff.data.levelName=="Kitchen")
 					{
+						//trace("Hit kitchen");
 						LEVEL = new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));	
 					}
+					else if(saveStuff.data.levelName=="Ballroom")
+					{
+						//trace("Hit ballroom");
+						LEVEL = new celeste3Fin(new FlxPoint(3616, 5856),new FlxPoint(16, 16));	
+					}
+					else if(saveStuff.data.levelName=="Sanctum")
+					{
+						//trace("Hit sanctum");
+						LEVEL = new celeste4Real(new FlxPoint(5792, 4128),new FlxPoint(16, 16));
+					}
+					else if(saveStuff.data.levelName=="Brain")
+					{
+						//trace("Hit brain");
+						LEVEL = new celeste5Real2(new FlxPoint(5792, 4128),new FlxPoint(16, 16));
+					}
+					
 				}
 			}
-			
-			//Testing purposes 
-			//LEVEL = new celeste1Fin1(new FlxPoint(4992, 3392),new FlxPoint(16, 16));
+			*/
 
-			//LEVEL = new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));
+			//LEVEL = new celeste2Fin3(new FlxPoint(5216, 3488),new FlxPoint(16, 16));	
+			LEVEL = new celeste3Fin(new FlxPoint(3616, 5856),new FlxPoint(16, 16));
+			//Testing purposes 
+			//
+			//LEVEL =  new celeste5Real2(new FlxPoint(5792, 4128),new FlxPoint(16, 16));
+			//new celeste5Real(new FlxPoint(6720, 4192),new FlxPoint(16, 16));//new celeste4Real(new FlxPoint(5792, 4128),new FlxPoint(16, 16));
+			//new celeste4Real(new FlxPoint(5792, 4128),new FlxPoint(16, 16));//new celeste4Fin(new FlxPoint(5792, 4128),new FlxPoint(16, 16));
+			//LEVEL = new celeste3Fin(new FlxPoint(3616, 5856),new FlxPoint(16, 16));	
 			this.add(LEVEL);
 			
-			//THIS WORKED!
-			//this.clear();
+		}
+		
+		public static function clearAllLevelData():void
+		{
+			var i:int = 0;
 			
-			////TESTING
-			//setUpLevelEnd();
-			
-			
-			
+			for(i = 0; i<levelNames.length; i++)
+			{
+				var levelSave:FlxSave = new FlxSave();
+				
+				levelSave.bind("levelData"+levelNames[i]);
+				
+				levelSave.erase();
+			}
 		}
 		
 		public function setUpLevelEnd():void 
 		{
+		
+		
+			if(FlxG.music!=null)
+			{
+				FlxG.music.stop();
+				FlxG.music.destroy();
+			}
+		
+			//MUSIC
+			var introMusic:FlxSound = new FlxSound();
+			introMusic.loadEmbedded(Assets.MENU_SONG, true);
+			
+			FlxG.music=introMusic;
+			FlxG.music.volume = 0.6;
+			FlxG.music.play();
+		
 			count = 0;
 		
 			var menuBackground:FlxSprite = new FlxSprite(0,0, Assets.SCREEN_BELOW);
 			menuBackground.scrollFactor = new FlxPoint(0, 0);
 			add(menuBackground);
-			FlxG.flashFramerate = 60; //60 before
 			
 			
 			
@@ -339,7 +391,7 @@ package
 				{
 					var currType:int = int(Math.random()*2);
 					
-					var currX:Number = 288+i*8+6*Math.random();
+					var currX:Number = 288+(i*8)+(12*Math.random())+4;
 					
 					if(currType==0)
 					{
@@ -586,36 +638,39 @@ package
 				//See if we should transfer the level
 				NEXT_LEVEL= LEVEL.transferLevel();
 			
-			
-				if (FlxG.keys.pressed("X"))
-				{
-					saveStuff.erase();
-				}
-			
-			
 				// If we've got a new level to transfer to, let's get rid of the old one and 
 				// add the new one
 				
 				if(NEXT_LEVEL!=null && NEXT_LEVEL.getLevelName()!=LEVEL.getLevelName())
 				{
-					saveStuff.data.levelName = NEXT_LEVEL.getLevelName();
-					
 					LEVEL.gameStateSave(); //Game State Save real fast
+					
+					saveStuff.data.levelName = NEXT_LEVEL.getLevelName();
 					
 					this.clear();
 										
 					gameplay= false;
 					
 					setUpLevelEnd();
-					
-					
-					
-					
-					
+
 				}
 				else if(NEXT_LEVEL!=null)
 				{
-					startNextLevel();
+					saveStuff.data.levelName = NEXT_LEVEL.getLevelName();
+				
+					
+				
+					//startNextLevel();
+					if(this!=null)
+					{
+						this.clear();
+					}
+					gameplay=true;
+			
+					LEVEL = NEXT_LEVEL;
+					//FlxG.mouse.hide();
+					this.add(LEVEL);
+					LEVEL.startMusic();
 				}
 				
 			}
@@ -636,11 +691,16 @@ package
 		
 		public function startNextLevel():void
 		{
+			FlxG.mouse.hide();
+			gameplay=true;
+			if(NEXT_LEVEL!=null)
+			{
 			
+				saveStuff.data.levelName =NEXT_LEVEL.getLevelName();
+			}
 			this.clear();
-				
-			LEVEL = NEXT_LEVEL;
-			this.add(LEVEL);
+			FlxG.switchState(new GameState());
+			
 		}
 		
 		public function returnToMainMenu():void

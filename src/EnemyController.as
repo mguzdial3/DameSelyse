@@ -24,7 +24,7 @@ package
 		public static const RELOAD_LEVEL:int =6;
 		
 		
-		
+		//public var colliders: FlxGroup;
 		
 		protected var currQuestion: DialogNode;
 		protected var caughtPlayerStatement: DialogNode;
@@ -87,6 +87,19 @@ package
 			currState=NORMAL_GAMEPLAY;
 		}
 		
+		public function setEnemiesNotSuspicious(): void
+		{
+			var i:int;
+			
+			for(i=0; i<enemies.length; i++)
+			{
+				
+				enemies[i].setNoLongerSuspicious();
+			}
+			
+			currState=NORMAL_GAMEPLAY;
+		}
+		
 		public function setNormalGameplay(): void
 		{
 			currState = NORMAL_GAMEPLAY;
@@ -137,6 +150,48 @@ package
 			
 		}
 		
+		
+		public function isValidEnemy(i:int): Boolean
+		{
+					
+			return (enemies[i].x>(FlxG.camera.scroll.x-180) &&
+						enemies[i].x<(FlxG.camera.scroll.x+180 +320)
+						&& enemies[i].y>(FlxG.camera.scroll.y-140) 
+						&& enemies[i].y<(FlxG.camera.scroll.y+240+140));
+			
+			
+		}
+		
+		public function enemyCollideGroup(against:FlxGroup):void
+		{
+			var i:int;
+			
+			for(i=0; i<enemies.length; i++)
+			{
+				if(isValidEnemy(i))
+				{
+					FlxG.collide(enemies[i], against);
+				}
+					
+			}
+		}
+		
+		public function enemyCollideSprite(against:FlxSprite): void
+		{
+			var i:int;
+			
+			for(i=0; i<enemies.length; i++)
+			{
+				if(isValidEnemy(i))
+				{
+					FlxG.collide(enemies[i], against);
+				}
+					
+			}
+		}
+		
+		
+		
 		public function commandEnemies(currLevel: TopDownLevel, specialCommand: int=NOT_ANY):int
 		{
 			var messageToReturn:int=NOTHING_SPECIAL;
@@ -151,40 +206,45 @@ package
 			{
 				var i:int;
 				var myMessage:int;
+				
+				
 				if(currState==NORMAL_GAMEPLAY)
 				{
-					
 					for(i=0; i<enemies.length; i++)
 					{	
 					//improving run speed test
-					/**
-						if(enemies[i].x>FlxG.camera.scroll.x-100 &&
-						enemies[i].x<FlxG.camera.scroll.x+100 +320
-						&& enemies[i].y>FlxG.camera.scroll.y-100 
-						&& enemies[i].y<FlxG.camera.scroll.y+240+100)
-						{ 
-					*/
-						myMessage= enemies[i].command(currLevel);
 					
-						//Enter Question Time
-						if(myMessage==enemies[i].QUESTION_TIME)
-						{
-							enterQuestionMode(enemies[i]);
-							messageToReturn =ENEMY_SPOTTED_PLAYER;
+						if(isValidEnemy(i))
+						{ 
+					
+							myMessage= enemies[i].command(currLevel);
+					
+							//Enter Question Time
+							if(myMessage==enemies[i].QUESTION_TIME)
+							{
+								enterQuestionMode(enemies[i]);
+								messageToReturn =ENEMY_SPOTTED_PLAYER;
 								
+							}
+							else if(myMessage==enemies[i].FOUND_PLAYER)
+							{
+								//Send the reload thing
+								enterFinalStatement(enemies[i]);
+								messageToReturn =RELOAD_LEVEL;
+							}
 						}
-						else if(myMessage==enemies[i].FOUND_PLAYER)
+						else
 						{
-							//Send the reload thing
-							enterFinalStatement(enemies[i]);
-							messageToReturn =RELOAD_LEVEL;
+							//Pause enemies, try
+							enemies[i].command(currLevel, Enemy.PAUSE);
 						}
 					}
+					
+					
 				}
 				else if(currState==QUESTION_TIME)
 				{
 				
-					//TopDownLevel.printText2.text = "Got to here";
 					for(i=0; i<enemies.length; i++)
 					{
 						//Testing this
@@ -198,7 +258,7 @@ package
 			{
 				for(i=0; i<enemies.length; i++)
 				{
-					enemies[i].hardStop();
+					enemies[i].command(currLevel, Enemy.PAUSE);
 					
 						
 				}

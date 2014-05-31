@@ -14,6 +14,7 @@ package
 		[Embed(source = "/assets/sprites/catGuardSpritesheet.png")] public static var GUARD_SPRITE:Class;
 		[Embed(source = "/assets/sprites/ratCookSpritesheet.png")] public static var COOK_SPRITE:Class;
 		[Embed(source = "/assets/sprites/ratHeadCookSpritesheet.png")] public static var HEAD_COOK_SPRITE:Class;
+		[Embed(source = "/assets/sprites/blindMouseSpriteSheet.png")] public static var BLIND_MOUSE_SPRITE:Class;
 		[Embed(source = "/assets/sprites/hatlessRatCookSpritesheet.png")] public static var HATLESS_COOK_SPRITE:Class;
 		[Embed(source = "/assets/sprites/prisonerSpritesheet.png")] public static var PRISONER_SPRITE:Class;
 		[Embed(source = "/assets/sprites/hammerheadSpritesheet.png")] public static var SHARK_SPRITE:Class;
@@ -31,6 +32,9 @@ package
 		[Embed(source = "/assets/sprites/rabbitSpritesheet.png")] public static var RABBIT_SPRITE:Class;
 		[Embed(source = "/assets/sprites/goatSpritesheet.png")] public static var GOAT_SPRITE:Class;
 		[Embed(source = "/assets/sprites/turtleSpritesheet.png")] public static var TURTLE_SPRITE:Class;
+		[Embed(source = "/assets/sprites/celesteEnemy.png")] public static var DAME_SPRITE:Class;
+		[Embed(source = "/assets/sprites/walrusKingSpritesheet.png")] public static var WALRUS_SPRITE:Class;
+
 		
 		//Split up player sprite
 		[Embed(source = "/assets/sprites/princessHeadSpritesheet.png")] public static var RANGERHEAD_SPRITE:Class;
@@ -70,6 +74,17 @@ package
 		
 		[Embed(source = "/assets/sprites/chefPants.png")] public static var CHEF_PANTS:Class;
 		[Embed(source = "/assets/sprites/chefLegsSpritesheet.png")] public static var CHEFLEGS_SPRITE:Class;
+		
+		
+		//Lady Outfits
+		[Embed(source = "/assets/sprites/ladyHat.png")] public static var LADY_HAT:Class;
+		[Embed(source = "/assets/sprites/ladyHeadSpritesheet.png")] public static var LADYHEAD_SPRITE:Class;
+		
+		[Embed(source = "/assets/sprites/ladyShirt.png")] public static var LADY_SHIRT:Class;
+		[Embed(source = "/assets/sprites/ladyBodySpritesheet.png")] public static var LADYBODY_SPRITE:Class;
+		
+		[Embed(source = "/assets/sprites/ladyPants.png")] public static var LADY_PANTS:Class;
+		[Embed(source = "/assets/sprites/ladyLegsSpritesheet.png")] public static var LADYLEGS_SPRITE:Class;
 		
 		
 		//Guard Expressables
@@ -121,6 +136,13 @@ package
 		[Embed(source = "/assets/sprites/chair.png")] public static var CHAIRRIGHT_SPRITE:Class;
 		[Embed(source = "/assets/sprites/chairDown2.png")] public static var CHAIRUP_SPRITE:Class;
 		
+		//HIDING PLANTS
+		[Embed(source = "/assets/sprites/plant3.png")] public static var SINGLE_PLANT:Class;
+		[Embed(source = "/assets/sprites/plant3_regrow.png")] public static var REGROW_PLANT:Class;
+		[Embed(source = "/assets/sprites/plant3_hiding.png")] public static var HIDING_PLANT:Class;
+
+		
+		
 		//Extra Kitchen Sprites
 		
 		[Embed(source = "/assets/sprites/Pumpkin.png")] public static var Pumpkin:Class;
@@ -147,9 +169,21 @@ package
 		[Embed(source = "/assets/sprites/Fruit.png")] public static var Fruit:Class;
 		[Embed(source = "/assets/sprites/Pot.png")] public static var Pot:Class;
 		[Embed(source = "/assets/sprites/WallShelf.png")] public static var WallShelf:Class;
-		[Embed(source = "/assets/sprites/DishCover.png")] public static var DishCover:Class;
+		[Embed(source = "/assets/sprites/DishCover2.png")] public static var DishCover:Class; //Changed from none to 2
 		
+	
 		
+		//Extra ballroom sprites
+		[Embed(source = "/assets/sprites/shortTable.png")] public static var shortTable:Class;
+		[Embed(source = "/assets/sprites/LongTable.png")] public static var LongTable:Class;
+		[Embed(source = "/assets/sprites/wallTorch2.png")] public static var wallTorch2:Class;
+		[Embed(source = "/assets/sprites/ballroomRug3.png")] public static var ballroomRug2:Class;
+		[Embed(source = "/assets/sprites/ballroomPillow.png")] public static var ballroomPillow:Class;
+		[Embed(source = "/assets/sprites/ballroomPillow2.png")] public static var ballroomPillow2:Class;
+		[Embed(source = "/assets/sprites/ballroomWindow.png")] public static var ballroomWindow:Class;
+		[Embed(source = "/assets/sprites/ballroomChandelier.png")] public static var ballroomChandelier:Class;
+
+
 		// tiles
 		[Embed(source = "/assets/tiles/celesteTileset.png")] public static var celesteTileset:Class;
 		[Embed(source = "/assets/tiles/celesteFloorTilesheetFin.png")] public static var celesteFloorTilesheetFin:Class;
@@ -157,12 +191,38 @@ package
 		
 		//lights
 		[Embed(source="/assets/light.png")] public static var LightImageClass:Class;
+		
+		[Embed(source="/assets/light-6.png")] public static var LightCatNone:Class;
+		[Embed(source="/assets/light-p55.png")] public static var LightCatLarge:Class;
+		[Embed(source="/assets/light-p45.png")] public static var LightCatMed:Class;
+		[Embed(source="/assets/light-p35.png")] public static var LightCatSmall:Class;
+
+		//5, 45, 4, 3
+		[Embed(source="/assets/light-p5.png")] public static var LightRatNone:Class;
+		[Embed(source="/assets/light-p4.png")] public static var LightRatMed:Class;
+		[Embed(source="/assets/light-p3.png")] public static var LightRatSmall:Class;
+
+
+
 		[Embed(source="/assets/SquareLight.png")] public static var SquareLightImageClass:Class;
-		[Embed(source="/assets/SharkLight.png")] public static var SharkLightImage:Class;
+		
+		
+		[Embed(source="/assets/SharkLight-p6-4.png")] public static var SharkLightImage:Class;
+		
+		[Embed(source="/assets/SharkLight-p55-38.png")] public static var SharkLightLarge:Class;
+		[Embed(source="/assets/SharkLight-p5-35.png")] public static var SharkLightMed:Class;
+		[Embed(source="/assets/SharkLight-p4-3.png")] public static var SharkLightSmall:Class;
+
+
+		[Embed(source="/assets/SharkLight-p6-4Turn.png")] public static var SharkLightImageTurn:Class;
+		[Embed(source="/assets/SharkLight-p55-38Turn.png")] public static var SharkLightLargeTurn:Class;
+		[Embed(source="/assets/SharkLight-p5-35Turn.png")] public static var SharkLightMedTurn:Class;
+		[Embed(source="/assets/SharkLight-p4-3Turn.png")] public static var SharkLightSmallTurn:Class;
 		
 		//Keys
 		[Embed(source="/assets/Key.png")] public static var KEY:Class;
 		[Embed(source="/assets/Key2.png")] public static var KEY2:Class;
+		[Embed(source="/assets/sprites/Click.png")] public static var CLICK:Class;
 		
 		//LOCKED DOOR
 		
@@ -184,7 +244,14 @@ package
 		[Embed(source="/assets/RatPortrait.png")] public static var RAT_HEAD:Class;
 		[Embed(source="/assets/HeadCookPortrait.png")] public static var HEAD_COOK_HEAD:Class;
 		[Embed(source="/assets/HatlessRatPortrait.png")] public static var HATLESS_COOK_HEAD:Class;
+		[Embed(source="/assets/blindRatPortrait.png")] public static var BLIND_HEAD:Class;
 		[Embed(source="/assets/PrisonerFace.png")] public static var PRISONER_HEAD:Class;
+
+		[Embed(source="/assets/PrisonerFaceFlip.png")] public static var PRISONER_HEAD_FLIP:Class;
+		
+		[Embed(source="/assets/SharkPortrait.png")] public static var SHARK_HEAD:Class;
+		[Embed(source="/assets/EvilDameFace.png")] public static var EVIL_CELESTE_HEAD:Class;
+		[Embed(source="/assets/walrusPortrait3.png")] public static var WALRUS_HEAD:Class;
 		
 		//Drunk Cat BITS
 		[Embed(source="/assets/sprites/DrunkCat.png")] public static var DrunkCat:Class;
@@ -200,7 +267,7 @@ package
 		[Embed(source = "/assets/sprites/openPipe2.png")] public static var OPEN_PIPE:Class;
 		[Embed(source = "/assets/sprites/openPipe2.png")] public static var OPEN_PIPE_FLIP:Class;
 		[Embed(source = "/assets/sprites/openingPipe2.png")] public static var CLOSED_PIPE:Class;
-		[Embed(source = "/assets/sprites/pipeExitAnimation.png")] public static var PIPE_EXIT:Class;
+		[Embed(source = "/assets/sprites/pipe2_exitingAnimation.png")] public static var PIPE_EXIT:Class;
 		[Embed(source = "/assets/sprites/openingPipe2.png")] public static var CLOSED_PIPE_FLIP:Class;
 		
 		//Menu Stuff
@@ -224,6 +291,9 @@ package
 		//Menu in Between Stuff
 		[Embed(source = "/assets/levelBetween/ContinueButton.png")] public static var CONTINUE_BUTTON:Class;
 		[Embed(source = "/assets/levelBetween/StartButton.png")] public static var START_BUTTON:Class;
+		[Embed(source = "/assets/levelBetween/StartButtonHighlight.png")] public static var START_BUTTON_HIGHLIGHT:Class;
+		[Embed(source = "/assets/levelBetween/NewGameButton.png")] public static var NEW_GAME_BUTTON:Class;
+		[Embed(source = "/assets/levelBetween/NewGameButtonHighlight.png")] public static var NEW_GAME_BUTTON_HIGHLIGHT:Class;
 		[Embed(source = "/assets/levelBetween/ContinueButtonHighlight.png")] public static var CONTINUE_BUTTON_HIGHLIGHT:Class;
 		[Embed(source = "/assets/levelBetween/SaveQuitButton.png")] public static var SAVE_BUTTON:Class;
 		[Embed(source = "/assets/levelBetween/SaveQuitButtonHighlight.png")] public static var SAVE_BUTTON_HIGHLIGHT:Class;
@@ -231,15 +301,19 @@ package
 		[Embed(source = "/assets/levelBetween/LevelBetweenScreenBelow.png")] public static var SCREEN_BELOW:Class;
 		
 		//Music
-		[Embed(source = "/assets/mp3/dungeon1_loop.mp3")] public static var DUNGEON_SONG:Class;
-		[Embed(source = "/assets/mp3/kitchen_intro_loop.mp3")] public static var KITCHEN_INTRO:Class;
-		[Embed(source = "/assets/mp3/kitchen_loop1.mp3")] public static var KITCHEN_SONG1:Class;
-		[Embed(source = "/assets/mp3/kitchen_loop2.mp3")] public static var KITCHEN_SONG2:Class;
-		[Embed(source = "/assets/mp3/kitchen_loop3.mp3")] public static var KITCHEN_SONG3:Class;
-		[Embed(source = "/assets/mp3/kitchen_loop4.mp3")] public static var KITCHEN_SONG4:Class;
+		[Embed(source = "/assets/mp3/dungeon1.mp3")] public static var DUNGEON_SONG:Class;
+		//[Embed(source = "/assets/mp3/kitchen_intro_loop.mp3")] public static var KITCHEN_INTRO:Class;
+		[Embed(source = "/assets/mp3/kitchen1.mp3")] public static var KITCHEN_SONG:Class;
+		[Embed(source = "/assets/mp3/ballroom1.mp3")] public static var BALLROOM_SONG:Class;
+		[Embed(source = "/assets/mp3/walrus_king_lair1.mp3")] public static var SANCTUM_SONG:Class;
+		[Embed(source = "/assets/mp3/walrus_brain.mp3")] public static var BRAIN_SONG:Class;
+		[Embed(source = "/assets/mp3/generalMenuMusic.mp3")] public static var MENU_SONG:Class;
+		
+
 		
 		//Sounds
 		[Embed(source = "/assets/compressed_sfx/FX/water_pickup3_v2.mp3")] public static var WATER_PICKUP:Class;
+		[Embed(source = "/assets/compressed_sfx/FX/water_deposit3b.mp3")] public static var WATER_DEPOSIT:Class;
 		[Embed(source = "/assets/compressed_sfx/FX/zipper.mp3")] public static var CLOTHES_NOISE:Class;
 		[Embed(source = "/assets/compressed_sfx/FX/key_pickup1.mp3")] public static var KEY_PICKUP:Class;
 		[Embed(source = "/assets/compressed_sfx/FX/door_unlock2v2.mp3")] public static var UNLOCK_NOISE:Class;
@@ -275,6 +349,54 @@ package
 		[Embed(source = "/assets/compressed_sfx/VO/catGuard/cat_guard_jabber.mp3")] public static var CAT_GUARD_JABBER:Class;
 		[Embed(source = "/assets/compressed_sfx/VO/catGuard/cat_guard_sayso.mp3")] public static var CAT_GUARD_SAYSO:Class;
 		
+		//Rat Guard Sounds
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_angry_jabber.mp3")] public static var RAT_ANGRY:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_jeering.mp3")] public static var RAT_JEER:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_lost.mp3")] public static var RAT_LOST:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_sighted.mp3")] public static var RAT_SIGHTED: Class;
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_talking.mp3")] public static var RAT_TALKING:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/ratChef/rat_thinking_surprise.mp3")] public static var RAT_SURPRISE:Class;
+		
+		//Shark Waiter Sounds
+		[Embed(source = "/assets/compressed_sfx/VO/sharkWaiter/shark_waiterAgree.mp3")] public static var WAITER_AGREE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkWaiter/shark_waiterCHOMP3.mp3")] public static var WAITER_CHOMP:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkWaiter/shark_waiterHappy.mp3")] public static var WAITER_HAPPY:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkWaiter/shark_waiterJabber.mp3")] public static var WAITER_JABBER:Class;
+		
+		//Shark Lady Sounds
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_angryChomp.mp3")] public static var SHARK_ANGRY_CHOMP:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_HammerAgreeAngry.mp3")] public static var SHARK_ANGRY_AGREE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerConvo.mp3")] public static var SHARK_CONVO:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerDelight.mp3")] public static var SHARK_DELIGHT:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerJabber.mp3")] public static var SHARK_JABBER:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerNag.mp3")] public static var SHARK_NAG:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerOfCourse.mp3")] public static var SHARK_OFCOURSE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerPlease.mp3")] public static var SHARK_PLEASE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerPout.mp3")] public static var SHARK_POUT:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerPowah.mp3")] public static var SHARK_POWAH:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerSophisticated.mp3")] public static var SHARK_SOPHISTICATED:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_hammerWhine.mp3")] public static var SHARK_WHINE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_lost.mp3")] public static var SHARK_LOST:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/sharkLady/shark_sighted.mp3")] public static var SHARK_SIGHTED:Class;
+		
+		//WALRUS KING SOUNDS
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk1_ho.mp3")] public static var WALRUS_HO:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk2_oi.mp3")] public static var WALRUS_OI:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk3_grunt.mp3")] public static var WALRUS_GRUNT:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk4_ponder.mp3")] public static var WALRUS_PONDER:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk5_intrigue.mp3")] public static var WALRUS_INTRIGUE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk6_oh.mp3")] public static var WALRUS_OH:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk9_hoi.mp3")] public static var WALRUS_HOI:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk11_hoi.mp3")] public static var WALRUS_HOI_QUESTION:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk12_phrase.mp3")] public static var WALRUS_GRUMPY:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk13_phrase.mp3")] public static var WALRUS_COMMAND:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk14_phrase.mp3")] public static var WALRUS_AGREE:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk15_phrase.mp3")] public static var WALRUS_COMMAND2:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk16_phrase.mp3")] public static var WALRUS_COMMAND3:Class;
+		[Embed(source = "/assets/compressed_sfx/VO/walrus/wk17_the_water_is_mine_japanese.mp3")] public static var WALRUS_MY_WATER:Class;
+
+
+		
 		
 		//Prisoner Sounds
 		[Embed(source = "/assets/compressed_sfx/VO/prisoners/fish.mp3")] public static var FISH_SOUND:Class;
@@ -286,6 +408,17 @@ package
 		[Embed(source = "/assets/sprites/Fish.png")] public static var FISH:Class;
 		[Embed(source = "/assets/sprites/WaiterPortrait.png")] public static var WAITER_PORTRAIT:Class;
 		[Embed(source = "/assets/sprites/SharkWaiter.png")] public static var WAITER_SPRITE:Class;
+		
+		//Ballroom stuff
+		[Embed(source = "/assets/sprites/SharkeesianSprite.png")] public static var SHARKEESIAN:Class;
+		[Embed(source = "/assets/sprites/flappyBirdSprite.png")] public static var FLAPPY:Class;
+		[Embed(source = "/assets/sprites/moogostSprite.png")] public static var MOOGOST:Class;
+		[Embed(source = "/assets/sprites/SealiaAnimated.png")] public static var SEALIA:Class;
+		[Embed(source = "/assets/sprites/WaterFount.png")] public static var FOUNT:Class;
+		[Embed(source = "/assets/SharkeesianPortrait.png")] public static var SHARKEESIAN_PORTRAIT:Class;
+		[Embed(source = "/assets/MoogostPortrait.png")] public static var MOOGOST_PORTRAIT:Class;
+		[Embed(source = "/assets/flappyPortrait.png")] public static var FLAPPY_PORTRAIT:Class;
+		[Embed(source = "/assets/sealiaPortrait.png")] public static var SEALIA_PORTRAIT:Class;
 		
 		
 		//FONT

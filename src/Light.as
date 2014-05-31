@@ -21,6 +21,10 @@ package {
       
     }
     
+    public function setSprite(spriteName:Class):void{
+    	super.loadGraphic(spriteName);
+    }
+    
     //Set the color automatically
     public function setColor(_color:uint=0xFFFFFFFF):void
     {
@@ -153,12 +157,12 @@ package {
     }
    
  
-    override public function draw():void {
-  	  var screenXY:FlxPoint = getScreenXY();
+		override public function draw():void {
+		  var screenXY:FlxPoint = getScreenXY();
  
- 	  darkness.stamp(this,
-      screenXY.x - this.width / 2,
-      screenXY.y - this.height / 2);
-	}
+		  darkness.stamp(this,
+		  screenXY.x - this.width / 2,
+		  screenXY.y - this.height / 2);
+		}
 	}
 }

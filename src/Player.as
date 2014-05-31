@@ -16,7 +16,7 @@ package
 	
 		//The number of drops the player is carrying
 		private var numDrops: int;
-		private var MAX_DROPS: int= 25;
+		private var MAX_DROPS: int= 10;
 		
 		//FOR DEBUGGING
 		private var num: Number;
@@ -116,6 +116,17 @@ package
 			groupToAddTo.add(bodySprite);
 			//Head
 			groupToAddTo.add(headSprite);
+		}
+		
+		public function setCurrOutfitByType(outfitType:uint, outfitSet:uint):void
+		{
+		
+			var outfit:PlayerOutfit = outfitHandler.setCurrOutfitByType(outfitType,outfitSet);
+			
+			if(outfit!=null)
+			{
+				setNewOutfit(outfit.getOutfitType(), outfit.getOutfit());
+			}
 		}
 		
 		public function keepBodyTogether(): void
@@ -241,6 +252,13 @@ package
 			}
 		}
 		
+		public function playAnimation(animationName:String):void
+		{
+			mySprite.play(animationName);
+			bodySprite.play(animationName);
+			headSprite.play(animationName);
+		}
+		
 		/**
 		 * Check for user input to control this entity
 		 */
@@ -292,27 +310,27 @@ package
 			var maxDropNum: Number = MAX_DROPS;
 			var dropNum : Number = numDrops;
 				
-			num = (maxDropNum - (dropNum))/maxDropNum;
-			num+=0.2; //So you can always move at least a little
+			//num = (maxDropNum - (dropNum))/maxDropNum;
+			//num+=0.2; //So you can always move at least a little
 			
-			maxVelocity = new FlxPoint(runSpeed*num, runSpeed*num);
+			maxVelocity = new FlxPoint(runSpeed, runSpeed);
 			
 			// check final movement direction
 			if (movement.x < 0)
 			{
-				moveLeft(2*num);
+				moveLeft(2);
 			}
 			else if (movement.x > 0)
 			{
-				moveRight(2*num);
+				moveRight(2);
 			}
 			if (movement.y < 0)
 			{
-				moveUp(2*num);
+				moveUp(2);
 			}
 			else if (movement.y > 0)
 			{
-				moveDown(2*num);
+				moveDown(2);
 			}
 		}
 		

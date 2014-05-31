@@ -5,17 +5,18 @@ package
 	//Called HideableObject as in the character can hide within it
 	public class HideableObject extends FlxSprite
 	{
-		private var timeToEnter: Number; //The amount of time, in seconds, it takes to enter this hiding space
-		private var timeToExit: Number; //Amount of time, in seconds, it takes to exit this hiding space
+		protected var timeToEnter: Number; //The amount of time, in seconds, it takes to enter this hiding space
+		protected var timeToExit: Number; //Amount of time, in seconds, it takes to exit this hiding space
 		
-		private var forcesOut: Boolean;
+		protected var forcesOut: Boolean;
 		
 		//Original image
-		private var origImage:Class;
+		protected var origImage:Class;
 		
 		//In Use Image
-		private var inUseImage: Class;
+		protected var inUseImage: Class;
 		
+		public var isAPlant: Boolean;		
 		//CONSTRUCTOR
 		
 		public function HideableObject(X:Number, Y:Number, imageOfObject: Class, _forcesOut: Boolean=false, _timeToEntry: Number=0.75, _timeToExit :Number=0.75
@@ -36,7 +37,7 @@ package
 						17 // height of each frame (in pixels)
 				);
 				
-				addAnimation("boil", [0,1,2,3],15,true);
+				addAnimation("boil", [0,1,2,3,1,0,2],(14+(Math.random()*3)),true);
 				play("boil");
 			}
 			
@@ -165,7 +166,9 @@ package
 						17 // height of each frame (in pixels)
 				);
 				
-				addAnimation("boil", [0,1,2,3],15,true);
+				
+				
+				addAnimation("boil", [0,1,2,3,1,0,2],(14+(Math.random()*3)),true);
 				play("boil");
 				
 				y+=6;

@@ -7,7 +7,7 @@ package
 		private var opened:Boolean;
 		private var timeToOpen: Number;
 		private var flipped:Boolean;
-	
+		private var exiting:Boolean;
 	
 		public function SavePoint(X:Number,  Y:Number,  _flipped:Boolean=false,  _timeToOpen:Number=1 )
 		{
@@ -27,9 +27,11 @@ package
 						Assets.OPEN_PIPE, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						16, // width of each frame (in pixels)
-						23 // height of each frame (in pixels)
+						22, // width of each frame (in pixels)
+						28 // height of each frame (in pixels)
 					);
+					
+					this.y+=5;
 				}
 				else
 				{
@@ -37,12 +39,12 @@ package
 							Assets.CLOSED_PIPE, // image to use
 							true, // animated
 							false, // don't generate "flipped" images since they're already in the image
-							16, // width of each frame (in pixels)
-							23 // height of each frame (in pixels)
+							22, // width of each frame (in pixels)
+							33 // height of each frame (in pixels)
 					);
 					//Set up animations
-					addAnimation("closed", [1]);
-					addAnimation("opening", [1,2,3,1,2,3,1,2,3,4,5,6],12);
+					addAnimation("closed", [0]);
+					addAnimation("opening", [0,1,2,0,1,2,0,1,2,3,4,5],12);
 		
 					play("closed");
 				}	
@@ -56,9 +58,11 @@ package
 						Assets.OPEN_PIPE_FLIP, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						16, // width of each frame (in pixels)
-						23 // height of each frame (in pixels)
+						22, // width of each frame (in pixels)
+						28 // height of each frame (in pixels)
 					);
+					
+					this.y+=5;
 				}
 				else
 				{
@@ -66,12 +70,12 @@ package
 							Assets.CLOSED_PIPE_FLIP, // image to use
 							true, // animated
 							false, // don't generate "flipped" images since they're already in the image
-							16, // width of each frame (in pixels)
-							23 // height of each frame (in pixels)
+							22, // width of each frame (in pixels)
+							33 // height of each frame (in pixels)
 					);
 					//Set up animations
-					addAnimation("closed", [1]);
-					addAnimation("opening", [1,2,3,1,2,3,1,2,3,4,5,6],12);
+					addAnimation("closed", [0]);
+					addAnimation("opening", [0,1,2,0,1,2,0,1,2,3,4,5],12);
 		
 					play("closed");
 				}
@@ -96,6 +100,26 @@ package
 		{
 			play("opening");
 		}
+		
+		
+		public function loadExit(): void
+		{
+			opened=true;
+			
+			loadGraphic(
+					Assets.PIPE_EXIT, // image to use
+					true, // animated
+					false, // don't generate "flipped" images since they're already in the image
+					22, // width of each frame (in pixels)
+					33 // height of each frame (in pixels)
+			);
+			//Set up animations
+			//addAnimation("exiting", [0,0,1,1,2,2,3,3,4,5,6,7,7,8],15);
+			addAnimation("exiting", [0,1,1,2,3,4,5,6,7,8],13);
+			
+			play("exiting");
+			exiting=true;
+		}
 	
 		public function openSavePoint(): void
 		{
@@ -107,12 +131,12 @@ package
 						Assets.OPEN_PIPE, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						16, // width of each frame (in pixels)
-						23 // height of each frame (in pixels)
+						22, // width of each frame (in pixels)
+						28 // height of each frame (in pixels)
 				);
 			
 				//Since we go from 19 to 24
-				//this.y+=5;
+				this.y+=5;
 			}
 			else
 			{
@@ -120,13 +144,39 @@ package
 						Assets.OPEN_PIPE_FLIP, // image to use
 						false, // animated
 						false, // don't generate "flipped" images since they're already in the image
-						16, // width of each frame (in pixels)
-						23 // height of each frame (in pixels)
+						22, // width of each frame (in pixels)
+						33 // height of each frame (in pixels)
 				);
 				
 				//this.x+=1;
 			
 			}
+		}
+		
+		public function exitThing():Boolean 
+		{
+		
+			if(exiting)
+			{
+				if(this.finished)
+				{
+					loadGraphic(
+						Assets.OPEN_PIPE, // image to use
+						false, // animated
+						false, // don't generate "flipped" images since they're already in the image
+						22, // width of each frame (in pixels)
+						28 // height of each frame (in pixels)
+					);
+			
+					this.y+=5; //4 instead of 5
+					
+					exiting = false;
+					
+					return true;
+				}
+			}
+			
+			return false;
 		}
 	}
 	

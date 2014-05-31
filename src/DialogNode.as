@@ -35,7 +35,8 @@ package
 		protected var endOfConversation: Boolean=false;
 		protected var conversationToSave:uint;
 		
-		
+		protected var requiredOutfit:uint;
+		protected var requiresAnOutfit:Boolean=false;
 		
 		
 		public function DialogNode(_nextNode:DialogNode, _faceToDisplay:uint, _displayText:String, _soundToPlay: Class=null, _afterEnd: uint= 0,
@@ -56,6 +57,28 @@ package
 			
 			soundToPlay=_soundToPlay;
 		}
+		
+		public function setRequiredOutfit(outfit:uint):void
+		{
+			requiredOutfit = outfit;
+			requiresAnOutfit=true;
+		}
+		
+		public function playerHasCorrectOutfit(outfitHandler:OutfitHandler):Boolean
+		{
+			if(!requiresAnOutfit)
+			{
+				return true;
+			}
+			else
+			{
+				return outfitHandler.getCurrLegsOutfitSet()==requiredOutfit && 
+				outfitHandler.getCurrBodyOutfitSet() == requiredOutfit &&
+				outfitHandler.getCurrHeadOutfitSet() == requiredOutfit;
+			}
+		}
+		
+		
 		
 		
 		public function getSoundToPlay(): Class

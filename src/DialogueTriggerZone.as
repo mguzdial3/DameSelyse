@@ -29,7 +29,7 @@ package
 		//Pass in player and Inventory for your descendants so you can check both for proper stuff
 		public function triggerDialogueZone(player: Player=null, inventory:Inventory=null): DialogNode
 		{
-			if(myDialogNode.canTransfer(inventory))
+			if(myDialogNode!=null && myDialogNode.canTransfer(inventory) && myDialogNode.playerHasCorrectOutfit(player.getOutfitHandler()))
 			{
 				activated = true;
 				return myDialogNode;
@@ -48,6 +48,11 @@ package
 		public function getRepeatable():Boolean
 		{
 			return repeatable;
+		}
+		
+		public function getTextToDisplay():String
+		{
+			return myDialogNode.getTextToDisplay();
 		}
 		
 		

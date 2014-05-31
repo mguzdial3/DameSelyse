@@ -27,6 +27,7 @@ package
 		public function TopDownEntity(spriteSheet: Class,_size: FlxPoint, frameSize:FlxPoint, X:Number = 100, Y:Number = 100, _runSpeed:int=60):void {
 			super(X, Y);
 			
+			
 			size = _size;
 			makeGraphic(size.x, size.y, 0xFFFF0000); 
 			alpha = 0;//Comment off this line to see the tiny white box collider for this entity
@@ -102,6 +103,9 @@ package
 				super.update();
 			}
 		}
+		
+		
+
 		
 		public function hardStop():void
 		{
@@ -236,6 +240,11 @@ package
 				acceleration.y = -runSpeed * 4*modifier; // accelerate to top speed in 1/4 of a second
 			}
 		
+		}
+		
+		public function getCurrPaused(): Boolean 
+		{
+			return currPaused;
 		}
 		
 		/**

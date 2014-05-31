@@ -1,6 +1,8 @@
 package 
 {
+	import flash.events.Event;
 	import org.flixel.*;
+	
 	
 	public class TopDownLevel extends FlxGroup
 	{
@@ -24,6 +26,9 @@ package
 		 */
 		public var player:Player;
 		public var playerStart:FlxPoint;
+		
+		
+		protected var enemiesHitWalls:Boolean=true;
 		
 		
 		/**
@@ -114,6 +119,7 @@ package
 		protected var savePoints: Vector.<SavePoint>;//List of all save points
 		protected var saveTimer: Number;//Amount of time till we're done opening a closed save point
 		protected var saveIndex: int; //The index of the save we're currently working with
+		
 		//Change this line to reset save stuff
 		private var resetSave: Boolean=false;
 
@@ -132,8 +138,8 @@ package
 		//Question Gameplay countdown sound
 		protected var questioningSound: FlxSound;
 		
-		private var cameraScrolling:Boolean=false;
-		private var cameraSpeed:int=4;
+		protected var cameraScrolling:Boolean=true;
+		private var cameraSpeed:int=2;
 
 		//Max Drops
 		private var maxDrops:int;
@@ -141,6 +147,11 @@ package
 		//Seconds
 		protected var currSeconds:Number;
 		
+		
+		//For exiting a pipe
+		protected var exiting: Boolean=false;
+		
+		private var lastSavedTimer:Number=0;
 		
 		/**
 		 * Constructor
@@ -151,9 +162,7 @@ package
 		public function TopDownLevel( levelSize:FlxPoint, tileSize:FlxPoint, _playerStart: FlxPoint, _levelName: String="NAN"):void 
 		{
 			super();
-			
 			levelName = _levelName;
-			
 			FlxG.mouse.hide();
 			reloadThisLevel=false;
 			
@@ -166,7 +175,6 @@ package
 			this.wallGroup = new FlxGroup();
 			this.foreGroundGroup = new FlxGroup();
 			this.guiGroup = new FlxGroup();
-			
 			
 			
 			this.playerStart=_playerStart;
@@ -187,6 +195,11 @@ package
 			questioningSound.loadEmbedded(Assets.COUNTDOWN_NOISE);
 			
 			
+			printText2 =new FlxText(20, 40, 300, "Print");
+			printText2.alignment = "right";
+			printText2.scrollFactor = new FlxPoint(0, 0);
+			printText2.text = "Print2";
+			
 			// create the level
 			this.create();
 			
@@ -194,10 +207,7 @@ package
 			saveTimer=0;
 			
 			
-			printText2 =new FlxText(20, 40, 300, "Print");
-			printText2.alignment = "right";
-			printText2.scrollFactor = new FlxPoint(0, 0);
-			printText2.text = "Print2";
+			
 			//guiGroup.add(printText2);
 			
 			if(checkSaveSetup())
@@ -244,7 +254,7 @@ package
 			printText.alignment = "right";
 			printText.scrollFactor = new FlxPoint(0, 0);
 			printText.text = "";
-			guiGroup.add(printText);
+			//guiGroup.add(printText);
 			debugString = "Debug";
 			
 			//ITEM BOX
@@ -267,7 +277,6 @@ package
 			hidingTimer=0;
 			
 			
-			
 			//Potentially particle effect to outfits more obvious
 
 			//MiniMap
@@ -288,10 +297,14 @@ package
 				FlxG.camera.scroll.x = player.x-100;
 				FlxG.camera.scroll.y = player.y-100;
 			}
+			
 		}
 		
 		
-		
+		public function startMusic(): void
+		{
+			
+		}
 		
 
 		public function reloadLevel(): void
@@ -307,6 +320,8 @@ package
 		{
 			return wallGroup[0];
 		}
+		
+		
 		
 		/**
 		 * Create the whole level, including all sprites, maps, blocks, etc
@@ -327,6 +342,8 @@ package
 			
 			createGUI();
 			createCamera();
+			
+			//TESTING
 			
 		}
 		
@@ -362,6 +379,19 @@ package
 		public function transferLevel(): TopDownLevel
 		{
 		
+		
+			
+			if(FlxG.keys.justReleased("N"))
+			{
+				if(FlxG.music!=null)
+				{
+					FlxG.music.stop();
+				}
+				
+				return getNextLevel();
+			}
+			
+			
 		
 		
 			return null;
@@ -468,7 +498,10 @@ package
 			||saver.data.timesCaught==null 
 			|| saver.data.conversationsHad==null
 			|| saver.data.levelTimeSeconds==null
-			|| saver.data.levelMinutes==null)
+			|| saver.data.levelMinutes==null
+			|| saver.data.currOutfitHead == null
+			|| saver.data.currOutfitBody== null
+			|| saver.data.currOutfitLegs == null)
 			|| resetSave);
 		}
 		
@@ -494,7 +527,9 @@ package
 			saver.data.currSavePointIndex = -1; //Represents the current open save point index
 			saver.data.dropsGrabbed = new Array();
 			
-			
+			saver.data.currOutfitHead=0;
+			saver.data.currOutfitBody=0;
+			saver.data.currOutfitLegs=0;
 			
 			saver.data.headOutfitGot=false;
 			saver.data.bodyOutfitGot=false;
@@ -512,9 +547,19 @@ package
 			saver.data.playerX=player.x; 
 			saver.data.playerY=player.y; 
 			saver.data.numDrops+= player.getDrops();
+			
+			if(player.getDrops()!=0)
+			{
+				FlxG.play(Assets.WATER_DEPOSIT);
+			}
 			player.clearDrops();
 			saver.data.currSavePointIndex = saveIndex;
 			
+			//Save current outfit
+			
+			saver.data.currOutfitHead=player.outfitHandler.getCurrHeadOutfitSet();
+			saver.data.currOutfitBody=player.outfitHandler.getCurrBodyOutfitSet();
+			saver.data.currOutfitLegs=player.outfitHandler.getCurrLegsOutfitSet();
 			
 			
 			var i: int;
@@ -571,10 +616,25 @@ package
 				
 			if(saver.data.currSavePointIndex!=-1)
 			{
-				savePoints[saver.data.currSavePointIndex].openSavePoint();
+				savePoints[saver.data.currSavePointIndex].loadExit();
 				
 				FlxG.play(Assets.RESPAWN_NOISE);
+				
+				exiting = true;
+				player.setHiding(true);
+				player.setPaused(true);
+				
+				player.x =savePoints[saver.data.currSavePointIndex].x+5;
+				player.y =savePoints[saver.data.currSavePointIndex].y+32;
+				
+				
 			}
+			
+			//Change to different outfit			
+			player.setCurrOutfitByType(PlayerOutfit.HEAD_OUTFIT,saver.data.currOutfitHead);
+			player.setCurrOutfitByType(PlayerOutfit.BODY_OUTFIT,saver.data.currOutfitBody);
+			player.setCurrOutfitByType(PlayerOutfit.LEGS_OUTFIT,saver.data.currOutfitLegs);
+			
 			
 			var i:int=0;
 			var j:int = 0;
@@ -611,11 +671,25 @@ package
 		
 		override public function update():void {
 			super.update();
-			
-			//printText2.text = "Sec"+int(currSeconds).toString();
+		
+		
+			if(FlxG.keys.justReleased("R"))
+			{
+				cameraSpeed++;
+			}
+			if(FlxG.keys.justReleased("F"))
+			{
+				cameraSpeed--;
+			}
+		
 			
 			//Increment currSeconds
 			currSeconds+=FlxG.elapsed;
+			
+			if(lastSavedTimer>0)
+			{
+				lastSavedTimer-=FlxG.elapsed;
+			}
 			
 			
 			//printText2.text = "PlayerStart: "+int(player.x)+", "+int(player.y);
@@ -680,37 +754,66 @@ package
 			//debugText.x = FlxG.camera.scroll.x;
 			//debugText.y =  FlxG.camera.scroll.y;
 			
+			//TEST
+			//TODO DELETE THIS
 			//Cheat bit for quick save destroying
 			if (FlxG.keys.pressed("X"))
 			{
 				saver.erase();
 			}
 			
+			//FOR EXITING PIPE
+			if(exiting)
+			{
+				if(savePoints[saver.data.currSavePointIndex].exitThing())
+				{
+					player.setHiding(false);
+					player.setPaused(false);
+					player.playAnimation("idle_left");
+					exiting =false;
+					
+					if(saver.data.currOutfitHead!=0 || saver.data.currOutfitBody!=0
+					|| saver.data.currOutfitLegs!=0)
+					{
+						//Play clothes changing noise
+						FlxG.play(Assets.CLOTHES_NOISE);
+					}
+				}
+			}
+			
 			
 			if(currState==NORMAL_GAMEPLAY)
 			{
+				//trace("normal gameplay");
 				normalGameplay();
 			}
 			else if(currState==QUESTION_TIME)
 			{
+				//trace("question gameplay");
 				questionGameplay();
 			}
 			else if(currState==INVENTORY_GAMEPLAY)
 			{
+				//trace("inventory gameplay");
 				inventoryGameplay();
 			}
 			else if(currState==HIDING_GAMEPLAY)
 			{
+				//trace("hiding gameplay");
 				hiddenNormalGameplay();
 			}
 			else if(currState==SAVING_GAMEPLAY)
 			{
+				//trace("saving gameplay");
 				savingGameplay();
 			}
 			else if(currState==DIALOG_GAMEPLAY)
 			{
+				//trace("dialog gameplay");
 				conversationGameplay();
 			}
+			
+			
 		}
 		
 		
@@ -718,10 +821,12 @@ package
 		protected function savingGameplay():void
 		{
 			//ENEMY CONTROLLER
-			FlxG.collide(enemyController, player);
-			FlxG.collide(enemyController, wallGroup);
-			FlxG.collide(enemyController, objectGroup);
-			
+			enemyController.enemyCollideSprite(player.mySprite);
+			if(enemiesHitWalls)
+			{
+				enemyController.enemyCollideGroup(wallGroup);
+			}
+			enemyController.enemyCollideGroup(objectGroup);
 			
 			
 				
@@ -738,6 +843,7 @@ package
 					saveTimer=0;
 					setGameState(NORMAL_GAMEPLAY);
 					player.setPaused(false);
+					player.setHiding(false);
 				}
 				else
 				{
@@ -764,8 +870,8 @@ package
 		protected function hiddenNormalGameplay():void
 		{	
 			//ENEMY CONTROLLER
-			FlxG.collide(enemyController, wallGroup);
-			FlxG.collide(enemyController, objectGroup);
+			enemyController.enemyCollideGroup(wallGroup);
+			enemyController.enemyCollideGroup(objectGroup);
 			
 			//THIS MOVES THE ENEMIES
 			var enemyMessage: int = enemyController.commandEnemies(this);
@@ -777,7 +883,7 @@ package
 			player.x=hidingLocation.x;
 			player.y = hidingLocation.y;
 			
-			if(!allKeysUp)
+			if(!allKeysUp && !hideableObjects[hideableObjectIndex].getForcesOut())
 			{
 				if (!FlxG.keys["LEFT"] && !FlxG.keys["RIGHT"]
 					&& !FlxG.keys["UP"] && !FlxG.keys["DOWN"])
@@ -833,11 +939,18 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x-player.width-3;
 						
-							hidingLocation.y = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
+							//potentialY = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
+						
+						
+							if(hideableObjects[hideableObjectIndex].getForcesOut())
+							 {
+								//potentialY+=4;
+							 }
 						
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
+								//hidingLocation.y = potentialY;
 							}
 						
 						}
@@ -854,10 +967,23 @@ package
 							//Check to make sure there isn't a wall there
 							potentialX= hideableObjects[hideableObjectIndex].x+hideableObjects[hideableObjectIndex].width+3;
 						//TESTING
-						hidingLocation.y = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
+						 	//potentialY= hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height*0.75;
+						 
+						 if(hideableObjects[hideableObjectIndex].getForcesOut())
+						 {
+						 	//potentialY+=4;
+						 }
+						 
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
+							
+							
 								hidingLocation.x=potentialX;
+								//hidingLocation.y = potentialY;
+							}
+							else
+							{
+								printText2.text = "Can't be here?";
 							}
 							
 						}
@@ -893,7 +1019,20 @@ package
 							//Check to make sure there isn't a wall there
 							 potentialY= hideableObjects[hideableObjectIndex].y-player.height-1;
 						
-							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							var currY:int = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2;
+							var canDo: Boolean = true;
+							
+							while(currY>potentialY && canDo)
+							{
+								if(!canHavePlayerAt(hidingLocation.x, currY))
+								{
+									canDo=false;
+								}
+								currY--;
+							
+							}
+							
+							if(canDo)
 							{
 								hidingLocation.y=potentialY;
 							}
@@ -976,7 +1115,7 @@ package
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
-								hidingLocation.y=hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height-player.mySprite.height/4;
+								//hidingLocation.y=hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height-player.mySprite.height/4;
 							}
 						
 						}
@@ -996,7 +1135,7 @@ package
 							if(canHavePlayerAt(potentialX, hidingLocation.y))
 							{
 								hidingLocation.x=potentialX;
-								hidingLocation.y=hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height-player.mySprite.height/4;
+								//hidingLocation.y=hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height-player.mySprite.height/4;
 							}
 						}
 						
@@ -1015,7 +1154,7 @@ package
 							if(canHavePlayerAt(hidingLocation.x, potentialY))
 							{
 								hidingLocation.y=potentialY;
-								hidingLocation.x=hideableObjects[hideableObjectIndex].x;
+								//hidingLocation.x=hideableObjects[hideableObjectIndex].x;
 							}
 						
 						}
@@ -1024,18 +1163,30 @@ package
 					}
 					else if(FlxG.keys.pressed("UP"))
 					{
-						//If location was already on up do nothing
-						if(hidingLocation.y+player.height/2<hideableObjects[hideableObjectIndex].y-hideableObjects[hideableObjectIndex].height/2)
+						//If location was already on left do nothing
+						if(hidingLocation.y+player.height/2<hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2)
 						{}
 						else
 						{
 							//Check to make sure there isn't a wall there
 							 potentialY= hideableObjects[hideableObjectIndex].y-player.height-1;
 						
-							if(canHavePlayerAt(hidingLocation.x, potentialY))
+							var currY2:int = hideableObjects[hideableObjectIndex].y+hideableObjects[hideableObjectIndex].height/2;
+							var canDo2: Boolean = true;
+							
+							while(currY2>potentialY && canDo2)
+							{
+								if(!canHavePlayerAt(hidingLocation.x, currY2))
+								{
+									canDo2=false;
+								}
+								currY2--;
+							
+							}
+							
+							if(canDo2)
 							{
 								hidingLocation.y=potentialY;
-								hidingLocation.x=hideableObjects[hideableObjectIndex].x;
 							}
 						
 						}
@@ -1110,12 +1261,17 @@ package
 			
 			var i:int;
 			var j:int; 
-			for(i=-3; i<3; i++)
+			for(i=-3; i<11; i++)
 			{
-				for(j=-3; j<3; j++)
+				//Changed to end at 0 instead of 3
+				//Player is only two high
+				for(j=0; j<2; j++)
 				{
+					//trace("Checking: "+(xPos+i)+", "+(yPos+j));
+				
 					if(FlxTilemap(wallGroup.getFirstAlive()).getTile((xPos+i)/16,(yPos+j)/16) != 0)
 					{
+						//trace("Can't be there");
 						canBeThere=false;
 					}
 				}
@@ -1230,19 +1386,44 @@ package
 			return saver.data.levelMinutes;
 		}
 		
+		protected function transferToHiding(): void
+		{
+			player.setHiding(true);
+			player.setPaused(true);
+			
+			//playerLight.alpha=0;
+			hideableObjects[hideableObjectIndex].transferToHidingImage();
+									
+			hidingTimer = hideableObjects[hideableObjectIndex].getTimeToExit();
+			allKeysUp = false;
+			
+			setGameState(HIDING_GAMEPLAY);
+			hidingLocation = new FlxPoint(player.x,player.y);
+			enemyController.clearAllSuspicions();
+		}
 		
+		public function getNextLevel():TopDownLevel
+		{
+			return null;
+		}
 		
 		
 		public function normalGameplay():void
 		{
 			//Camera testing
-			
 			if(!cameraScrolling)
 			{
 				FlxG.camera.follow(player, 2);
 			}
+			
 			FlxG.collide(wallGroup, player);
-			FlxG.collide(enemyController, objectGroup);
+			
+			enemyController.enemyCollideGroup(objectGroup);
+			enemyController.enemyCollideSprite(player.mySprite);
+			if(enemiesHitWalls)
+			{
+				enemyController.enemyCollideGroup(wallGroup);
+			}
 			
 			
 			//Water Droplet Conections
@@ -1265,19 +1446,17 @@ package
 			}
 			
 			
-			
+			i = 0;
 			//Check all dialogueTriggers to see if we have entered a dialogue zone
-			for(i=0; i<dialogueTriggers.length; i++)
+			while(i<dialogueTriggers.length)//for(i=0; i<dialogueTriggers.length; i++)
 			{
-				if(dialogueTriggers[i]!=null && FlxG.collide(dialogueTriggers[i],player))
+				if(dialogueTriggers[i]!=null && FlxG.overlap(dialogueTriggers[i],player))
 				{
-				
 					var currNode: DialogNode = dialogueTriggers[i].triggerDialogueZone(player, inventory);
 					
 					if(currNode!=null)
 					{
 						//SAVE STUFF conversations update
-						
 						
 						setUpConversation(currNode);
 						
@@ -1285,18 +1464,25 @@ package
 						{
 							dialogueTriggers[i]=null;
 						}
+						
 					}
 				}
+				i++;
 			}
 			
 			//saveIndex set up and figure out to start saving
 			for(i=0; i<savePoints.length; i++)
 			{
-				if(savePoints[i]!=null && FlxG.collide(savePoints[i],player))
+				if(savePoints[i]!=null && FlxG.collide(savePoints[i],player) && lastSavedTimer<=0)
 				{
+					lastSavedTimer=1;
+					
 					saveIndex = i;
 					setGameState(SAVING_GAMEPLAY);
 					player.setPaused(true); //Pause player while saving
+					
+										
+					player.setHiding(true, false);
 				}
 			}
 			
@@ -1327,18 +1513,7 @@ package
 					}
 					else
 					{
-						player.setHiding(true);
-						player.setPaused(true);
-						
-						//playerLight.alpha=0;
-						hideableObjects[hideableObjectIndex].transferToHidingImage();
-												
-						hidingTimer = hideableObjects[hideableObjectIndex].getTimeToExit();
-						allKeysUp = false;
-						
-						setGameState(HIDING_GAMEPLAY);
-						hidingLocation = new FlxPoint(player.x,player.y);
-						enemyController.clearAllSuspicions();
+						transferToHiding();
 					}
 				}
 				else
@@ -1373,6 +1548,7 @@ package
 			}
 			
 			
+			
 			var newOutfit:Boolean=false;
 			
 			if(!legOutfit.getGrabbed() && (FlxG.collide(legOutfit, player)))
@@ -1398,6 +1574,8 @@ package
 				
 				player.setNewOutfitPiece(legOutfit);
 				newOutfit=true;
+				
+				
 			}
 			
 			if(!headOutfit.getGrabbed() && (FlxG.collide(headOutfit, player)))
@@ -1451,10 +1629,17 @@ package
 			}
 			
 			//ENEMY CONTROLLER
-			FlxG.collide(enemyController, player);
-			FlxG.collide(enemyController, wallGroup);
+			
+			
 			if(newOutfit)
 			{
+			
+				//Save current outfit
+				
+				saver.data.currOutfitHead=player.outfitHandler.getCurrHeadOutfitSet();
+				saver.data.currOutfitBody=player.outfitHandler.getCurrBodyOutfitSet();
+				saver.data.currOutfitLegs=player.outfitHandler.getCurrLegsOutfitSet();
+				
 				//IT DOES WORK NOW. BOOYAH
 				enemyController.commandEnemies(this, EnemyController.CHECK_COSTUME);
 			}
@@ -1476,6 +1661,7 @@ package
 				
 			}
 			
+			
 		}
 		
 		protected function setUpConversation( currNode: DialogNode): void
@@ -1489,6 +1675,7 @@ package
 			dialogHandler.showDialogHandler(this);
 			dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
 			setGameState(DIALOG_GAMEPLAY);
+			
 		}
 		
 		protected function handleConversationSaving(conversation:uint):void
@@ -1498,6 +1685,7 @@ package
 		
 		protected function handleConversationEnd(displayingDialog: int):void
 		{
+		
 			if(displayingDialog== DialogHandler.END)
 			{
 				setGameState(NORMAL_GAMEPLAY);
@@ -1514,11 +1702,13 @@ package
 				}
 				else if(afterEnd== DialogNode.RESET_GAME)
 				{
+					
+				
 					//YOU'VE BEEN CAUGHT
 					//SAVE STUFF: UP THE NUMBER OF TIMES WE'VE BEEN CAUGHT
 					saver.data.timesCaught+=1;
-					//printText2.text = "Reset Game";
 					reloadLevel();
+					printText2.text = "reset game";
 				}
 				else if(afterEnd==DialogNode.RESET_ENEMIES)
 				{
@@ -1549,8 +1739,11 @@ package
 		protected function conversationGameplay(): void
 		{
 			enemyController.commandEnemies(this, 1); //Pause all
-			FlxG.collide(enemyController, player.mySprite);
-			FlxG.collide(enemyController, wallGroup);
+			enemyController.enemyCollideSprite(player.mySprite);
+			if(enemiesHitWalls)
+			{
+				enemyController.enemyCollideGroup(wallGroup);
+			}
 			
 			player.keepBodyTogether();
 			
@@ -1558,7 +1751,10 @@ package
 			var displayingDialog: int = dialogHandler.displayDialogHandler(FlxG.camera.scroll, inventory,player);
 			
 			
-			handleConversationEnd(displayingDialog);
+			if(displayingDialog!=DialogHandler.KEEP_GOING)
+			{
+				handleConversationEnd(displayingDialog);
+			}
 			
 		}
 		
@@ -1586,9 +1782,12 @@ package
 			}
 			
 			//Make sure the enemies didn't just become ghosts
-			FlxG.collide(enemyController, player);
-			FlxG.collide(enemyController, wallGroup);
+			enemyController.enemyCollideSprite(player.mySprite);
 			
+			if(enemiesHitWalls)
+			{
+				enemyController.enemyCollideGroup(wallGroup);
+			}				
 			
 			
 			var i:int=0;
@@ -1635,6 +1834,7 @@ package
 				}
 			}
 			
+			
 			//Try removing command
 			enemyController.commandEnemies(this);
 			
@@ -1662,6 +1862,13 @@ package
 					player.setPaused(true);
 				}
 				inventory.hideInventory(this, FlxG.camera.scroll);
+				
+				//Save the current outfit, in case it switched
+				
+				saver.data.currOutfitHead=player.outfitHandler.getCurrHeadOutfitSet();
+				saver.data.currOutfitBody=player.outfitHandler.getCurrBodyOutfitSet();
+				saver.data.currOutfitLegs=player.outfitHandler.getCurrLegsOutfitSet();
+				
 				
 			}
 		

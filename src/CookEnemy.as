@@ -5,7 +5,7 @@ package
 	public class CookEnemy extends Enemy
 	{
 	
-		public function CookEnemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _enemyType:uint = 0, _waypointWaitTimeMax:Number=0, _runspeed:Number=63):void {
+		public function CookEnemy(_waypoints:Vector.<FlxPoint>, player: Player, _lightFOV: Light, X:Number=100, Y:Number=140, _dialogNode:DialogNode=null, _enemyType:uint = 0, _waypointWaitTimeMax:Number=0, _runspeed:Number=60):void {
 			super(Assets.COOK_SPRITE, _waypoints, player,_lightFOV, X, Y,_dialogNode, _runspeed,15,18, _enemyType, _waypointWaitTimeMax);
 			
 			
@@ -15,10 +15,10 @@ package
 			}
 			else
 			{
-				enemyQuestion = new DialogNode(null, DialogHandler.RAT_HEAD, "What are you doing here? Huh? Huh?");
+				enemyQuestion = new DialogNode(null, DialogHandler.RAT_HEAD, "What are you doing here? Huh? Huh?", Assets.RAT_TALKING);
 			}
 			
-			drag = new FlxPoint(runSpeed * 10, runSpeed * 10);
+			drag = new FlxPoint(runSpeed * 2, runSpeed * 2);
 			
 			
 			//This one is the chef outfit
@@ -27,6 +27,12 @@ package
 			giveUpTimerMax=5.0;
 			
 			noMatchFOV();
+			
+			//Rat Sounds
+			sightedSound= Assets.RAT_SIGHTED;
+		  	lostSound= Assets.RAT_LOST;
+		  	
+		  	minimumDist=30;
 		}
 		
 		
@@ -35,27 +41,27 @@ package
 		
 		override public function getCaughtPlayerStatement(): DialogNode
 		{
-			return new DialogNode(null, DialogHandler.RAT_HEAD, "Hey there chef-! Wait a second, you're Dame Celeste!", Assets.CAT_GUARD_JABBER, DialogNode.RESET_GAME);
+			return new DialogNode(null, DialogHandler.RAT_HEAD, "Hey there chef-! Wait a second, you're Dame Celeste!", Assets.RAT_TALKING, DialogNode.RESET_GAME);
 		}
 		
 		override protected function allMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.35,0.35);
+			lightFOV.setSprite(Assets.LightRatSmall);
 		}
 		
 		override protected function noMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.5,0.5);
+			lightFOV.setSprite(Assets.LightRatNone);
 		}
 		
 		override protected function oneMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.45,0.45);
+			lightFOV.setSprite(Assets.LightCatMed);
 		}
 		
 		override protected function twoMatchFOV():void
 		{
-			lightFOV.scale= new FlxPoint(0.425,0.425);
+			lightFOV.setSprite(Assets.LightRatMed);
 		}
 		
 		
@@ -72,15 +78,14 @@ package
 			mySprite.addAnimation("walk_down", [9, 10, 11, 12], 14);
 			mySprite.addAnimation("walk_horz", [5, 6, 7,8], 14);
 			
-			mySprite.facing=LEFT;
 		}
 		
 		//Get Positive Response
 		override protected function getPositiveResponse(): DialogNode
 		{
-			var node1: DialogNode = 	 new DialogNode(null, DialogHandler.RAT_HEAD, "Oh! Get 'um quick then!",Assets.CAT_GUARD_DISAGREE, DialogNode.RESET_ENEMIES)
+			var node1: DialogNode = 	 new DialogNode(null, DialogHandler.RAT_HEAD, "Oh! Get 'um quick then!",Assets.RAT_ANGRY, DialogNode.RESET_ENEMIES)
 		
-			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "Fetching Ingredients for The Chef!");
+			return new DialogNode(node1, DialogHandler.PLAYER_HEAD,  "Fetching Ingredients for The Chef!",Assets.CELESTE_DETERMINED );
 		}
 		
 		//To be overriden by later enemies
@@ -105,32 +110,33 @@ package
 			var response2: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Ugh! That's gross. Wait- You're the prisoner!",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer1, getRandomKeyboardKey(), false,  new DialogNode(response2, DialogHandler.PLAYER_HEAD,  "Cutting the cheese")));
 			
-			var response3: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Wow, really? Rat jokes? You must be the prisoner.",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response3: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Wow, really? Rat jokes? You must be the prisoner.",Assets.RAT_JEER,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer3,getRandomKeyboardKey(), false,  new DialogNode(response3, DialogHandler.PLAYER_HEAD, enemyAnswer3)));
 			
-			var response4: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "That's hardly any excuse, to the dungeon with you!",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response4: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "That's hardly any excuse, to the dungeon with you!",Assets.RAT_TALKING,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer4,getRandomKeyboardKey(), false,  new DialogNode(response4, DialogHandler.PLAYER_HEAD, enemyAnswer4)));
 			
-			var response5: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Yeah you're right, I should take a break- right after I send you back to jail!",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response5: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Yeah you're right, I should take a break- right after I send you back to jail!",Assets.RAT_SURPRISE,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer5,getRandomKeyboardKey(), false,  new DialogNode(response5, DialogHandler.PLAYER_HEAD, enemyAnswer5)));
 			
-			var response6: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "You're right, let's get you back to your nice, cold cell.",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response6: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "You're right, let's get you back to your nice, cold cell.",Assets.RAT_TALKING,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer6,getRandomKeyboardKey(), false,  new DialogNode(response6, DialogHandler.PLAYER_HEAD, enemyAnswer6)));
 			
-			var response7: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Oh. Okay then prisoner, let's get you back.",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response7: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Oh. Okay then prisoner, let's get you back.",Assets.RAT_TALKING,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer7,getRandomKeyboardKey(), false,  new DialogNode(response7, DialogHandler.PLAYER_HEAD, enemyAnswer7)));
 			
-			var response8: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Um. It's okay? Ah. There there? Gonna have to take you back tho.",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response8: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "Um. It's okay? Ah. There there? Gonna have to take you back tho.",Assets.RAT_TALKING,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer8,getRandomKeyboardKey(), false,  new DialogNode(response8, DialogHandler.PLAYER_HEAD, enemyAnswer8)));
 			
-			var response9: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "That was really offensive, you're going to jail.",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response9: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "That was really offensive, you're going to jail.",Assets.RAT_JEER,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer9,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer9)));
 			
-			var response10: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "AHHH! A Cat! Wait, you're just the prisoner!",Assets.CAT_GUARD_DISAGREE,DialogNode.RESET_GAME);
+			var response10: DialogNode = new DialogNode(null, DialogHandler.RAT_HEAD, "AHHH! A Cat! Wait, you're just the prisoner!",Assets.RAT_SURPRISE,DialogNode.RESET_GAME);
 			enemyAnswers.push(new EnemyAnswer(enemyAnswer10,getRandomKeyboardKey(), false,  new DialogNode(response9, DialogHandler.PLAYER_HEAD, enemyAnswer10)));
 			
 			
 		}
+		
 		
 		override protected function updateControls():void {
 			super.updateControls();
@@ -227,6 +233,7 @@ package
 			*/
 			
 		}
+		
 		
 	
 	}//End of class

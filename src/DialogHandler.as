@@ -39,6 +39,14 @@ package
 		public static const FISH_HEAD: uint = 16;
 		public static const HEAD_COOK_HEAD: uint = 17;
 		public static const HATLESS_COOK_HEAD: uint = 18;
+		public static const EVIL_CELESTE_HEAD: uint = 19;
+		public static const WALRUS_HEAD: uint = 20;
+		public static const PRISONER_HEAD_FLIP: uint = 21;
+		public static const BLIND_HEAD: uint = 22;
+		public static const SHARKEESIAN_HEAD: uint = 23;
+		public static const MOOGOST_HEAD: uint = 24;
+		public static const FLAPPY_HEAD: uint = 25;
+		public static const SEALIA_HEAD: uint = 26;
 		
 		
 		//Potential Responses From Handling Dialog
@@ -124,7 +132,7 @@ package
 			}
 			else if(currNode.getFaceToDisplay() ==SHARK_HEAD)
 			{
-				head = new FlxSprite(head.x,head.y,Assets.PRISONER_HEAD); //Replace this with correct head when we get it
+				head = new FlxSprite(head.x,head.y,Assets.SHARK_HEAD); //Replace this with correct head when we get it
 				
 				add(head);
 			}
@@ -209,6 +217,58 @@ package
 			else if(currNode.getFaceToDisplay()==HATLESS_COOK_HEAD)
 			{
 				head = new FlxSprite(head.x,head.y,Assets.HATLESS_COOK_HEAD);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==EVIL_CELESTE_HEAD)
+			{
+				
+				head = new FlxSprite(head.x,head.y,Assets.EVIL_CELESTE_HEAD);
+				
+				add(head);
+			
+			}
+			else if(currNode.getFaceToDisplay()==WALRUS_HEAD)
+			{
+				
+				head = new FlxSprite(head.x,head.y,Assets.WALRUS_HEAD);
+				
+				add(head);
+			
+			}
+			else if(currNode.getFaceToDisplay()==PRISONER_HEAD_FLIP)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.PRISONER_HEAD_FLIP);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==BLIND_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.BLIND_HEAD);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==SHARKEESIAN_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.SHARKEESIAN_PORTRAIT);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==MOOGOST_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.MOOGOST_PORTRAIT);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==FLAPPY_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.FLAPPY_PORTRAIT);
+				
+				add(head);
+			}
+			else if(currNode.getFaceToDisplay()==SEALIA_HEAD)
+			{
+				head = new FlxSprite(head.x,head.y,Assets.SEALIA_PORTRAIT);
 				
 				add(head);
 			}

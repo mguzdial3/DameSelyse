@@ -536,7 +536,10 @@ package org.flixel
 		 */
 		public function clear():void
 		{
-			length = members.length = 0;
+			if(members!=null)
+			{
+				length = members.length = 0;
+			}
 		}
 		
 		/**

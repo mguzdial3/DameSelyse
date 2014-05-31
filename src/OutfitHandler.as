@@ -94,6 +94,40 @@ package
 			}
 		}
 		
+		public function setCurrOutfitByType(outfitType:uint, outfitSet:uint):PlayerOutfit
+		{
+		
+			var i:int =0;
+			var indexAt:int = 0;
+			for(i=0; i<allOutfits.length; i++)
+			{
+				if(outfitType==allOutfits[i].getOutfitType())
+				{
+					if(outfitSet==allOutfits[i].getOutfitSet())
+					{
+						if(outfitType==PlayerOutfit.LEGS_OUTFIT)
+						{
+							indexAt=i;
+							setCurrLegsOutfit(allOutfits[i]);
+						}
+						else if(outfitType==PlayerOutfit.BODY_OUTFIT)
+						{
+							indexAt=i;
+							setCurrBodyOutfit(allOutfits[i]);
+						}
+						else if(outfitType==PlayerOutfit.HEAD_OUTFIT)
+						{
+							indexAt=i;
+							setCurrHeadOutfit(allOutfits[i]);
+						}
+					}
+				}
+				
+			}
+			
+			return allOutfits[indexAt];
+		}
+		
 		
 		private function setCurrLegsOutfit(currLeg: PlayerOutfit):void
 		{

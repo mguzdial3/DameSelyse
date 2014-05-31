@@ -11,6 +11,7 @@ package
 		 * Constructor
 		 */
 		public function Main() {
+			//Change back to MainMenuState
 			super(320, 240, MainMenuState, 2);
 		}
 	}
